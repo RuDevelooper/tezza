@@ -2,6 +2,7 @@ version: '3.7'
 
 services:
   frontend:
+    image: tezza-front
     restart: always
     container_name: frontend_tezza
     build:
@@ -12,6 +13,7 @@ services:
     ports:
       - '8083:80'
   app:
+    image: tezza-app
     restart: always
     container_name: backend_tezza
     build:
