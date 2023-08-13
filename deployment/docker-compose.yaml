@@ -1,0 +1,26 @@
+version: '3.7'
+
+services:
+  frontend:
+    restart: always
+    container_name: frontend_tezza
+    build:
+      context: ..
+      dockerfile: deployment/frontend/Dockerfile
+    environment:
+      - VUE_APP_API_URL=/api
+    ports:
+      - '8083:80'
+  app:
+    restart: always
+    container_name: backend_tezza
+    build:
+      context: ..
+      dockerfile: deployment/backend/Dockerfile
+    env_file:
+      - ../config.env
+    ports:
+      - '8084:8082'
+    command:
+      bash -c ". /usr/local/bin/entrypoint_migrations.sh \
+      && . /usr/local/bin/entrypoint_api.sh"
