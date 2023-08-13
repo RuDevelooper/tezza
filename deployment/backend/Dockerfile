@@ -31,4 +31,8 @@ COPY --chown=app:app ./.pg_service.conf /home/app/
 RUN chmod 0600 /app/.pgpass
 RUN chmod +x /usr/local/bin/entrypoint_*.sh
 
+RUN mkdir -p /app/staticfiles
+RUN chmod -R 777 /app/staticfiles
+
+
 USER $USERNAME
