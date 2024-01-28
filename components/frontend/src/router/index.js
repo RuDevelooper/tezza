@@ -24,7 +24,7 @@ const requireUnauthenticated = (to, from, next) => {
     store.dispatch('auth/initialize')
         .then(() => {
             if (store.getters['auth/isAuthenticated']) {
-                next('/home');
+                next('/');
             } else {
                 next();
             }
