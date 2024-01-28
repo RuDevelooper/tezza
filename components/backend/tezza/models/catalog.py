@@ -35,8 +35,8 @@ class Material(models.Model):
 class Product(models.Model):
 
     class Side(models.TextChoices):
-        LEFT = 'L', _('Левый')
-        RIGHT = 'R', _('Правый')
+        LEFT = 'L', _('Слева')
+        RIGHT = 'R', _('Справа')
 
     sku = models.CharField(
         max_length=100,
@@ -92,4 +92,4 @@ class Product(models.Model):
         verbose_name_plural = 'Изделия'
 
     def __str__(self):
-        return self.title
+        return f'{self.sku} | {self.title}'
