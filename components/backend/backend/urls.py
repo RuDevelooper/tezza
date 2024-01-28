@@ -11,11 +11,13 @@ urlpatterns = [
 ]
 
 router = routers.DefaultRouter()
+router.register('sides', api.Side, basename='sides', )
 router.register('colors', api.Color, basename='colors', )
 router.register('materials', api.Material, basename='materials', )
 router.register('products', api.Product, basename='products', )
 router.register('customers', api.Customer, basename='customers', )
 router.register('orders', api.Order, basename='orders', )
+router.register('order_items', api.OrderItem, basename='order_items', )
 router.register('order_products', api.OrderItem, basename='order_products', )
 router.register('order_logs', api.OrderLog, basename='order_logs', )
 router.register('order_comments', api.OrderComment, basename='order_comments', )

@@ -94,9 +94,15 @@ const orders = [
         beforeEnter: requireAuthenticated,
     },
     {
-        path: '/assembler',
-        name: 'assembler',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler.vue'),
+        path: '/assembler/orders',
+        name: 'assembler_orders',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler/orders.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/assembler/order',
+        name: 'assembler_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler/order.vue'),
         beforeEnter: requireAuthenticated,
     },
     {

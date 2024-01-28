@@ -1,7 +1,7 @@
 version: '3.7'
 
 services:
-  frontend:
+  tezza-frontend:
     image: tezza-front
     restart: always
     container_name: frontend_tezza
@@ -12,7 +12,7 @@ services:
       - VUE_APP_API_URL=/api
     ports:
       - '8083:80'
-  app:
+  tezza-app:
     image: tezza-app
     restart: always
     container_name: backend_tezza
@@ -21,8 +21,11 @@ services:
       dockerfile: deployment/backend/Dockerfile
     env_file:
       - ../config.env
+    volumes:
+      - ../staticfiles:/app/staticfiles
     ports:
       - '8084:8082'
     command:
       bash -c ". /usr/local/bin/entrypoint_migrations.sh \
       && . /usr/local/bin/entrypoint_api.sh"
+

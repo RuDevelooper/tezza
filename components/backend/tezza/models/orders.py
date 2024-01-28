@@ -9,6 +9,7 @@ from .customer import Customer
 
 
 class Order(models.Model):
+
     class Status(models.TextChoices):
         NEW = 'new', _('Новый')
         WAIT_PAYMENT = 'wait_payment', _('Ожидает оплаты')
@@ -73,11 +74,13 @@ class Order(models.Model):
         decimal_places=2,
         verbose_name='Стоимость доставки',
         default=0,
+        blank=True,
     )
     delivery_tracking_number = models.CharField(
         max_length=20,
         verbose_name='Трек номер доставки',
         null=True,
+        blank=True,
     )
     total_cost = models.DecimalField(
         max_digits=9,
@@ -86,31 +89,37 @@ class Order(models.Model):
     )
     assembling_start = models.DateTimeField(
         null=True,
+        blank=True,
         verbose_name='Начало сборки',
     )
     assembling_end = models.DateTimeField(
         null=True,
+        blank=True,
         verbose_name='Завершение сборки',
     )
     assembler = models.ForeignKey(
         to=User,
         related_name='assembled_orders',
         null=True,
+        blank=True,
         on_delete=models.PROTECT,
         verbose_name='Сборщик',
     )
     picked_at = models.DateTimeField(
         null=True,
+        blank=True,
         verbose_name='Упакован',
     )
     shipped_at = models.DateTimeField(
         null=True,
+        blank=True,
         verbose_name='Отправлен',
     )
     picker = models.ForeignKey(
         to=User,
         related_name='picked_orders',
         null=True,
+        blank=True,
         on_delete=models.PROTECT,
         verbose_name='Упаковщик',
     )
@@ -178,7 +187,9 @@ class OrderComment(models.Model):
         verbose_name='Заказ',
     )
     comment = models.TextField(
-        blank=True, null=True, verbose_name='Комментарий',
+        blank=True,
+        null=True,
+        verbose_name='Комментарий',
     )
     user = models.ForeignKey(
         to=User,
@@ -199,6 +210,7 @@ class OrderComment(models.Model):
 
 
 class OrderItem(models.Model):
+
     class Status(models.TextChoices):
         NEW = 'new', _('Новый')
         ASSEMBLY = 'assembly', _('Сборка')

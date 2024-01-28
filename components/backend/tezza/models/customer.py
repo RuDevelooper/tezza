@@ -23,3 +23,6 @@ class Customer(models.Model):
         ordering = ["name"]
         verbose_name = 'Покупатель'
         verbose_name_plural = 'Покупатели'
+
+    def __str__(self):
+        return self.name

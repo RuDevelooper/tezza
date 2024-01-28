@@ -5,6 +5,7 @@ from tezza.serializers import Customer, Product
 
 
 class User(serializers.ModelSerializer):
+
     class Meta:
         model = models.User
         fields = (
@@ -15,19 +16,14 @@ class User(serializers.ModelSerializer):
 
 
 class OrderItem(serializers.ModelSerializer):
-    status = serializers.CharField(source='get_status_display', required=False)
-    priority = serializers.CharField(source='get_priority_display', required=False)
+    status_name = serializers.CharField(source='get_status_display', required=False)
+    priority = serializers.CharField(source='get_priority_display',
+                                     required=False)
     product = Product(many=False)
 
     class Meta:
         model = models.OrderItem
-        fields = (
-            'id',
-            'status',
-            'priority',
-            'product',
-            'price',
-        )
+        fields = '__all__'
 
 
 class OrderComment(serializers.ModelSerializer):
@@ -45,7 +41,8 @@ class Order(serializers.ModelSerializer):
     comments = OrderComment(many=True, read_only=True)
     customer = Customer(many=False)
     items = OrderItem(many=True)
-    priority = serializers.CharField(source='get_priority_display', required=False)
+    priority = serializers.CharField(source='get_priority_display',
+                                     required=False)
     status = serializers.CharField(source='get_status_display', required=False)
 
     class Meta:
@@ -53,11 +50,12 @@ class Order(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, data):
-        self.service.create(**data)
-        return
+
+        return self.service.create(**data)
 
 
 class OrderLog(serializers.ModelSerializer):
+
     class Meta:
         model = models.OrderLog
         fields = '__all__'

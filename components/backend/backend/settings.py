@@ -23,7 +23,8 @@ class Settings(BaseSettings):
 
     ALLOW_ORIGINS: Union[str, Tuple[str, ...]] = Field(default_factory=tuple)
     ALLOWED_HOSTS: Union[str, Tuple[str, ...]] = Field(default_factory=tuple)
-    CORS_ORIGIN_WHITELIST: Union[str, Tuple[str, ...]] = Field(default_factory=tuple)
+    CSRF_TRUSTED_ORIGINS: Union[str, Tuple[str, ...]] = Field(default_factory=tuple)
+    CORS_ALLOWED_ORIGINS: Union[str, Tuple[str, ...]] = Field(default_factory=tuple)
 
     LOGGING_LEVEL: str = 'INFO'
 
@@ -37,8 +38,12 @@ class Settings(BaseSettings):
         return self.ALLOWED_HOSTS.split(',')
 
     @property
-    def cross_origin_whitelist(self):
-        return self.CORS_ORIGIN_WHITELIST.split(',')
+    def csrf_trusted_origins(self):
+        return self.CSRF_TRUSTED_ORIGINS.split(',')
+
+    @property
+    def cors_allowed_origins(self):
+        return self.CORS_ALLOWED_ORIGINS.split(',')
 
 
 settings = Settings()
@@ -58,35 +63,8 @@ DEBUG = settings.DEBUG
 ALLOWED_HOSTS = settings.allowed_hosts
 
 # CORS Settings
-CORS_ALLOWED_ORIGINS = [
-    "http://localhost:8080",
-    "http://127.0.0.1:8080",
-    "http://localhost:8080",
-    "http://127.0.0.1:9000"
-]
-
-# CORS_ORIGIN_ALLOW_ALL = settings.DEBUG
-# CORS_ORIGIN_WHITELIST = settings.cross_origin_whitelist
-# CORS_ALLOW_HEADERS = [
-#     'accept',
-#     'accept-encoding',
-#     'authorization',
-#     'content-type',
-#     'dnt',
-#     'origin',
-#     'user-agent',
-#     'x-csrftoken',
-#     'x-requested-with',
-# ]
-# CORS_ALLOW_METHODS = [
-#     'DELETE',
-#     'GET',
-#     'OPTIONS',
-#     'PATCH',
-#     'POST',
-#     'PUT',
-# ]
-# CORS_ALLOW_CREDENTIALS = True
+CORS_ALLOWED_ORIGINS = settings.cors_allowed_origins
+CSRF_TRUSTED_ORIGINS = settings.csrf_trusted_origins
 
 # Application definition
 
@@ -101,6 +79,7 @@ INSTALLED_APPS = [
     'corsheaders',
     'rest_framework',
     'rest_framework.authtoken',
+    'django_filters',
 ]
 
 MIDDLEWARE = [
@@ -141,7 +120,6 @@ DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
         "OPTIONS": {
-            # "service": "tezza_pg_prod",
             "service": "tezza_pg",
             "passfile": ".pgpass",
         },
@@ -175,7 +153,7 @@ TIME_ZONE = 'UTC'
 
 USE_I18N = True
 
-USE_TZ = True
+USE_TZ = False
 
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/4.2/howto/static-files/
@@ -198,9 +176,10 @@ MEDIA_URL = 'media/'
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 REST_FRAMEWORK = {
-    "DATE_INPUT_FORMATS": ["%d.%m.%Y"],
+    'DATE_INPUT_FORMATS': ['%d.%m.%Y'],
     'DEFAULT_AUTHENTICATION_CLASSES': (
         'rest_framework.authentication.TokenAuthentication',
         'rest_framework.authentication.SessionAuthentication',
-    )
+    ),
+    'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }

@@ -28,6 +28,7 @@ const initialState = {
 
 const getters = {
     isAuthenticated: state => !!state.token,
+    user: state => !!state.user,
 };
 
 const actions = {
@@ -83,13 +84,16 @@ const mutations = {
         state.error = false;
     },
     [SET_TOKEN](state, token) {
-        if (!isProduction) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+        localStorage.setItem(TOKEN_STORAGE_KEY, token);
+        // if (!isProduction) localStorage.setItem(TOKEN_STORAGE_KEY, token);
         session.defaults.headers.Authorization = `Token ${token}`;
         state.token = token;
     },
     [SET_USER_DATA](state, data) {
-        if (!isProduction) localStorage.setItem(USER_ID, data.id);
-        if (!isProduction) localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
+        localStorage.setItem(USER_ID, data.id);
+        // if (!isProduction) localStorage.setItem(USER_ID, data.id);
+        localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
+        // if (!isProduction) localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
 
         state.user.id = data.id;
         state.user.name = `${data.first_name} ${data.last_name}`;
@@ -102,7 +106,7 @@ const mutations = {
     [REMOVE_USER_DATA](state) {
         localStorage.removeItem(USER_ID);
         localStorage.removeItem(USER_NAME);
-        
+
         state.user.id = null;
         state.user.name = null;
     },

@@ -9,6 +9,10 @@ import '@/assets/sass/forms/custom-flatpickr.css';
 import { useMeta } from '@/composables/use-meta';
 import { useStore } from 'vuex';
 
+
+import Multiselect from '@suadelabs/vue3-multiselect';
+import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
+
 useMeta({ title: 'Новый заказ' });
 
 const store = useStore();
@@ -40,12 +44,15 @@ const default_item_values = {
     price: 0,
 }
 onMounted(() => {
-    items.value.push({ id: 1, ...default_item_values });
+    items.value.push({ 'item': { id: 1, ...default_item_values } });
     let dt = new Date();
     created_at.value = new Date();
-    dt.setDate(dt.getDate() + 5);
+    dt.setDate(dt.getDate() + 15);
     dt.setHours(0, 0, 0, 0);
     due_date.value = dt;
+    store.dispatch('materials/fetchItems')
+    store.dispatch('colors/fetchItems')
+    store.dispatch('sides/fetchItems')
 
 
 
@@ -58,11 +65,12 @@ const add_item = () => {
             (max, character) => (character.id > max ? character.id : max), items.value[0].id
         );
     }
-    items.value.push({ id: max_id + 1, ...default_item_values });
+    items.value.push({ 'item': { id: max_id + 1, ...default_item_values } });
 };
 
 const remove_item = (item) => {
-    items.value = items.value.filter((d) => d.id != item.id);
+    console.log(item)
+    items.value = items.value.filter((d) => d.item.id != item.id);
 };
 
 const createdAtHandler = (selectedDates) => {
@@ -79,21 +87,23 @@ const create_order = () => {
     console.log(store.state.auth.user)
 
 
-    var product_cost = items.value.reduce((acc, x) => acc + (x.price * x.quantity), 0);
+    var product_cost = items.value.reduce((acc, x) => acc + (x.item.price * x.item.quantity), 0);
 
     let order_items = []
     for (var item of items.value) {
-        order_items.push({
-            product: {
-                sku: item.sku,
-                title: item.title,
-                quantity: item.quantity,
-                material: item.material,
-                side: item.side,
-                color: item.color,
-            },            
-            price: item.price,
-        })
+        for (let i = 0; i < item.item.quantity; i++) {
+            order_items.push({
+                product: {
+                    sku: item.item.sku,
+                    title: item.item.title,
+                    material: { title: item.item.material },
+                    side: item.item.side,
+                    color: { title: item.item.color },
+                },
+                price: item.item.price,
+            });
+        }
+
     }
 
     store.dispatch('orders/create', {
@@ -115,7 +125,48 @@ const create_order = () => {
     })
 };
 
+const product = ref({
+    sku: null
+})
+
+const findProducts = (query, _) => {
+    if (query.length < 2) return;
+
+    store.dispatch('products/find', query)
+}
+
+
 </script>
+<style>
+.multiselect__option--highlight {
+    background: #fff;
+    color: #4361ee;
+}
+
+.multiselect__option--selected {
+    background-color: rgba(27, 85, 226, 0.23921568627450981);
+    color: #4361ee;
+    font-weight: normal;
+}
+
+.multiselect__option--disabled {
+    background: inherit !important;
+}
+
+.multiselect__tag {
+    color: #000;
+    background: #e4e4e4;
+}
+
+.multiselect__tag-icon:after {
+    color: #000 !important;
+}
+
+.multiselect__tag-icon:focus,
+.multiselect__tag-icon:hover {
+    background: inherit;
+}
+</style>
 <template>
     <div class="layout-px-spacing apps-invoice-add">
         <teleport to="#breadcrumb">
@@ -157,32 +208,32 @@ const create_order = () => {
 
                                                 <div class="invoice-address-company-fields">
                                                     <div class="form-group row">
-                                                        <label for="company-name"
+                                                        <label for="customer-name"
                                                             class="col-sm-3 col-form-label col-form-label-sm">ФИО</label>
                                                         <div class="col-sm-9">
                                                             <input type="text" v-model="order.customer.name"
-                                                                id="company-name" class="form-control form-control-sm"
+                                                                id="customer-name" class="form-control form-control-sm"
                                                                 placeholder="Фамилия Имя Отчество" />
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="company-email"
+                                                        <label for="company-name"
                                                             class="col-sm-3 col-form-label col-form-label-sm">ИП /
                                                             ООО</label>
                                                         <div class="col-sm-9">
                                                             <input type="text" v-model="order.customer.organisation"
-                                                                id="company-email" class="form-control form-control-sm"
+                                                                id="company-name" class="form-control form-control-sm"
                                                                 placeholder="Название компании-покупателя" />
                                                         </div>
                                                     </div>
 
                                                     <div class="form-group row">
-                                                        <label for="company-phone"
+                                                        <label for="phone"
                                                             class="col-sm-3 col-form-label col-form-label-sm">Телефон</label>
                                                         <div class="col-sm-9">
                                                             <input type="text" v-model="order.customer.phone"
-                                                                id="company-phone" class="form-control form-control-sm"
+                                                                id="phone" class="form-control form-control-sm"
                                                                 placeholder="(123) 456 789" />
                                                         </div>
                                                     </div>
@@ -259,28 +310,26 @@ const create_order = () => {
                                         </div>
                                     </div>
 
+
+
                                     <div class="invoice-detail-items">
                                         <div class="table-responsive">
                                             <table class="table table-bordered item-table">
                                                 <thead>
                                                     <tr>
                                                         <th class=""></th>
-                                                        <th>Артикул</th>
-                                                        <th class="">Наименование</th>
-                                                        <th class="">Шт.</th>
-                                                        <th class="">Материал</th>
-                                                        <th class="">Сторона</th>
-                                                        <th class="">Цвет</th>
-                                                        <th class="">Цена</th>
+                                                        <th>Артикул / Наименование</th>
+                                                        <th class="">Характеристики</th>
+                                                        <th class="">Количество / Цена</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
-                                                    <tr v-for="(item, index) in items" :key="index">
+                                                    <tr v-for="(good, index) in items" :key="index">
                                                         <td class="delete-item-row">
                                                             <ul class="table-controls">
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="delete-item"
-                                                                        @click="remove_item(item)">
+                                                                        @click="remove_item(good.item)">
                                                                         <svg xmlns="http://www.w3.org/2000/svg" width="24"
                                                                             height="24" viewBox="0 0 24 24" fill="none"
                                                                             stroke="currentColor" stroke-width="2"
@@ -294,55 +343,57 @@ const create_order = () => {
                                                                 </li>
                                                             </ul>
                                                         </td>
-                                                        <td class="sku">
-                                                            <input type="text" v-model="item.sku"
-                                                                class="form-control form-control-sm"
-                                                                placeholder="Артикул" />
-                                                        </td>
                                                         <td class="name">
-                                                            <input type="text" v-model="item.title"
-                                                                class="form-control form-control-sm"
+                                                            <div class="w100">
+                                                                <multiselect v-model="good.item" id="orderItemSku"
+                                                                    :options="store.state.products.bySku" :searchable="true"
+                                                                    selected-label="sku" select-label="" deselect-label=""
+                                                                    placeholder="Артикул.." track-by="sku" label="sku"
+                                                                    @search-change="findProducts"
+                                                                    :class="form - select - lg">
+                                                                </multiselect>
+                                                            </div>
+                                                            <input v-model="good.item.title" class="form-control px-3 mt-1"
                                                                 placeholder="Наименование" />
                                                         </td>
+
+                                                        <td class="text-end material">
+                                                            <select v-model="good.item.material"
+                                                                class="form-select form-select mb-1" id="material">
+                                                                <option v-for="material in store.state.materials.materials"
+                                                                    :key="material.id">
+                                                                    {{ material.title }}
+                                                                </option>
+                                                            </select>
+                                                            <select v-model="good.item.color"
+                                                                class="form-select form-select mb-1" id="color">
+                                                                <option v-for="color in store.state.colors.colors"
+                                                                    :key="color.id">
+                                                                    {{ color.title }}
+                                                                </option>
+                                                            </select>
+                                                        <!-- </td>
+                                                        <td class="text-end color"> -->
+                                                            <select v-model="good.item.side" class="form-select form-select"
+                                                                id="side">
+                                                                <option value="Левый">Левый</option>
+                                                                <option value="Правый">Правый</option>
+                                                            </select>
+                                                        </td>
                                                         <td class="text-end qty">
-                                                            <input type="number" v-model="item.quantity"
-                                                                class="form-control form-control-sm"
+                                                            <input type="number" v-model="good.item.price"
+                                                                class="form-control form-control"
+                                                                placeholder="Цена" />
+                                                            <input type="number" v-model="good.item.quantity"
+                                                                class="form-control form-control"
                                                                 placeholder="Количество" />
                                                         </td>
-                                                        <td class="text-end material">
-                                                            <select v-model="item.material"
-                                                                class="country_code form-select form-select-sm"
-                                                                id="material">
-                                                                <option value="">Материал</option>
-                                                                <option value="United States">Металл</option>
-                                                                <option value="United Kingdom">Дерево</option>
-                                                                <option value="Canada">Пластик</option>
-                                                            </select>
-                                                        </td>
-                                                        <td class="text-end side">
-                                                            <select v-model="item.side"
-                                                                class="country_code form-select form-select-sm"
-                                                                id="material">
-                                                                <option value="">Сторона</option>
-                                                                <option value="United States">Левая</option>
-                                                                <option value="United Kingdom">Правая</option>
-                                                            </select>
-                                                        </td>
-                                                        <td class="text-end color">
-                                                            <select v-model="item.color"
-                                                                class="country_code form-select form-select-sm" id="color">
-                                                                <option value="">Цвет</option>
-                                                                <option value="United States">Белый</option>
-                                                                <option value="United Kingdom">Серый</option>
-                                                                <option value="Canada">Черный</option>
-                                                                <option value="Australia">Синий</option>
-                                                                <option value="Germany">Красный</option>
-                                                            </select>
-                                                        </td>
-                                                        <td class="price">
-                                                            <input type="number" v-model="item.price"
-                                                                class="form-control form-control-sm" placeholder="Цена" />
-                                                        </td>
+                                                        <!-- <td class="text-end amount">
+                                                            <span class="editable-amount mt-2">
+                                                                <span class="currency">₽</span> <span class="amount">{{
+                                                                    good.item.price }}</span>
+                                                            </span>
+                                                        </td> -->
                                                     </tr>
                                                 </tbody>
                                             </table>
@@ -351,7 +402,6 @@ const create_order = () => {
                                         <button type="button" class="btn btn-secondary additem btn-sm"
                                             @click="add_item()">Добавить изделие</button>
                                     </div>
-
                                     <div class="invoice-detail-total">
                                         <div class="row">
 
@@ -362,8 +412,8 @@ const create_order = () => {
                                                         <div class="invoice-summary-value">
                                                             <div class="subtotal-amount"><span class="currency">₽
                                                                 </span><span class="amount">
-                                                                    {{ items.reduce((acc, x) => acc + (x.price *
-                                                                        x.quantity), 0) }}
+                                                                    {{ items.reduce((acc, x) => acc + (x.item.price *
+                                                                        x.item.quantity), 0) }}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -381,8 +431,8 @@ const create_order = () => {
                                                             <div class="balance-due-amount"><span class="currency">₽
                                                                 </span>
                                                                 <span class="amount">
-                                                                    {{ items.reduce((acc, x) => acc + (x.price *
-                                                                        x.quantity),
+                                                                    {{ items.reduce((acc, x) => acc + (x.item.price *
+                                                                        x.item.quantity),
                                                                         0) + order.delivery.cost }}
                                                                 </span>
                                                             </div>
@@ -449,7 +499,7 @@ const create_order = () => {
                                         <div class="col-xl-12 col-md-4" v-on:="">
 
                                             <button type="button" class="btn btn-success w-100 mb-4 me-2"
-                                                @click="create_order()">Добавить изделие</button>
+                                                @click="create_order()">Сохранить заказ</button>
                                         </div>
                                     </div>
                                 </div>

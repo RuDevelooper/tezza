@@ -13,4 +13,7 @@ export default {
   update(id, payload) {
     return session.get(`/orders/${id}`, payload);
   },
+  update_item(id, status) {
+    return session.patch(`/order_items/${id}/`, { status });
+  },
 };

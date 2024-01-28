@@ -105,8 +105,8 @@
 
                     <ul id="assembler" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/assembler" @click="toggleMobileMenu">
-                                {{ $t('new_orders') }}
+                            <router-link to="/assembler/orders" @click="toggleMobileMenu">
+                                {{ $t('orders') }}
                             </router-link>
                         </li>
                     </ul>

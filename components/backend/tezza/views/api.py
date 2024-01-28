@@ -1,6 +1,5 @@
-from rest_framework import viewsets, permissions
-from rest_framework.authentication import TokenAuthentication
-from rest_framework.generics import get_object_or_404
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import viewsets, permissions, filters
 from rest_framework.response import Response
 
 from tezza import models, serializers
@@ -10,8 +9,8 @@ class UserViewSet(viewsets.ViewSet):
     """
     A simple ViewSet for listing or retrieving users.
     """
-    authentication_classes = TokenAuthentication,
-    http_method_names = ('get',)
+    # authentication_classes = TokenAuthentication,
+    http_method_names = ('get', )
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -23,7 +22,7 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class User(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -31,8 +30,9 @@ class User(viewsets.ModelViewSet):
 
     queryset = models.User.objects.all()
 
+
 class Color(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -42,7 +42,7 @@ class Color(viewsets.ModelViewSet):
 
 
 class Material(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -51,18 +51,30 @@ class Material(viewsets.ModelViewSet):
     queryset = models.Material.objects.all()
 
 
+class Side(viewsets.ViewSetMixin):
+#     authentication_classes = TokenAuthentication,
+    permission_classes = {
+        permissions.IsAuthenticated,
+    }
+    serializer_class = serializers.Side
+    queryset = models.Product.Side
+
+
 class Product(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.Product
 
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['sku', ]
+
     queryset = models.Product.objects.all()
 
 
 class Customer(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -72,27 +84,27 @@ class Customer(viewsets.ModelViewSet):
 
 
 class Order(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.Order
 
+    filterset_fields = ['number', 'status']
     queryset = models.Order.objects.all()
 
 
 class OrderItem(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.OrderItem
-
     queryset = models.OrderItem.objects.all()
 
 
 class OrderComment(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -102,7 +114,7 @@ class OrderComment(viewsets.ModelViewSet):
 
 
 class OrderLog(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+#     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
