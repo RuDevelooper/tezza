@@ -2,8 +2,8 @@ const path = require('path');
 module.exports = {
     pluginOptions: {
         i18n: {
-            locale: 'en',
-            fallbackLocale: 'en',
+            locale: 'ru',
+            fallbackLocale: 'ru',
             localeDir: 'locales',
             enableInSFC: false
         }
@@ -15,8 +15,8 @@ module.exports = {
     configureWebpack: {
         resolve: {
             alias: {
-                '@themeConfig': path.resolve(__dirname, 'theme.config.js'),                
+                '@themeConfig': path.resolve(__dirname, 'theme.config.js'),
             }
         }
-    }
+    },
 };

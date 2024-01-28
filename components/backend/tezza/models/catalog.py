@@ -66,10 +66,18 @@ class Product(models.Model):
         choices=Side.choices,
         default=Side.LEFT,
         verbose_name='Сторона',
+        null=True,
+    )
+    side_point = models.CharField(
+        max_length=100,
+        verbose_name='Признак для стороны',
+        blank=True,
+        null=True,
     )
     size = models.IntegerField(
         default=0,
         verbose_name='Размер, см',
+        null=True,
     )
     price = models.DecimalField(
         max_digits=9,

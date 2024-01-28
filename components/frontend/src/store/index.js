@@ -5,6 +5,10 @@ import auth from './auth';
 import password from './password';
 import signup from './signup';
 import orders from './orders';
+import products from './products';
+import materials from './materials';
+import colors from './colors';
+import sides from './sides';
 
 export default new createStore({
     state: {
@@ -17,8 +21,8 @@ export default new createStore({
         menu_style: 'vertical',
         layout_style: 'full',
         countryList: [
-            { code: 'en', name: 'English' },
             { code: 'ru', name: 'Russian' },
+            { code: 'en', name: 'English' },
         ],
     },
     mutations: {
@@ -92,5 +96,9 @@ export default new createStore({
         password,
         signup,
         orders,
+        products,
+        materials,
+        colors,
+        sides,
       },
 });

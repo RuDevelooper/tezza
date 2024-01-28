@@ -17,7 +17,17 @@ class Material(serializers.ModelSerializer):
         fields = '__all__'
 
 
+class Side(serializers.BaseSerializer):
+
+    class Meta:
+        model = serializers.CharField(source='get_side_display', required=True)
+        fields = '__all__'
+
+
 class Product(serializers.ModelSerializer):
+    color = Color(many=False)
+    material = Material(many=False)
+    side = serializers.CharField(source='get_side_display', required=True)
 
     class Meta:
         model = models.Product

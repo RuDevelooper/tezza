@@ -2529,6 +2529,18 @@ textarea[readonly] {
                 background-color: $danger;
                 color: #fff;
             }
+
+            &.done-hover-icon {
+                padding: 2px;
+                border-radius: 25%;
+                font-size: 15px;
+                vertical-align: sub;
+                cursor: pointer;
+            }
+            &.done-hover-icon:hover {
+                background-color: $success;
+                color: #fff;
+            }
         }
     }
 }

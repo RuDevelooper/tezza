@@ -3,6 +3,8 @@
     "order": "Заказ",
     "assembler": "Сборка",
     "new_orders": "Новые заказы",
+    "free_orders": "Заказы",
+    "my_orders": "Мои заказы",
     "picker": "Упаковка",
     "dashboard": "Мониторинг",
     "sales": "Продажи",

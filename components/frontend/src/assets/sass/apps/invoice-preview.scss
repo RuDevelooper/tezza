@@ -98,6 +98,11 @@
       height: 36px;
     }
 
+    .invoice-logo {
+      width: 128px;
+      height: 48px;
+    }
+
     div.company-info {
       display: flex;
       justify-content: flex-end;
@@ -194,7 +199,7 @@
 
     th {
       padding: 9px 22px;
-      font-size: 11px !important;
+      font-size: 13px !important;
       border: none;
       border-top: 1px solid $m-color_3;
       border-bottom: 1px solid $m-color_3;
@@ -210,6 +215,7 @@
     }
 
     tr td {
+      font-size: 15px !important;
       &:first-child {
         padding-left: 35px;
       }
@@ -313,6 +319,11 @@
   }
 }
 
+@page {
+  size: A4 landscape;
+  margin: 12px 12px;
+}
+
 @media print {
   body * {
     visibility: hidden;
@@ -332,11 +343,6 @@
     right: 0;
     top: 0;
   }
-}
-
-@page {
-  size: auto;
-  margin: 0mm;
 }
 
 /*

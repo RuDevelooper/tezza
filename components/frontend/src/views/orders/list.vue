@@ -175,7 +175,7 @@ const selcted_row = (val) => {
                                 </div>
                             </template>
                             <template #assembler="props">
-                                <div>{{ props.row.assembler.full_name || '' }}</div>
+                                <div>{{ props.row.assembler ? props.row.assembler.full_name : '' }}</div>
                             </template>
                             <template #customer="props">
                                 <div>{{ props.row.customer.name || '' }}</div>
