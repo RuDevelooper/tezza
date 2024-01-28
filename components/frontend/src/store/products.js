@@ -24,7 +24,7 @@ export class Product {
 export default {
     namespaced: true,
     state: {
-        bySku: Product,
+        bySku: [],
         add: {
             id: null,
             color: {

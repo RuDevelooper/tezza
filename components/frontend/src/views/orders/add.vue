@@ -52,7 +52,7 @@ onMounted(() => {
     due_date.value = dt;
     store.dispatch('materials/fetchItems')
     store.dispatch('colors/fetchItems')
-    store.dispatch('sides/fetchItems')
+    // store.dispatch('sides/fetchItems')
 
 
 
@@ -349,8 +349,7 @@ const findProducts = (query, _) => {
                                                                     :options="store.state.products.bySku" :searchable="true"
                                                                     selected-label="sku" select-label="" deselect-label=""
                                                                     placeholder="Артикул.." track-by="sku" label="sku"
-                                                                    @search-change="findProducts"
-                                                                    :class="form - select - lg">
+                                                                    @search-change="findProducts">
                                                                 </multiselect>
                                                             </div>
                                                             <input v-model="good.item.title" class="form-control px-3 mt-1"
@@ -358,26 +357,24 @@ const findProducts = (query, _) => {
                                                         </td>
 
                                                         <td class="text-end material">
-                                                            <select v-model="good.item.material"
+                                                            <select v-model="good.item.material.title"
                                                                 class="form-select form-select mb-1" id="material">
                                                                 <option v-for="material in store.state.materials.materials"
                                                                     :key="material.id">
                                                                     {{ material.title }}
                                                                 </option>
                                                             </select>
-                                                            <select v-model="good.item.color"
+                                                            <select v-model="good.item.color.title"
                                                                 class="form-select form-select mb-1" id="color">
                                                                 <option v-for="color in store.state.colors.colors"
                                                                     :key="color.id">
                                                                     {{ color.title }}
                                                                 </option>
                                                             </select>
-                                                        <!-- </td>
-                                                        <td class="text-end color"> -->
                                                             <select v-model="good.item.side" class="form-select form-select"
                                                                 id="side">
-                                                                <option value="Левый">Левый</option>
-                                                                <option value="Правый">Правый</option>
+                                                                <option value="Слева">Слева</option>
+                                                                <option value="Справа">Справа</option>
                                                             </select>
                                                         </td>
                                                         <td class="text-end qty">
@@ -388,12 +385,6 @@ const findProducts = (query, _) => {
                                                                 class="form-control form-control"
                                                                 placeholder="Количество" />
                                                         </td>
-                                                        <!-- <td class="text-end amount">
-                                                            <span class="editable-amount mt-2">
-                                                                <span class="currency">₽</span> <span class="amount">{{
-                                                                    good.item.price }}</span>
-                                                            </span>
-                                                        </td> -->
                                                     </tr>
                                                 </tbody>
                                             </table>
