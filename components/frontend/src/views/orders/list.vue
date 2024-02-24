@@ -16,9 +16,9 @@ const columns = ref([
     'created_at',
     'due_date',
     'customer',
-    'items',
+    // 'items',
     'items_assembled',
-    'comments',
+    // 'comments',
     'assembler',
     'status',
 ]);
@@ -33,7 +33,7 @@ const headings = {
     items: 'Изделий в заказе',
     items_assembled: 'Собрано',
     items_assembled_percent: '%',
-    comments: 'Комментарии',
+    // comments: 'Комментарии',
     assembler: 'Сборщик',
     status: 'Статус',
     actions: '',
@@ -53,9 +53,9 @@ const table_option = ref({
         'customer',
         'deadline',
         'items',
-        'items_assembled',
+        'due_date',
         'items_assembled_percent',
-        'comments',
+        'number',
         'assembler',
         'status',
     ],
@@ -75,15 +75,15 @@ const table_option = ref({
 });
 const selected_rows = ref([]);
 const statuses = ref({
-    'Новый': 'success',
-    'Ожидает оплаты': 'success',
-    'Оплачен': 'success',
-    'Сборка': 'success',
-    'Собран': 'success',
-    'Покраска': 'success',
-    'Упаковка': 'success',
-    'Отправлен': 'success',
-    'Завершен': 'success',
+    'Новый': 'badge-info',
+    'Ожидает оплаты': 'badge-info',
+    'Оплачен': 'badge-primary',
+    'Сборка': 'badge-warning',
+    'Собран': 'badge-success',
+    'Покраска': 'badge-success',
+    'Упаковка': 'badge-secondary',
+    'Отправлен': 'badge-dark',
+    'Завершен': 'badge-dark',
 });
 
 onMounted(() => {
@@ -134,17 +134,17 @@ const selcted_row = (val) => {
                     <div class="custom-table">
                         <v-client-table :data="store.state.orders.orders" :columns="columns" :options="table_option">
                             <template #beforeFilter>
-                                <router-link to="/orders/add" class="btn me-2 btn-primary"><svg
+                                <router-link to="/orders/add" class="btn btn-primary"><svg
                                         xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="feather feather-plus">
+                                        stroke-linejoin="round" class="feather feather-plus me-2">
                                         <line x1="12" y1="5" x2="12" y2="19"></line>
                                         <line x1="5" y1="12" x2="19" y2="12"></line>
                                     </svg>
                                     Новый
                                 </router-link>
 
-                                <button type="button" class="btn ml-2 btn-danger" @click="delete_row()">
+                                <!-- <button type="button" class="btn ml-2 btn-danger" @click="delete_row()">
                                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                         fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
                                         stroke-linejoin="round" class="feather feather-trash-2">
@@ -156,7 +156,7 @@ const selcted_row = (val) => {
                                         <line x1="14" y1="11" x2="14" y2="17"></line>
                                     </svg>
                                     Удалить
-                                </button>
+                                </button> -->
                             </template>
                             <template #id="props">
                                 <div class="checkbox-outline-primary custom-control custom-checkbox">
@@ -166,43 +166,49 @@ const selcted_row = (val) => {
                                 </div>
                             </template>
                             <template #number="props">
-                                <router-link to="/orders/preview">
+                                <router-link :to="{ path: '/orders/preview', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>
                             <template #created_at="props">
-                                <div :data_sort="props.row.created_at">{{ props.row.created_at.toLocaleDateString('ru') }}
+                                <div :data_sort="props.row.created_at">{{ props.row.created_at.toLocaleDateString('ru')
+                                    }}
                                 </div>
                             </template>
                             <template #assembler="props">
-                                <div>{{ props.row.assembler ? props.row.assembler.full_name : '' }}</div>
+                                <div>{{ props.row.assembler_user ? `${props.row.assembler_user.first_name}
+                                    ${props.row.assembler_user.last_name}` : '' }}</div>
                             </template>
                             <template #customer="props">
                                 <div>{{ props.row.customer.name || '' }}</div>
                             </template>
                             <template #due_date="props">
-                                <div :data_sort="props.row.due_date">{{ props.row.due_date.toLocaleDateString('ru') }}</div>
+                                <div :data_sort="props.row.due_date">{{ props.row.due_date.toLocaleDateString('ru') }}
+                                </div>
                             </template>
                             <template #status="props">
-                                <span class="badge inv-status" :class="'badge-' + statuses[props.row.status]">
+                                <span class="badge inv-status" :class="statuses[props.row.status]">
                                     {{ props.row.status }}
                                 </span>
                             </template>
                             <template #items="props">
                                 <div :data_sort="props.row.due_date">{{ props.row.items.length }}</div>
                             </template>
-                            <template #comments="props">
+                            <!-- <template #comments="props">
                                 <div :data_sort="props.row.due_date">{{ props.row.comments.length }}</div>
-                            </template>
+                            </template> -->
                             <template #items_assembled="props">
-                                <div :data_sort="props.row.due_date">{{ props.row.items.filter(x => x.status == "Собран").length }}</div>
+                                <div :data_sort="props.row.items.length">
+                                    {{ props.row.items.filter(x => x.status_name == "Собран").length }}
+                                    из {{ props.row.items.length }}
+                                </div>
                             </template>
                             <template #actions="props">
                                 <div class="mb-4 me-2 custom-dropdown dropdown btn-group">
                                     <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask"
                                         data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px" width="24"
-                                            height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px"
+                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                             stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
                                             class="feather feather-more-horizontal">
                                             <circle cx="12" cy="12" r="1"></circle>
@@ -214,10 +220,11 @@ const selcted_row = (val) => {
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pendingTask">
                                         <li>
                                             <router-link href="javascript:void(0);" to="/orders/edit"
-                                                class="dropdown-item action-edit"><svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="feather feather-edit-3">
+                                                class="dropdown-item action-edit"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-edit-3">
                                                     <path d="M12 20h9"></path>
                                                     <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z">
                                                     </path>
@@ -227,10 +234,11 @@ const selcted_row = (val) => {
                                         </li>
                                         <li>
                                             <a href="javascript:void(0);" @click="delete_row(props.row)"
-                                                class="dropdown-item action-delete"><svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="feather feather-trash">
+                                                class="dropdown-item action-delete"><svg
+                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-trash">
                                                     <polyline points="3 6 5 6 21 6"></polyline>
                                                     <path
                                                         d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
@@ -249,4 +257,3 @@ const selcted_row = (val) => {
         </div>
     </div>
 </template>
-

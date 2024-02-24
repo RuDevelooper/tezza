@@ -3,6 +3,7 @@ from django.utils.translation import gettext_lazy as _
 
 
 class Color(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(
         max_length=60,
         verbose_name='Название',
@@ -18,6 +19,7 @@ class Color(models.Model):
 
 
 class Material(models.Model):
+    id = models.IntegerField(primary_key=True)
     title = models.CharField(
         max_length=60,
         verbose_name='Название',
@@ -40,6 +42,7 @@ class Product(models.Model):
 
     sku = models.CharField(
         max_length=100,
+        unique=True,
         verbose_name='Артикул',
         blank=True,
     )

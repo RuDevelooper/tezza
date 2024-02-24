@@ -309,8 +309,8 @@
     import '@/assets/sass/scrollspyNav.scss';
     import highlight from '@/components/plugins/highlight.vue';
 
-    import Multiselect from '@suadelabs/vue3-multiselect';
-    import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
+    // import Multiselect from '@suadelabs/vue3-multiselect';
+    // import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
     import { useMeta } from '@/composables/use-meta';
     useMeta({ title: 'Vue Multiselect' });

@@ -9,9 +9,11 @@ import '@/assets/sass/forms/custom-flatpickr.css';
 import { useMeta } from '@/composables/use-meta';
 import { useStore } from 'vuex';
 
+import { useRouter } from 'vue-router';
+const router = useRouter();
 
-import Multiselect from '@suadelabs/vue3-multiselect';
-import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
+import Multiselect from 'vue-multiselect'
+// import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
 useMeta({ title: 'Новый заказ' });
 
@@ -55,7 +57,6 @@ onMounted(() => {
     // store.dispatch('sides/fetchItems')
 
 
-
 });
 
 const add_item = () => {
@@ -69,7 +70,7 @@ const add_item = () => {
 };
 
 const remove_item = (item) => {
-    console.log(item)
+    // console.log(item)
     items.value = items.value.filter((d) => d.item.id != item.id);
 };
 
@@ -82,9 +83,9 @@ const dueDateHandler = (selectedDates) => {
 }
 
 const create_order = () => {
-    console.log(created_at)
-    console.log(due_date)
-    console.log(store.state.auth.user)
+    // console.log(created_at)
+    // console.log(due_date)
+    // console.log(store.state.auth.user)
 
 
     var product_cost = items.value.reduce((acc, x) => acc + (x.item.price * x.item.quantity), 0);
@@ -96,9 +97,9 @@ const create_order = () => {
                 product: {
                     sku: item.item.sku,
                     title: item.item.title,
-                    material: { title: item.item.material },
+                    material: item.item.material,
                     side: item.item.side,
-                    color: { title: item.item.color },
+                    color: item.item.color,
                 },
                 price: item.item.price,
             });
@@ -108,7 +109,6 @@ const create_order = () => {
 
     store.dispatch('orders/create', {
         number: order.value.number,
-        // "priority": "",
         customer: {
             organisation: order.value.customer.organisation,
             name: order.value.customer.name,
@@ -122,7 +122,26 @@ const create_order = () => {
         delivery_cost: order.value.delivery.cost,
         total_cost: product_cost + order.value.delivery.cost,
         created_by: store.state.auth.user.id,
-    })
+        comment_for_manager: order.value.notes.manager,
+        comment_for_assembler: order.value.notes.assembler,
+        comment_for_picker: order.value.notes.picker,
+    }).then((res) => {
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            padding: '2em'
+        });
+        toast.fire({
+            icon: 'success',
+            title: `Заказ № ${res.data.number} создан`,
+            padding: '2em'
+        });
+        router.push('/orders/list')
+    }).catch((error) => {
+        new window.Swal('Ошибка!', error.message, 'error')
+    });
 };
 
 const product = ref({
@@ -135,6 +154,10 @@ const findProducts = (query, _) => {
     store.dispatch('products/find', query)
 }
 
+import { VueDadata } from 'vue-dadata';
+import 'vue-dadata/dist/style.css';
+
+let dadataToken = process.env.VITE_APP_DADATA_API_KEY
 
 </script>
 <style>
@@ -176,7 +199,7 @@ const findProducts = (query, _) => {
                         <nav class="breadcrumb-one" aria-label="breadcrumb">
                             <ol class="breadcrumb">
                                 <li class="breadcrumb-item"><a href="javascript:;">Заказы</a></li>
-                                <li class="breadcrumb-item"><router-link to="/orders/list" @click="toggleMobileMenu"
+                                <li class="breadcrumb-item"><router-link to="/orders/list"
                                         class="breadcrumb-item">Список</router-link></li>
                                 <li class="breadcrumb-item active" aria-current="page"><span>Новый</span></li>
                             </ol>
@@ -232,8 +255,8 @@ const findProducts = (query, _) => {
                                                         <label for="phone"
                                                             class="col-sm-3 col-form-label col-form-label-sm">Телефон</label>
                                                         <div class="col-sm-9">
-                                                            <input type="text" v-model="order.customer.phone"
-                                                                id="phone" class="form-control form-control-sm"
+                                                            <input type="text" v-model="order.customer.phone" id="phone"
+                                                                class="form-control form-control-sm"
                                                                 placeholder="(123) 456 789" />
                                                         </div>
                                                     </div>
@@ -250,10 +273,19 @@ const findProducts = (query, _) => {
                                                             class="col-sm-3 col-form-label col-form-label-sm">Адрес</label>
                                                         <div class="col-sm-9">
                                                             <input type="text" v-model="order.delivery.address"
-                                                                id="company-address" class="form-control form-control-sm"
+                                                                id="company-address"
+                                                                class="form-control form-control-sm"
                                                                 placeholder="Адрес" />
                                                         </div>
                                                     </div>
+
+                                                    <!-- <div class="form-group row">
+                                                        <label for="company-address"
+                                                            class="col-sm-3 col-form-label col-form-label-sm">Адрес</label>
+                                                        <div class="vue-truncate-html-example">
+                                                            <vue-dadata v-model="order.delivery.address" :token="dadataToken" />
+                                                        </div>
+                                                    </div> -->
 
                                                     <div class="form-group row">
                                                         <label for="delivery"
@@ -286,7 +318,8 @@ const findProducts = (query, _) => {
                                                 <div class="form-group mb-4">
                                                     <label for="number">Номер заказа</label>
                                                     <input type="text" v-model="order.number" id="number"
-                                                        class="form-control form-control-sm" placeholder="012345" />
+                                                        class="form-control form-control-sm"
+                                                        placeholder="Введите номер" />
                                                 </div>
                                             </div>
 
@@ -330,10 +363,11 @@ const findProducts = (query, _) => {
                                                                 <li>
                                                                     <a href="javascript:void(0);" class="delete-item"
                                                                         @click="remove_item(good.item)">
-                                                                        <svg xmlns="http://www.w3.org/2000/svg" width="24"
-                                                                            height="24" viewBox="0 0 24 24" fill="none"
-                                                                            stroke="currentColor" stroke-width="2"
-                                                                            stroke-linecap="round" stroke-linejoin="round"
+                                                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                                                            width="24" height="24" viewBox="0 0 24 24"
+                                                                            fill="none" stroke="currentColor"
+                                                                            stroke-width="2" stroke-linecap="round"
+                                                                            stroke-linejoin="round"
                                                                             class="feather feather-x-circle">
                                                                             <circle cx="12" cy="12" r="10"></circle>
                                                                             <line x1="15" y1="9" x2="9" y2="15"></line>
@@ -346,41 +380,63 @@ const findProducts = (query, _) => {
                                                         <td class="name">
                                                             <div class="w100">
                                                                 <multiselect v-model="good.item" id="orderItemSku"
-                                                                    :options="store.state.products.bySku" :searchable="true"
-                                                                    selected-label="sku" select-label="" deselect-label=""
-                                                                    placeholder="Артикул.." track-by="sku" label="sku"
+                                                                    :options="store.state.products.bySku"
+                                                                    :searchable="true" :showNoOptions="true"
+                                                                    noOptions="Начните вводить артикул"
+                                                                    selected-label="sku" select-label=""
+                                                                    deselect-label="" placeholder="Артикул.."
+                                                                    track-by="sku" label="sku"
                                                                     @search-change="findProducts">
+                                                                    <template #noOptions>
+                                                                        <span>Введите 2 и более символов</span>
+                                                                    </template>
+                                                                    <template #noResult>
+                                                                        <span>Артикулов подходящих по фильтру нет</span>
+                                                                    </template>
                                                                 </multiselect>
                                                             </div>
-                                                            <input v-model="good.item.title" class="form-control px-3 mt-1"
-                                                                placeholder="Наименование" />
+                                                            <input v-model="good.item.title"
+                                                                class="form-control px-3 mt-1"
+                                                                placeholder="Наименование" disabled />
                                                         </td>
 
                                                         <td class="text-end material">
-                                                            <select v-model="good.item.material.title"
+                                                            <!-- <select v-model="good.item.material.title"
                                                                 class="form-select form-select mb-1" id="material">
-                                                                <option v-for="material in store.state.materials.materials"
+                                                                <option
+                                                                    v-for="material in store.state.materials.materials"
                                                                     :key="material.id">
                                                                     {{ material.title }}
                                                                 </option>
-                                                            </select>
-                                                            <select v-model="good.item.color.title"
+                                                            </select> -->
+                                                            <!-- <select v-model="good.item.color.title"
                                                                 class="form-select form-select mb-1" id="color">
                                                                 <option v-for="color in store.state.colors.colors"
                                                                     :key="color.id">
                                                                     {{ color.title }}
                                                                 </option>
-                                                            </select>
-                                                            <select v-model="good.item.side" class="form-select form-select"
+                                                            </select> -->
+                                                            <!-- <select v-model="good.item.side" class="form-select form-select"
                                                                 id="side">
                                                                 <option value="Слева">Слева</option>
                                                                 <option value="Справа">Справа</option>
-                                                            </select>
+                                                            </select> -->
+                                                            <input v-model="good.item.material.title"
+                                                                class="form-control form-control mb-1" id="material"
+                                                                placeholder="Материал" disabled />
+
+                                                            <input v-model="good.item.color.title"
+                                                                class="form-control form-control mb-1" id="side"
+                                                                placeholder="Цвет" disabled />
+
+                                                            <input v-model="good.item.side"
+                                                                class="form-control form-control" id="color"
+                                                                placeholder="Сторона" disabled />
                                                         </td>
                                                         <td class="text-end qty">
                                                             <input type="number" v-model="good.item.price"
-                                                                class="form-control form-control"
-                                                                placeholder="Цена" />
+                                                                class="form-control form-control mb-1"
+                                                                placeholder="Цена" disabled />
                                                             <input type="number" v-model="good.item.quantity"
                                                                 class="form-control form-control"
                                                                 placeholder="Количество" />
@@ -404,7 +460,7 @@ const findProducts = (query, _) => {
                                                             <div class="subtotal-amount"><span class="currency">₽
                                                                 </span><span class="amount">
                                                                     {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                        x.item.quantity), 0) }}
+                                                                x.item.quantity), 0) }}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -412,8 +468,9 @@ const findProducts = (query, _) => {
                                                     <div class="invoice-totals-row invoice-summary-total">
                                                         <div class="invoice-summary-label">Доставка</div>
                                                         <div class="invoice-summary-value">
-                                                            <div class="total-amount"><span class="currency">₽ </span><span
-                                                                    class="amount">{{ order.delivery.cost }}</span></div>
+                                                            <div class="total-amount"><span class="currency">₽
+                                                                </span><span class="amount">{{ order.delivery.cost
+                                                                    }}</span></div>
                                                         </div>
                                                     </div>
                                                     <div class="invoice-totals-row invoice-summary-balance-due">
@@ -423,8 +480,8 @@ const findProducts = (query, _) => {
                                                                 </span>
                                                                 <span class="amount">
                                                                     {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                        x.item.quantity),
-                                                                        0) + order.delivery.cost }}
+                                                                x.item.quantity),
+                                                                0) + order.delivery.cost }}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -440,7 +497,8 @@ const findProducts = (query, _) => {
                         <div class="col-xl-3">
                             <div class="invoice-actions">
                                 <div class="invoice-action-currency">
-                                    <label for="invoice-detail-notes" class="col-sm-12 col-form-label col-form-label-sm">
+                                    <label for="invoice-detail-notes"
+                                        class="col-sm-12 col-form-label col-form-label-sm">
                                         Комментарий для менеджера:
                                     </label>
                                     <div class="col-sm-12 px-4">
@@ -455,8 +513,9 @@ const findProducts = (query, _) => {
                                     <div class="invoice-action-tax-fields">
                                         <div class="form-group mb-0">
                                             <div class="col-sm-12">
-                                                <textarea v-model="order.notes.assembler" rows="5" id="invoice-detail-notes"
-                                                    class="form-control" placeholder='Комментарий для сборщика'></textarea>
+                                                <textarea v-model="order.notes.assembler" rows="5"
+                                                    id="invoice-detail-notes" class="form-control"
+                                                    placeholder='Комментарий для сборщика'></textarea>
                                             </div>
                                         </div>
                                     </div>
@@ -468,8 +527,8 @@ const findProducts = (query, _) => {
                                     <div class="invoice-action-tax-fields">
                                         <div class="form-group mb-0">
                                             <div class="col-sm-12">
-                                                <textarea v-model="order.notes.picker" rows="5" id="invoice-detail-notes"
-                                                    class="form-control"
+                                                <textarea v-model="order.notes.picker" rows="5"
+                                                    id="invoice-detail-notes" class="form-control"
                                                     placeholder='Комментарий для упаковщика'></textarea>
                                             </div>
                                         </div>
@@ -487,10 +546,11 @@ const findProducts = (query, _) => {
                                             <router-link to="/apps/invoice/preview"
                                                 class="btn btn-dark btn-preview">Preview</router-link>
                                         </div> -->
-                                        <div class="col-xl-12 col-md-4" v-on:="">
+                                        <div class="col-xl-12 col-md-4">
 
                                             <button type="button" class="btn btn-success w-100 mb-4 me-2"
-                                                @click="create_order()">Сохранить заказ</button>
+                                                @click="create_order()">Сохранить
+                                                заказ</button>
                                         </div>
                                     </div>
                                 </div>
@@ -502,4 +562,3 @@ const findProducts = (query, _) => {
         </div>
     </div>
 </template>
-

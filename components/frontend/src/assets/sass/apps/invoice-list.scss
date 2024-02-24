@@ -185,6 +185,33 @@
                             color: $danger;
                             background-color: $l-danger;
                         }
+                        transform: none;
+
+                        &.badge-primary {
+                            background-color: $l-primary;
+                            color: $primary;
+                        }
+
+                        &.badge-warning {
+                            color: $warning;
+                            background-color: $l-warning;
+                        }
+
+                        &.badge-info {
+                            color: $info;
+                            background-color: $l-info;
+                        }
+                        transform: none;
+
+                        &.badge-secondary {
+                            background-color: $l-secondary;
+                            color: $secondary;
+                        }
+
+                        &.badge-dark {
+                            color: $dark;
+                            background-color: $l-dark;
+                        }
                     }
 
                     .dropdown {
@@ -232,12 +259,21 @@
                             color: $danger;
                         }
                     }
+
+                    &.action-favorites {
+                        background: $l-success;
+                        color: $success;
+
+                        svg {
+                            color: $success;
+                        }
+                    }
                 }
             }
         }
     }
 
-    /* 
+    /*
     Inv List Bottom Section
 */
 
