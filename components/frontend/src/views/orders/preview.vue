@@ -95,7 +95,7 @@ const setItemDone = (item_id) => {
                                                                     src="@/assets/images/full_logo.svg" alt="company" />
                                                             </div>
                                                         </div>
-                                                        <div v-if="store.state.orders.order.customer" class="col-sm-6 align-self-center pt-5">
+                                                        <div v-if="store.state.orders.order.customer" class="col-sm-8 align-self-center pt-5">
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">Заказчик : </span>
                                                                 <span class="inv-date">
@@ -145,7 +145,7 @@ const setItemDone = (item_id) => {
                                                                 </span>
                                                             </p>
                                                         </div>
-                                                        <div class="col-sm-6 align-self-start pt-5 text-sm-end">
+                                                        <div class="col-sm-4 align-self-start pt-5 text-sm-end">
                                                             <p>
                                                                 <span class="inv-subtitle">Статус заказа: </span>
                                                                 <span>
@@ -286,7 +286,7 @@ const setItemDone = (item_id) => {
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"
                                                 @click="print()">Печать</a>
                                         </div>
-                                        <div class="col-xl-12 col-md-3 col-sm-6">
+                                        <!-- <div class="col-xl-12 col-md-3 col-sm-6">
                                             <a href="javascript:;" class="btn btn-primary btn-send">Send Invoice</a>
                                         </div>
                                         <div class="col-xl-12 col-md-3 col-sm-6">
@@ -295,7 +295,7 @@ const setItemDone = (item_id) => {
                                         <div class="col-xl-12 col-md-3 col-sm-6">
                                             <router-link to="/apps/invoice/edit"
                                                 class="btn btn-dark btn-edit">Edit</router-link>
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>

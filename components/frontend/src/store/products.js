@@ -76,9 +76,7 @@ export default {
         async create({ commit }, payload) {
             try {
                 const res = await products.create(payload);
-                // commit('setOrders', res.data);
             } catch (err) {
-                console.log(err)
                 throw err;
             }
         },

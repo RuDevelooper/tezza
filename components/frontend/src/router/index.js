@@ -12,7 +12,6 @@ import store from '../store';
 const requireAuthenticated = (to, from, next) => {
     store.dispatch('auth/initialize')
         .then(() => {
-            console.log(store.getters['auth/isAuthenticated'])
             if (!store.getters['auth/isAuthenticated']) {
                 next('/auth/login');
             } else {
