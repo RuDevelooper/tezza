@@ -75,7 +75,7 @@
   padding: 36px 35px;
   margin-bottom: 40px;
   padding-bottom: 25px;
-  border-bottom: 1px solid $m-color_2;
+  // border-bottom: 1px solid $m-color_2;
 }
 
 .inv--customer-detail-section {
@@ -172,15 +172,15 @@
     }
 
     .inv-created-date, .inv-due-date {
-      margin-bottom: 2px;
+      margin-bottom: 16px;
 
       .inv-title {
         font-weight: 700;
-        font-size: 13px;
+        font-size: 18px;
       }
 
       .inv-date {
-        font-size: 13px;
+        font-size: 20px;
         font-weight: 600;
       }
     }

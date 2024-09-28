@@ -7,14 +7,14 @@ export class Product {
     sku = "Пусто"
 
     constructor(product) {
-        this.id = product.id;
+        // this.id = product.id;
         this.sku = product.sku;
         this.title = product.title;
         this.side = product.side;
         this.side_point = product.side_point;
         this.size = product.size;
         this.price = product.price;
-
+        this.quantity = 1;
         this.color = new Color(product.color);
         this.material = new Material(product.material);
     }

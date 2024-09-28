@@ -1,3 +1,4 @@
+from django.contrib.auth.models import AbstractUser
 from rest_framework import serializers
 
 from tezza import models, services
@@ -16,15 +17,22 @@ class User(serializers.ModelSerializer):
 
 
 class OrderItem(serializers.ModelSerializer):
+    service = services.Orders()
     status_name = serializers.CharField(source='get_status_display', required=False)
     priority = serializers.CharField(source='get_priority_display',
                                      required=False)
-    product = Product(many=False)
+    product = Product()
 
     class Meta:
         model = models.OrderItem
         fields = '__all__'
+        read_only_fields = ['order', 'product']
 
+    def update(self, instance, validated_data):
+        # super().update(instance, validated_data)
+
+        self.service.check_order_after_item_update(instance, validated_data)
+        return instance
 
 class OrderComment(serializers.ModelSerializer):
     user = User(many=False, read_only=True)
@@ -37,13 +45,14 @@ class OrderComment(serializers.ModelSerializer):
 class Order(serializers.ModelSerializer):
     service = services.Orders()
 
-    assembler = User(many=False, read_only=True)
-    comments = OrderComment(many=True, read_only=True)
+    assembler_user = User(source='assembler', read_only=True)
+    manager_user = User(source='created_by', read_only=True)
+    # comments = OrderComment(many=True)
     customer = Customer(many=False)
     items = OrderItem(many=True)
     priority = serializers.CharField(source='get_priority_display',
                                      required=False)
-    status = serializers.CharField(source='get_status_display', required=False)
+    status_name = serializers.CharField(source='get_status_display', required=False)
 
     class Meta:
         model = models.Order

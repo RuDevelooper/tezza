@@ -1,5 +1,5 @@
-from django_filters.rest_framework import DjangoFilterBackend
 from rest_framework import viewsets, permissions, filters
+from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 
 from tezza import models, serializers
@@ -9,8 +9,8 @@ class UserViewSet(viewsets.ViewSet):
     """
     A simple ViewSet for listing or retrieving users.
     """
-    # authentication_classes = TokenAuthentication,
-    http_method_names = ('get', )
+    authentication_classes = TokenAuthentication,
+    http_method_names = ('get',)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -22,7 +22,7 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class User(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -32,7 +32,7 @@ class User(viewsets.ModelViewSet):
 
 
 class Color(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -42,7 +42,7 @@ class Color(viewsets.ModelViewSet):
 
 
 class Material(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -52,7 +52,7 @@ class Material(viewsets.ModelViewSet):
 
 
 class Side(viewsets.ViewSetMixin):
-#     authentication_classes = TokenAuthentication,
+    authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -61,7 +61,7 @@ class Side(viewsets.ViewSetMixin):
 
 
 class Product(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -74,7 +74,7 @@ class Product(viewsets.ModelViewSet):
 
 
 class Customer(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    #     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -84,18 +84,22 @@ class Customer(viewsets.ModelViewSet):
 
 
 class Order(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    #     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.Order
 
-    filterset_fields = ['number', 'status']
-    queryset = models.Order.objects.all()
+    filterset_fields = {
+        'status': ["in", "exact"],  # note the 'in' field
+        'number': ["exact"]
+    }
+    queryset = models.Order.objects.all().order_by('-created_at')
+    ordering_fields = ['created_at', 'due_date']
 
 
 class OrderItem(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    #     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -104,7 +108,7 @@ class OrderItem(viewsets.ModelViewSet):
 
 
 class OrderComment(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    #     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -114,7 +118,7 @@ class OrderComment(viewsets.ModelViewSet):
 
 
 class OrderLog(viewsets.ModelViewSet):
-#     authentication_classes = TokenAuthentication,
+    #     authentication_classes = TokenAuthentication,
     permission_classes = {
         permissions.IsAuthenticated,
     }

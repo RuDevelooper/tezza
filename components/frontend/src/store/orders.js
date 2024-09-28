@@ -18,6 +18,9 @@ class Order {
     id = null;
     number = null;
     created_at = null;
+    comment_for_manager = null;
+    comment_for_assembler = null;
+    comment_for_picker = null;
     due_date = null;
     priority = null;
     status = null;
@@ -32,14 +35,21 @@ class Order {
     created_by = null;
     customer = null;
     assembler = null;
+    assembler_user = null;
     picker = null;
 
     constructor(i) {
-        let assembler = i.assembler ? {
-            id: i.assembler.id,
-            first_name: i.assembler.first_name,
-            last_name: i.assembler.last_name,
-            full_name: i.assembler.first_name + ' ' + i.assembler.last_name,
+        let assembler_user = i.assembler_user ? {
+            id: i.assembler_user.id,
+            first_name: i.assembler_user.first_name,
+            last_name: i.assembler_user.last_name,
+            full_name: i.assembler_user.first_name + ' ' + i.assembler_user.last_name,
+        } : null;
+        let manager_user = i.manager_user ? {
+            id: i.manager_user.id,
+            first_name: i.manager_user.first_name,
+            last_name: i.manager_user.last_name,
+            full_name: i.manager_user.first_name + ' ' + i.manager_user.last_name,
         } : null;
 
         let customer = i.customer ? {
@@ -55,28 +65,28 @@ class Order {
             items.push(new OrderItem(item))
         };
 
-        let comments = []
-        for (var item of i.comments) {
-            comments.push(
-                {
+        // let comments = []
+        // for (var item of i.comments) {
+        //     comments.push(
+        //         {
 
-                    id: item.id,
-                    user: {
-                        id: item.user.id,
-                        first_name: item.user.first_name,
-                        last_name: item.user.last_name,
-                    },
-                    comment: item.comment,
-                    added_at: new Date(item.added_at) || item.added_at,
-                    order: item.order,
-                }
-            )
-        };
+        //             id: item.id,
+        //             user: {
+        //                 id: item.user.id,
+        //                 first_name: item.user.first_name,
+        //                 last_name: item.user.last_name,
+        //             },
+        //             comment: item.comment,
+        //             added_at: new Date(item.added_at) || item.added_at,
+        //             order: item.order,
+        //         }
+        //     )
+        // };
 
         this.id = i.id;
         this.number = i.number;
         this.priority = i.priority;
-        this.status = i.status;
+        this.status = i.status_name;
         this.products_cost = i.products_cost;
         this.delivery_cost = i.delivery_cost;
         this.delivery_tracking_number = i.delivery_tracking_number;
@@ -84,10 +94,13 @@ class Order {
         this.created_by = i.created_by;
         this.assembler = i.assembler;
         this.picker = i.picker;
-        this.assembler = assembler;
+        this.assembler_user = assembler_user;
+        this.manager_user = manager_user;
         this.customer = customer;
         this.items = items;
-        this.comments = comments;
+        this.comment_for_manager = i.comment_for_manager;
+        this.comment_for_assembler = i.comment_for_assembler;
+        this.comment_for_picker = i.comment_for_picker;
         this.created_at = new Date(i.created_at) || i.created_at;
         this.due_date = new Date(i.due_date) || i.due_date;
         this.assembling_start = new Date(i.assembling_start) || i.assembling_start;
@@ -102,7 +115,7 @@ class Order {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-          };
+        };
         if (this.created_at) {
             return this.created_at.toLocaleDateString('ru-RU', options);
         }
@@ -115,7 +128,7 @@ class Order {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-          };
+        };
         if (this.due_date) {
             let deadline = new Date(this.due_date)
             deadline.setDate(deadline.getDate() - 5)
@@ -130,11 +143,37 @@ class Order {
             year: 'numeric',
             month: 'long',
             day: 'numeric',
-          };
+        };
         if (this.due_date) {
             return this.due_date.toLocaleDateString('ru-RU', options);
         }
         return '-';
+    }
+
+    get customer_phone() {
+        let inputNumbersValue = this.customer.phone.split(/\D/g).join('').slice(-10),
+            formattedInputValue = "";
+
+        if (["7", "8", "9"].indexOf(inputNumbersValue[0]) > -1) {
+            if (inputNumbersValue[0] == "9") inputNumbersValue = "7" + inputNumbersValue;
+            var firstSymbols = (inputNumbersValue[0] == "8") ? "8" : "+7";
+            formattedInputValue = firstSymbols + " ";
+            if (inputNumbersValue.length > 1) {
+                formattedInputValue += '(' + inputNumbersValue.substring(1, 4);
+            }
+            if (inputNumbersValue.length >= 5) {
+                formattedInputValue += ') ' + inputNumbersValue.substring(4, 7);
+            }
+            if (inputNumbersValue.length >= 8) {
+                formattedInputValue += '-' + inputNumbersValue.substring(7, 9);
+            }
+            if (inputNumbersValue.length >= 10) {
+                formattedInputValue += '-' + inputNumbersValue.substring(9, 11);
+            }
+        } else {
+            formattedInputValue = '+' + inputNumbersValue.substring(0, 16);
+        }
+        return formattedInputValue;
     }
 }
 
@@ -190,6 +229,30 @@ export default {
                 throw err;
             }
         },
+        async fetchFilter({ commit }, filters) {
+            try {
+                const res = await orders.fetchFilter(filters);
+                commit('setOrders', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async fetchFilter({ commit }, filters) {
+            try {
+                const res = await orders.fetchFilter(filters);
+                commit('setOrders', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async fetchFilter({ commit }, filters) {
+            try {
+                const res = await orders.fetchFilter(filters);
+                commit('setOrders', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
         async fetchById({ commit }, { id }) {
             try {
                 const res = await orders.fetchById(id);
@@ -201,9 +264,8 @@ export default {
         async create({ commit }, payload) {
             try {
                 const res = await orders.create(payload);
-                // commit('setOrders', res.data);
+                return res;
             } catch (err) {
-                console.log(err)
                 throw err;
             }
         },
@@ -211,6 +273,14 @@ export default {
             try {
                 const res = await orders.update(id, payload);
                 commit('setOrders', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async update_assembler({ commit }, { id, assembler, status, assembling_start }) {
+            try {
+                const res = await orders.update_assembler(id, assembler, status, assembling_start);
+                commit('setOrder', res.data);
             } catch (err) {
                 throw err;
             }

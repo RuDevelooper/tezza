@@ -8,6 +8,7 @@ class Color(serializers.ModelSerializer):
     class Meta:
         model = models.Color
         fields = '__all__'
+        read_only_fields = ['id', 'title']
 
 
 class Material(serializers.ModelSerializer):
@@ -15,6 +16,7 @@ class Material(serializers.ModelSerializer):
     class Meta:
         model = models.Material
         fields = '__all__'
+        read_only_fields = ['id', 'title']
 
 
 class Side(serializers.BaseSerializer):
@@ -25,10 +27,15 @@ class Side(serializers.BaseSerializer):
 
 
 class Product(serializers.ModelSerializer):
-    color = Color(many=False)
-    material = Material(many=False)
-    side = serializers.CharField(source='get_side_display', required=True)
+    color = Color(many=False, read_only=True)
+    material = Material(many=False, read_only=True)
+    side = serializers.CharField(source='get_side_display', read_only=True)
 
     class Meta:
         model = models.Product
         fields = '__all__'
+        extra_kwargs = {
+            'sku': {
+                'validators': []
+            }
+        }

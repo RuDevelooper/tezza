@@ -82,6 +82,24 @@ class Order(models.Model):
         null=True,
         blank=True,
     )
+    comment_for_manager = models.CharField(
+        max_length=255,
+        verbose_name='Комментарий для менеджера',
+        null=True,
+        blank=True,
+    )
+    comment_for_assembler = models.CharField(
+        max_length=255,
+        verbose_name='Комментарий для сборщика',
+        null=True,
+        blank=True,
+    )
+    comment_for_picker = models.CharField(
+        max_length=255,
+        verbose_name='Комментарий для упаковщика',
+        null=True,
+        blank=True,
+    )
     total_cost = models.DecimalField(
         max_digits=9,
         decimal_places=2,

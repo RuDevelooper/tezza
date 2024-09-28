@@ -1,6 +1,6 @@
 from _decimal import Decimal
 from datetime import datetime
-from typing import Any, List
+from typing import Any, List, Callable
 
 from django.db import transaction
 from pydantic import BaseModel, Field
@@ -43,50 +43,36 @@ class Order(BaseModel):
 
 class Orders:
 
-    # @validate_call
     @transaction.atomic
     def create(self, **kwargs):
-        # with transaction.atomic():
-        order_data = Order(**kwargs)
-        customer, created = models.Customer.objects.get_or_create(
-            organisation=order_data.customer.organisation,
-            name=order_data.customer.name,
-            address=order_data.customer.address,
-            phone=order_data.customer.phone,
-        )
-        order, created = models.Order.objects.get_or_create(
-            number=order_data.number,
-            due_date=order_data.due_date,
-            created_by=order_data.created_by,
-            customer=customer,
-            products_cost=order_data.products_cost,
-            delivery_cost=order_data.delivery_cost,
-            total_cost=order_data.total_cost,
-        )
+        order_items = kwargs.pop('items')
+        customer = kwargs.pop('customer')
+        customer, created = models.Customer.objects.get_or_create(**customer)
+        order = models.Order.objects.create(customer=customer, **kwargs)
+        order.change_status(status=models.Order.Status.NEW)
 
-        order_items = []
-        for item in order_data.items:
-            color = models.Color.objects.get(
-                title=item.product.color.get('title')
-            )
-            material = models.Material.objects.get(
-                title=item.product.material.get('title')
-            )
-            product = models.Product.objects.get(sku=item.product.sku)
-            if not product:
-                product, created = models.Product.objects.get_or_create(
-                    sku=item.product.sku,
-                    title=item.product.title,
-                    color=color,
-                    material=material,
-                    side=item.product.get_side_display,
-                )
-
-            order_item = models.OrderItem.objects.create(
+        for item in order_items:
+            product_data = item.pop('product')
+            product = models.Product.objects.get(**product_data)
+            models.OrderItem.objects.create(
                 order=order,
                 product=product,
-                price=item.price,
+                **item,
             )
-            order_items.append(order_item)
 
         return order
+
+    @transaction.atomic
+    def check_order_after_item_update(self, instance: models.OrderItem, validated_data):
+        instance.__dict__.update(**validated_data)
+        instance.save()
+
+        status = validated_data.get('status')
+        if status == 'assembled':
+            if instance.order.status == models.Order.Status.ASSEMBLY:
+                order = instance.order
+                if all(i.status == models.OrderItem.Status.ASSEMBLED for i in order.items.all()):
+                    order.assembling_end = datetime.utcnow()
+                    order.change_status(models.Order.Status.ASSEMBLED)
+
+                order.save()

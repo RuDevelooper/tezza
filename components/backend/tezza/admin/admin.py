@@ -23,6 +23,16 @@ class ProductAdmin(admin.ModelAdmin):
         'color',
         'material',
     ]
+    search_fields = [
+        'sku',
+        'title',
+        'side',
+        'side_point',
+        'size',
+        'price',
+        'color',
+        'material',
+    ]
 
 
 @admin.register(models.OrderItem)
@@ -49,3 +59,4 @@ class OrderAdmin(admin.ModelAdmin):
         'delivery_tracking_number',
         'total_cost',
     ]
+    ordering = ["-created_at"]
