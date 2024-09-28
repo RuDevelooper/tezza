@@ -20,7 +20,7 @@
                                 <line x1="3" y1="12" x2="3.01" y2="12"></line>
                                 <line x1="3" y1="18" x2="3.01" y2="18"></line>
                             </svg>
-                            <span>{{ $t('orders') }}</span>
+                            Администратор
                         </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -33,9 +33,9 @@
 
                     <ul id="orders" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
-                            <router-link to="/orders/list" @click="toggleMobileMenu">Список</router-link>
+                            <router-link to="/orders/list" @click="toggleMobileMenu">{{ $t('orders') }}</router-link>
                         </li>
-                        <li>
+                        <!-- <li>
                             <router-link to="/orders/add" @click="toggleMobileMenu">Новый</router-link>
                         </li>
                         <li>
@@ -43,11 +43,11 @@
                         </li>
                         <li>
                             <router-link to="/orders/preview" @click="toggleMobileMenu">Предпросмотр</router-link>
-                        </li>
+                        </li> -->
                     </ul>
                 </li>
 
-                <li class="menu">
+                <!-- <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard"
                         aria-controls="dashboard" aria-expanded="false">
                         <div class="">
@@ -80,7 +80,7 @@
                             </router-link>
                         </li>
                     </ul>
-                </li>
+                </li> -->
 
                 <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#assembler"
@@ -113,8 +113,8 @@
                 </li>
 
                 <li class="menu">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#picker"
-                        aria-controls="picker" aria-expanded="false">
+                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#picker" aria-controls="picker"
+                        aria-expanded="false">
                         <div class="">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
                                 fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
