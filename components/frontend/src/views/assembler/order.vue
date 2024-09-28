@@ -26,11 +26,9 @@ const bind_data = () => {
         { key: 'side', label: 'Сторона', },
         { key: 'material', label: 'Материал' },
         { key: 'color', label: 'Цвет', },
-        // { key: 'priority', label: 'Приоритет', },
         { key: 'status', label: 'Статус', },
         { key: 'action', label: '', },
     ];
-    console.log(store.state.orders.order.assembler_user)
 };
 
 const print = () => {
@@ -120,7 +118,7 @@ const add_favorites = () => {
                                                             </div>
                                                         </div>
 
-                                                        <div class="col-sm-6 align-self-center mt-3">
+                                                        <div class="col-sm-8 align-self-center mt-3">
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">Дата заказа : </span>
                                                                 <span class="inv-date">
@@ -142,7 +140,7 @@ const add_favorites = () => {
                                                                 </span>
                                                             </p>
                                                         </div>
-                                                        <div class="col-sm-6 align-self-center mt-3 text-sm-end">
+                                                        <div class="col-sm-4 align-self-start pt-3 text-sm-end">
                                                             <p>
                                                                 <span class="inv-subtitle">Статус заказа: </span>
                                                                 <span>

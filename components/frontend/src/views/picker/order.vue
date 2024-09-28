@@ -118,7 +118,7 @@ const add_favorites = () => {
                                                         </div>
 
                                                         <div v-if="store.state.orders.order.customer"
-                                                            class="col-sm-6 align-self-center pt-3">
+                                                            class="col-sm-8 align-self-center pt-3">
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">Заказчик : </span>
                                                                 <span class="inv-date">
@@ -157,7 +157,7 @@ const add_favorites = () => {
                                                                 </span>
                                                             </p>
                                                         </div>
-                                                        <div class="col-sm-6 align-self-start text-end">
+                                                        <div class="col-sm-4 align-self-start text-end">
                                                             <p class="inv-street-addr">644105, Омск, ул. 4-я
                                                                 Челюскинцев, 1
                                                             </p>

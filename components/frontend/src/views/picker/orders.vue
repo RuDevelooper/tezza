@@ -29,11 +29,11 @@ const headings = {
     // id: (h, row, index) => {
     //     return '';
     // },
-    number: 'Номер заказа',
-    created_at: 'Дата',
+    number: 'Номер',
+    created_at: 'Создан',
     customer: 'Заказчик',
-    deadline: 'Отгрузка не позднее',
-    items: 'Изделий в заказе',
+    deadline: 'Плановая дата',
+    items: 'Изделий',
     items_assembled: 'Собрано',
     items_assembled_percent: '%',
     comment_for_picker: 'Комментарий',
@@ -53,7 +53,7 @@ const table_option = ref({
     pagination: { nav: 'scroll', chunk: 20 },
     resizableColumns: false,
     sortable: [
-        'invoice',
+        'number',
         'created_at',
         'customer',
         'deadline',

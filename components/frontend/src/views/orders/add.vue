@@ -69,7 +69,6 @@ const add_item = () => {
 };
 
 const remove_item = (item) => {
-    // console.log(item)
     items.value = items.value.filter((d) => d.item.id != item.id);
 };
 
@@ -82,9 +81,6 @@ const dueDateHandler = (selectedDates) => {
 }
 
 const create_order = () => {
-    // console.log(created_at)
-    // console.log(due_date)
-    // console.log(store.state.auth.user)
 
 
     var product_cost = items.value.reduce((acc, x) => acc + (x.item.price * x.item.quantity), 0);
