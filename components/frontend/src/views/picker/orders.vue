@@ -169,8 +169,8 @@ const selcted_row = (val) => {
                                 </router-link>
                             </template>
                             <template #created_at="props">
-                                <div :data_sort="props.row.created_at">{{ props.row.created_at.toLocaleDateString('ru')
-                                    }}
+                                <div :data_sort="props.row.created_at">
+                                    {{ props.row.created_at.toLocaleDateString('ru') }}
                                 </div>
                             </template>
                             <template #assembler="props">
@@ -211,21 +211,7 @@ const selcted_row = (val) => {
                                             <circle cx="5" cy="12" r="1"></circle>
                                         </svg>
                                     </a>
-
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pendingTask">
-                                        <!-- <li>
-                                            <router-link href="javascript:void(0);" to="/orders/edit"
-                                                class="dropdown-item action-edit"><svg xmlns="http://www.w3.org/2000/svg"
-                                                    width="24" height="24" viewBox="0 0 24 24" fill="none"
-                                                    stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                                    stroke-linejoin="round" class="feather feather-edit-3">
-                                                    <path d="M12 20h9"></path>
-                                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z">
-                                                    </path>
-                                                </svg>
-                                                Edit
-                                            </router-link>
-                                        </li> -->
                                         <li>
                                             <a href="javascript:void(0);" @click="add_favorites(props.row)"
                                                 class="dropdown-item action-favorites">

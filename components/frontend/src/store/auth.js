@@ -45,27 +45,27 @@ const actions = {
     logout({ commit }) {
         commit(REMOVE_TOKEN);
         commit(REMOVE_USER_DATA);
-        // return auth.logout()
-        //     .then(() => commit(LOGOUT))
-        //     .finally(() => {
-        //         commit(REMOVE_TOKEN);
-        //         commit(REMOVE_USER_DATA);
-        //     });
+        return auth.logout()
+            .then(() => commit(LOGOUT))
+            .finally(() => {
+                commit(REMOVE_TOKEN);
+                commit(REMOVE_USER_DATA);
+            });
     },
     initialize({ commit }) {
         const token = localStorage.getItem(TOKEN_STORAGE_KEY);
 
-        // if (isProduction && !token) {
-        //     commit(REMOVE_USER_DATA);
-        // }
+        if (isProduction && !token) {
+            commit(REMOVE_USER_DATA);
+        }
 
-        // if (isProduction && token) {
-        //     commit(SET_TOKEN, token);
-        // }
+        if (isProduction && token) {
+            commit(SET_TOKEN, token);
+        }
 
-        // if (!isProduction && token) {
-        //     commit(SET_TOKEN, token);
-        // }
+        if (!isProduction && token) {
+            commit(SET_TOKEN, token);
+        }
     },
 };
 

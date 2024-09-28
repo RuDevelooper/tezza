@@ -95,35 +95,57 @@ const setItemDone = (item_id) => {
                                                                     src="@/assets/images/full_logo.svg" alt="company" />
                                                             </div>
                                                         </div>
-
-                                                        <div class="col-sm-6 align-self-center mt-3">
+                                                        <div v-if="store.state.orders.order.customer" class="col-sm-6 align-self-center pt-5">
                                                             <p class="inv-created-date">
-                                                                <span class="inv-title">Дата заказа : </span>
+                                                                <span class="inv-title">Заказчик : </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.created_at_local_date }}
+                                                                    {{ store.state.orders.order.customer.name }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-due-date mt-1">
-                                                                <span class="inv-title">Завершить сборку до : </span>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Организация : </span>
                                                                 <span class="inv-date">
-                                                                    {{
-                                                                        store.state.orders.order.assembler_deadline_locale_date
-                                                                    }}
+                                                                    {{ store.state.orders.order.customer.organisation }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-due-date mt-1">
-                                                                <span class="inv-title">Комментарий: </span>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Адрес : </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.comment_for_assembler }}
+                                                                    {{ store.state.orders.order.customer.address }}
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Телефон : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.customer_phone }}
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Стоимость заказа : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.total_cost }} руб.
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Стоимость изделий : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.products_cost }} руб.
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Стоимость доставки : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.delivery_cost }} руб.
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">ТРЕК-номер : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.delivery_tracking_number }}
                                                                 </span>
                                                             </p>
                                                         </div>
-                                                        <div class="col-sm-6 align-self-center mt-3 text-sm-end">
-                                                            <!-- <p class="inv-street-addr">644105, Омск, ул. 4-я Челюскинцев, 1
-                                                            </p>
-                                                            <p class="inv-email-address">tezzazakaz@mail.ru</p>
-                                                            <p class="inv-email-address">+7 (381) 229-02-62</p> -->
-                                                            <!-- <div class="inv--payment-info"> -->
+                                                        <div class="col-sm-6 align-self-start pt-5 text-sm-end">
                                                             <p>
                                                                 <span class="inv-subtitle">Статус заказа: </span>
                                                                 <span>
@@ -150,8 +172,60 @@ const setItemDone = (item_id) => {
                                                                     }}
                                                                 </span>
                                                             </p>
-                                                            <!-- </div> -->
+                                                            <p v-if="store.state.orders.order.assembling_start">
+                                                                <span class="inv-subtitle">Сборка начата: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.assembling_start.toLocaleDateString('ru-RU')
+                                                                    }}
+                                                                </span>
+                                                            </p>
+                                                            <p v-if="store.state.orders.order.assembling_end">
+                                                                <span class="inv-subtitle">Сборка завершена: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.assembling_end.toLocaleDateString('ru-RU')
+                                                                    }}
+                                                                </span>
+                                                            </p>
+                                                            <p v-if="store.state.orders.order.picked_at">
+                                                                <span class="inv-subtitle">Отправлен: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.picked_at.toLocaleDateString('ru-RU') }}
+                                                                </span>
+                                                            </p>
                                                         </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="inv--product-table-section pt-0">
+                                                    <div class="table-responsive">
+                                                        <table class="table table-hover">
+                                                            <thead>
+                                                                <tr>
+                                                                    <th>
+                                                                        Комментарий для менеджера
+                                                                    </th>
+                                                                    <th>
+                                                                        Комментарий для сборщика
+                                                                    </th>
+                                                                    <th>
+                                                                        Комментарий для упаковщика
+                                                                    </th>
+                                                                </tr>
+                                                            </thead>
+                                                            <tbody>
+                                                                <tr>
+                                                                    <td>
+                                                                        {{ store.state.orders.order.comment_for_manager }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ store.state.orders.order.comment_for_assembler }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ store.state.orders.order.comment_for_picker }}
+                                                                    </td>
+                                                                </tr>
+                                                            </tbody>
+                                                        </table>
                                                     </div>
                                                 </div>
 
@@ -189,9 +263,6 @@ const setItemDone = (item_id) => {
                                                                     <td>
                                                                         {{ item.product.color.title }}
                                                                     </td>
-                                                                    <!-- <td>
-                                                                        {{ item.priority }}
-                                                                    </td> -->
                                                                     <td>
                                                                         {{ item.status_name }}
                                                                     </td>
@@ -200,51 +271,6 @@ const setItemDone = (item_id) => {
                                                         </table>
                                                     </div>
                                                 </div>
-
-                                                <!-- <div class="inv--total-amounts">
-                                                    <div class="row mt-4">
-                                                        <div class="col-sm-5 col-12 order-sm-0 order-1"></div>
-                                                        <div class="col-sm-7 col-12 order-sm-1 order-0">
-                                                            <div class="text-sm-end">
-                                                                <div class="row">
-                                                                    <div class="col-sm-8 col-7">
-                                                                        <p class="">Sub Total:</p>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-5">
-                                                                        <p class="">$3155</p>
-                                                                    </div>
-                                                                    <div class="col-sm-8 col-7">
-                                                                        <p class="">Tax Amount:</p>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-5">
-                                                                        <p class="">$700</p>
-                                                                    </div>
-                                                                    <div class="col-sm-8 col-7">
-                                                                        <p class="discount-rate">Discount : <span
-                                                                                class="discount-percentage">5%</span></p>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-5">
-                                                                        <p class="">$10</p>
-                                                                    </div>
-                                                                    <div class="col-sm-8 col-7 grand-total-title">
-                                                                        <h4 class="">Grand Total :</h4>
-                                                                    </div>
-                                                                    <div class="col-sm-4 col-5 grand-total-amount">
-                                                                        <h4 class="">$3845</h4>
-                                                                    </div>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </div>
-                                                </div>
-
-                                                <div class="inv--note">
-                                                    <div class="row mt-4">
-                                                        <div class="col-sm-12 col-12 order-sm-0 order-1">
-                                                            <p>Note: Thank you for doing Business with us.</p>
-                                                        </div>
-                                                    </div>
-                                                </div> -->
                                             </div>
                                         </div>
                                     </div>

@@ -101,12 +101,12 @@ class Order {
         this.comment_for_manager = i.comment_for_manager;
         this.comment_for_assembler = i.comment_for_assembler;
         this.comment_for_picker = i.comment_for_picker;
-        this.created_at = new Date(i.created_at) || i.created_at;
-        this.due_date = new Date(i.due_date) || i.due_date;
-        this.assembling_start = new Date(i.assembling_start) || i.assembling_start;
-        this.assembling_end = new Date(i.assembling_end) || i.assembling_end;
-        this.picked_at = new Date(i.picked_at) || i.picked_at;
-        this.shipped_at = new Date(i.shipped_at) || i.shipped_at;
+        this.created_at = i.created_at ? new Date(i.created_at) : null;
+        this.due_date = i.due_date ? new Date(i.due_date) : null;
+        this.assembling_start = i.assembling_start ? new Date(i.assembling_start) : null;
+        this.assembling_end = i.assembling_end ? new Date(i.assembling_end) : null;
+        this.picked_at = i.picked_at ? new Date(i.picked_at) : null;
+        this.shipped_at = i.shipped_at ? new Date(i.shipped_at) : null;
     }
 
     get created_at_local_date() {
