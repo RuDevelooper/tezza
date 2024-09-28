@@ -117,7 +117,8 @@ const add_favorites = () => {
                                                             </div>
                                                         </div>
 
-                                                        <div v-if="store.state.orders.order.customer" class="col-sm-6 align-self-center pt-5">
+                                                        <div v-if="store.state.orders.order.customer"
+                                                            class="col-sm-6 align-self-center pt-3">
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">Заказчик : </span>
                                                                 <span class="inv-date">
@@ -151,38 +152,18 @@ const add_favorites = () => {
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">ТРЕК-номер : </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.delivery_tracking_number }}
+                                                                    {{ store.state.orders.order.delivery_tracking_number
+                                                                    }}
                                                                 </span>
                                                             </p>
                                                         </div>
-                                                        <!-- <div class="col-sm-6 align-self-center mt-3 text-sm-end">
-                                                            <p>
-                                                                <span class="inv-subtitle">Статус заказа: </span>
-                                                                <span>
-                                                                    {{ store.state.orders.order.status }}
-                                                                </span>
+                                                        <div class="col-sm-6 align-self-start text-end">
+                                                            <p class="inv-street-addr">644105, Омск, ул. 4-я
+                                                                Челюскинцев, 1
                                                             </p>
-                                                            <p>
-                                                                <span class="inv-subtitle">Приоритет: </span>
-                                                                <span>
-                                                                    {{ store.state.orders.order.priority }}
-                                                                </span>
-                                                            </p>
-                                                            <p v-if="store.state.orders.order.created_by">
-                                                                <span class="inv-subtitle">Менеджер: </span>
-                                                                <span>
-                                                                    {{ store.state.orders.order.manager_user.full_name
-                                                                    }}
-                                                                </span>
-                                                            </p>
-                                                            <p v-if="store.state.orders.order.assembler">
-                                                                <span class="inv-subtitle">Сборщик: </span>
-                                                                <span>
-                                                                    {{ store.state.orders.order.assembler_user.full_name
-                                                                    }}
-                                                                </span>
-                                                            </p>
-                                                        </div> -->
+                                                            <p class="inv-email-address">tezzazakaz@mail.ru</p>
+                                                            <p class="inv-email-address">+7 (3812) 290-262</p>
+                                                        </div>
                                                     </div>
                                                 </div>
 
@@ -221,7 +202,8 @@ const add_favorites = () => {
                                                                         {{ item.product.color.title }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.product.price.toLocaleString('ru-RU') }} руб.
+                                                                        {{ item.product.price.toLocaleString('ru-RU') }}
+                                                                        руб.
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
