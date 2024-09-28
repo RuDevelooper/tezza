@@ -59,4 +59,21 @@ class OrderAdmin(admin.ModelAdmin):
         'delivery_tracking_number',
         'total_cost',
     ]
+    search_fields = [
+        'number',
+        'created_at',
+        'due_date',
+        'priority',
+        'status',
+        'products_cost',
+        'delivery_cost',
+        'delivery_tracking_number',
+        'total_cost',
+    ]
+    list_filter = [
+        'created_at',
+        'due_date',
+        'priority',
+        'status',
+    ]
     ordering = ["-created_at"]
