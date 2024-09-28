@@ -13,7 +13,6 @@ import { useRouter } from 'vue-router';
 const router = useRouter();
 
 import Multiselect from 'vue-multiselect'
-// import '@suadelabs/vue3-multiselect/dist/vue3-multiselect.css';
 
 useMeta({ title: 'Новый заказ' });
 
@@ -160,6 +159,7 @@ import 'vue-dadata/dist/style.css';
 let dadataToken = process.env.VITE_APP_DADATA_API_KEY
 
 </script>
+<style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
 <style>
 .multiselect__option--highlight {
     background: #fff;
