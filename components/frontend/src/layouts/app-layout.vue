@@ -30,7 +30,7 @@
             <!--  END CONTENT AREA  -->
 
             <!-- BEGIN APP SETTING LAUNCHER -->
-            <app-settings />
+            <!-- <app-settings /> -->
             <!-- END APP SETTING LAUNCHER -->
         </div>
     </div>
@@ -40,5 +40,5 @@
     import Header from '@/components/layout/header.vue';
     import Sidebar from '@/components/layout/sidebar.vue';
     import Footer from '@/components/layout/footer.vue';
-    import appSettings from '@/components/app-settings.vue';
+    // import appSettings from '@/components/app-settings.vue';
 </script>
