@@ -19,6 +19,15 @@ export default {
   update_assembler(id, assembler, status, assembling_start) {
     return session.patch(`/orders/${id}/`, { assembler, status, assembling_start });
   },
+  update_picker(id, picker, shipped_at, status) {
+    return session.patch(`/orders/${id}/`, { picker, shipped_at, status });
+  },
+  set_track_number(id, delivery_tracking_number) {
+    return session.patch(`/orders/${id}/`, { delivery_tracking_number });
+  },
+  finish_order(id, status) {
+    return session.patch(`/orders/${id}/`, { status });
+  },
   update_item(id, status) {
     return session.patch(`/order_items/${id}/`, { status });
   },

@@ -51,6 +51,12 @@ class Order {
             last_name: i.manager_user.last_name,
             full_name: i.manager_user.first_name + ' ' + i.manager_user.last_name,
         } : null;
+        let picker_user = i.picker_user ? {
+            id: i.picker_user.id,
+            first_name: i.picker_user.first_name,
+            last_name: i.picker_user.last_name,
+            full_name: i.picker_user.first_name + ' ' + i.picker_user.last_name,
+        } : null;
 
         let customer = i.customer ? {
             id: i.customer.id,
@@ -96,6 +102,7 @@ class Order {
         this.picker = i.picker;
         this.assembler_user = assembler_user;
         this.manager_user = manager_user;
+        this.picker_user = picker_user;
         this.customer = customer;
         this.items = items;
         this.comment_for_manager = i.comment_for_manager;
@@ -285,9 +292,33 @@ export default {
                 throw err;
             }
         },
+        async update_picker({ commit }, { id, picker, shipped_at, status }) {
+            try {
+                const res = await orders.update_picker(id, picker, shipped_at, status);
+                commit('setOrder', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
         async setOrderItemDone({ commit }, { id, status }) {
             try {
                 const res = await orders.update_item(id, status);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async set_track_number({ commit }, { id, delivery_tracking_number }) {
+            try {
+                const res = await orders.set_track_number(id, delivery_tracking_number);
+                commit('setOrder', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async finish_order({ commit }, { id, status }) {
+            try {
+                const res = await orders.finish_order(id, status);
+                commit('setOrder', res.data);
             } catch (err) {
                 throw err;
             }

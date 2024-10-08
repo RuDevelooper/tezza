@@ -212,7 +212,7 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                         <div class="col-xl-9">
                             <div class="invoice-content">
                                 <div class="invoice-detail-body">
-                                    <div class="invoice-detail-title">
+                                    <div class="invoice-detail-title mb-3">
 
                                         <div class="invoice-title">
 
@@ -221,6 +221,37 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                     </div>
 
                                     <div class="invoice-detail-header">
+                                        <div class="row justify-content-between">
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-4">
+                                                    <label for="number">Номер заказа</label>
+                                                    <input type="text" v-model="order.number" id="number"
+                                                        class="form-control form-control-sm"
+                                                        placeholder="Введите номер" />
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-4">
+                                                    <label for="date">Дата заказа</label>
+                                                    <flat-pickr v-model="created_at" @on-change="createdAtHandler"
+                                                        class="form-control form-control-sm flatpickr active"
+                                                        placeholder="Дата заказа"></flat-pickr>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-3">
+                                                <div class="form-group">
+                                                    <label for="due">Плановая отгрузка</label>
+                                                    <flat-pickr v-model="due_date" @on-change="dueDateHandler"
+                                                        class="form-control form-control-sm flatpickr active"
+                                                        placeholder="Due Date"></flat-pickr>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div class="invoice-detail-terms mt-0 mb-4">
                                         <div class="row justify-content-between">
                                             <div class="col-xl-5 invoice-address-company">
                                                 <h4>Покупатель:</h4>
@@ -275,14 +306,6 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                                         </div>
                                                     </div>
 
-                                                    <!-- <div class="form-group row">
-                                                        <label for="company-address"
-                                                            class="col-sm-3 col-form-label col-form-label-sm">Адрес</label>
-                                                        <div class="vue-truncate-html-example">
-                                                            <vue-dadata v-model="order.delivery.address" :token="dadataToken" />
-                                                        </div>
-                                                    </div> -->
-
                                                     <div class="form-group row">
                                                         <label for="delivery"
                                                             class="col-sm-3 col-form-label col-form-label-sm">ТК</label>
@@ -308,46 +331,13 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                         </div>
                                     </div>
 
-                                    <div class="invoice-detail-terms">
-                                        <div class="row justify-content-between">
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-4">
-                                                    <label for="number">Номер заказа</label>
-                                                    <input type="text" v-model="order.number" id="number"
-                                                        class="form-control form-control-sm"
-                                                        placeholder="Введите номер" />
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-4">
-                                                    <label for="date">Дата заказа</label>
-                                                    <flat-pickr v-model="created_at" @on-change="createdAtHandler"
-                                                        class="form-control form-control-sm flatpickr active"
-                                                        placeholder="Дата заказа"></flat-pickr>
-                                                </div>
-                                            </div>
-
-                                            <div class="col-md-3">
-                                                <div class="form-group mb-4">
-                                                    <label for="due">Плановая отгрузка</label>
-                                                    <flat-pickr v-model="due_date" @on-change="dueDateHandler"
-                                                        class="form-control form-control-sm flatpickr active"
-                                                        placeholder="Due Date"></flat-pickr>
-                                                </div>
-                                            </div>
-                                        </div>
-                                    </div>
-
-
-
                                     <div class="invoice-detail-items">
                                         <div class="table-responsive">
                                             <table class="table table-bordered item-table">
                                                 <thead>
                                                     <tr>
                                                         <th class=""></th>
-                                                        <th>Артикул / Наименование</th>
+                                                        <th>Артикул / Наименование / Размер</th>
                                                         <th class="">Характеристики</th>
                                                         <th class="">Количество / Цена</th>
                                                     </tr>
@@ -391,9 +381,18 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                                                     </template>
                                                                 </multiselect>
                                                             </div>
-                                                            <input v-model="good.item.title"
-                                                                class="form-control px-3 mt-1"
-                                                                placeholder="Наименование" disabled />
+                                                            <div class="row">
+                                                                <div class="col-xl-9 col-sm-12 pe-1">
+                                                                    <input v-model="good.item.title"
+                                                                        class="form-control px-3 mt-1"
+                                                                        placeholder="Наименование" disabled />
+                                                                </div>
+                                                                <div class="col-xl-3 col-sm-12 ps-0">
+                                                                    <input v-model="good.item.size"
+                                                                        class="form-control px-3 mt-1"
+                                                                        placeholder="Размер" disabled />
+                                                                </div>
+                                                            </div>
                                                         </td>
 
                                                         <td class="text-end material">
@@ -456,7 +455,7 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                                             <div class="subtotal-amount"><span class="currency">₽
                                                                 </span><span class="amount">
                                                                     {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                x.item.quantity), 0) }}
+                                                                        x.item.quantity), 0) }}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -476,8 +475,8 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                                                 </span>
                                                                 <span class="amount">
                                                                     {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                x.item.quantity),
-                                                                0) + order.delivery.cost }}
+                                                                        x.item.quantity),
+                                                                        0) + order.delivery.cost }}
                                                                 </span>
                                                             </div>
                                                         </div>
