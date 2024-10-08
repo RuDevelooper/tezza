@@ -73,6 +73,6 @@ class Orders:
                 order = instance.order
                 if all(i.status == models.OrderItem.Status.ASSEMBLED for i in order.items.all()):
                     order.assembling_end = datetime.utcnow()
-                    order.change_status(models.Order.Status.ASSEMBLED)
+                    order.change_status(models.Order.Status.ASSEMBLED.title())
 
                 order.save()

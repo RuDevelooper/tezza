@@ -47,6 +47,7 @@ class Order(serializers.ModelSerializer):
 
     assembler_user = User(source='assembler', read_only=True)
     manager_user = User(source='created_by', read_only=True)
+    picker_user = User(source='picker', read_only=True)
     # comments = OrderComment(many=True)
     customer = Customer(many=False)
     items = OrderItem(many=True)
