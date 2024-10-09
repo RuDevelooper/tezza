@@ -6922,6 +6922,31 @@ body.dark {
                     background-color: rgb(231, 81, 90, 0.09);
                 }
 
+                .inv-status.badge-primary {
+                    color: $primary;
+                    background-color: $d-primary;
+                }
+
+                .inv-status.badge-warning {
+                    color: $warning;
+                    background-color: $d-warning;
+                }
+
+                .inv-status.badge-info {
+                    color: $info;
+                    background-color: $d-info;
+                }
+
+                .inv-status.badge-secondary {
+                    color: $secondary;
+                    background-color: $d-secondary;
+                }
+
+                .inv-status.badge-dark {
+                    color: $dark;
+                    background-color: $d-dark;
+                }
+
                 .actions {
                     .dropdown {
                         a.dropdown-item.action-edit {
