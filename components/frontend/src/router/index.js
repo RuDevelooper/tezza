@@ -76,6 +76,12 @@ const orders = [
         beforeEnter: requireAuthenticated,
     },
     {
+        path: '/orders/archive',
+        name: 'orders-archive',
+        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/archive.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
         path: '/',
         name: 'home',
         component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/list.vue'),
@@ -127,6 +133,20 @@ const orders = [
         path: '/picker',
         name: 'picker',
         component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/picker.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+]
+const report = [
+    {
+        path: '/report/assembler',
+        name: 'report_assembler',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/report/assembler.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/report/designer',
+        name: 'report_designer',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/report/designer.vue'),
         beforeEnter: requireAuthenticated,
     },
 ]
@@ -639,6 +659,7 @@ const error_pages = [
 const routes = [
     ...auth,
     ...orders,
+    ...report,
     // ...dashboard,
     // ...components,
     // ...fonts,

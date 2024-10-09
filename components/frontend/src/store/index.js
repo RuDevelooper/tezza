@@ -8,6 +8,7 @@ import orders from './orders';
 import products from './products';
 import materials from './materials';
 import colors from './colors';
+import designers from './designers';
 import sides from './sides';
 
 export default new createStore({
@@ -99,6 +100,7 @@ export default new createStore({
         products,
         materials,
         colors,
+        designers,
         sides,
       },
 });
