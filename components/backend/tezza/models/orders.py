@@ -7,9 +7,24 @@ from django.utils.translation import gettext_lazy as _
 from .catalog import Product
 from .customer import Customer
 
+User.__str__ = lambda user: f'{user.first_name} {user.last_name}'
+
+
+class Designer(models.Model):
+    name = models.CharField(
+        max_length=20,
+        verbose_name='Имя',
+    )
+
+    class Meta:
+        verbose_name = 'Дизайнер'
+        verbose_name_plural = 'Дизайнеры'
+
+    def __str__(self):
+        return self.name
+
 
 class Order(models.Model):
-
     class Status(models.TextChoices):
         NEW = 'new', _('Новый')
         WAIT_PAYMENT = 'wait_payment', _('Ожидает оплаты')
@@ -141,6 +156,14 @@ class Order(models.Model):
         on_delete=models.PROTECT,
         verbose_name='Упаковщик',
     )
+    designer = models.ForeignKey(
+        to=Designer,
+        related_name='designer',
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        verbose_name='Дизайнер',
+    )
 
     class Meta:
         ordering = ['created_at']
@@ -153,7 +176,7 @@ class Order(models.Model):
     def change_status(self, status: Status):
         with transaction.atomic():
             OrderLog.objects.create(
-                event=f"Статус: '{status.value}'",
+                event=f"Статус: '{status}'",
                 order=self,
                 status=status,
             )
@@ -228,7 +251,6 @@ class OrderComment(models.Model):
 
 
 class OrderItem(models.Model):
-
     class Status(models.TextChoices):
         NEW = 'new', _('Новый')
         ASSEMBLY = 'assembly', _('Сборка')
@@ -270,6 +292,15 @@ class OrderItem(models.Model):
         decimal_places=2,
         verbose_name='Цена',
     )
+    assembled_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Дата и время завершения сборки',
+    )
+    added_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата и время добавления изделия',
+    )
 
     class Meta:
         ordering = ['order']
@@ -278,3 +309,32 @@ class OrderItem(models.Model):
 
     def __str__(self):
         return f'Заказ {self.order.number} | {self.product.title}'
+
+
+class MonthlyPlan(models.Model):
+
+    year = models.IntegerField(
+        null=False,
+        verbose_name='Год',
+    )
+    month = models.IntegerField(
+        null=False,
+        verbose_name='Месяц',
+    )
+    items = models.IntegerField(
+        null=False,
+        default=0,
+        verbose_name='Количество изделий',
+    )
+    added_at = models.DateTimeField(
+        auto_now=True,
+        verbose_name='Дата и время создания плана',
+    )
+
+    class Meta:
+        ordering = ['-added_at']
+        verbose_name = 'План на месяц'
+        verbose_name_plural = 'Планы на месяц'
+
+    def __str__(self):
+        return f'План на {self.year} г. {self.month} месяц.'

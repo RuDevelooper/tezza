@@ -110,12 +110,12 @@ const delete_row = (item) => {
     }
 };
 
-const add_favorites = (item) => {
-    store.dispatch('orders/update_assembler', {
+const mark_as_sended = (item) => {
+    store.dispatch('orders/update_picker', {
         "id": item.id,
-        "assembler": store.state.auth.user.id,
-        "assembling_start": new Date(),
-        "status": "assembly",
+        "picker": store.state.auth.user.id,
+        "shipped_at": new Date(),
+        "status": "shipped",
     })
         .then(() => store.dispatch('orders/fetchFilter', assembler_filter))
 };
@@ -153,9 +153,9 @@ const selcted_row = (val) => {
                                 <div class="text-center">
                                     <div v-if="props.row.assembler == store.state.auth.user.id">
                                         <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                            viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"
-                                            stroke-linecap="round" stroke-linejoin="round" class="feather feather-star text-warning"
-                                            data-v-02c2cbc4="">
+                                            viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
+                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                            class="feather feather-star text-warning" data-v-02c2cbc4="">
                                             <polygon
                                                 points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
                                             </polygon>
@@ -196,7 +196,7 @@ const selcted_row = (val) => {
                             </template>
                             <template #items_assembled="props">
                                 <div :data_sort="props.row.due_date">{{ props.row.items.filter(x => x.status_name ==
-                            "Собран").length }}</div>
+                                    "Собран").length }}</div>
                             </template>
                             <template #actions="props">
                                 <div class="mb-4 me-2 custom-dropdown dropdown btn-group">
@@ -213,17 +213,16 @@ const selcted_row = (val) => {
                                     </a>
                                     <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pendingTask">
                                         <li>
-                                            <a href="javascript:void(0);" @click="add_favorites(props.row)"
-                                                class="dropdown-item action-favorites">
+                                            <a href="javascript:void(0);" @click="mark_as_sended(props.row)"
+                                                class="dropdown-item action-send">
                                                 <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
                                                     viewBox="0 0 24 24" fill="none" stroke="currentColor"
                                                     stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-star" data-v-5522efca="">
-                                                    <polygon
-                                                        points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                                                    </polygon>
+                                                    class="feather feather-send" data-v-5522efca="">
+                                                    <line x1="22" y1="2" x2="11" y2="13"></line>
+                                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
                                                 </svg>
-                                                Добавить к моим
+                                                Отправлен
                                             </a>
                                         </li>
                                     </ul>

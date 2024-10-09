@@ -1,4 +1,3 @@
-from django.contrib.auth.models import AbstractUser
 from rest_framework import serializers
 
 from tezza import models, services
@@ -6,7 +5,6 @@ from tezza.serializers import Customer, Product
 
 
 class User(serializers.ModelSerializer):
-
     class Meta:
         model = models.User
         fields = (
@@ -34,11 +32,18 @@ class OrderItem(serializers.ModelSerializer):
         self.service.check_order_after_item_update(instance, validated_data)
         return instance
 
+
 class OrderComment(serializers.ModelSerializer):
     user = User(many=False, read_only=True)
 
     class Meta:
         model = models.OrderComment
+        fields = '__all__'
+
+
+class Designer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Designer
         fields = '__all__'
 
 
@@ -48,7 +53,7 @@ class Order(serializers.ModelSerializer):
     assembler_user = User(source='assembler', read_only=True)
     manager_user = User(source='created_by', read_only=True)
     picker_user = User(source='picker', read_only=True)
-    # comments = OrderComment(many=True)
+    designer_user = Designer(source='designer', read_only=True)
     customer = Customer(many=False)
     items = OrderItem(many=True)
     priority = serializers.CharField(source='get_priority_display',
@@ -60,12 +65,10 @@ class Order(serializers.ModelSerializer):
         fields = '__all__'
 
     def create(self, data):
-
         return self.service.create(**data)
 
 
 class OrderLog(serializers.ModelSerializer):
-
     class Meta:
         model = models.OrderLog
         fields = '__all__'

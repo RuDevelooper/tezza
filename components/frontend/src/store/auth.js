@@ -9,6 +9,7 @@ import {
     REMOVE_USER_DATA,
     SET_TOKEN,
     SET_USER_DATA,
+    SET_USER_INFO,
 } from './types';
 
 const TOKEN_STORAGE_KEY = 'TOKEN_STORAGE_KEY';
@@ -54,17 +55,21 @@ const actions = {
     },
     initialize({ commit }) {
         const token = localStorage.getItem(TOKEN_STORAGE_KEY);
+        const userID = localStorage.getItem(USER_ID);
+        const userName = localStorage.getItem(USER_NAME);
 
-        if (isProduction && !token) {
+        if (isProduction && !token && !(userID || userName)) {
             commit(REMOVE_USER_DATA);
         }
 
-        if (isProduction && token) {
+        if (isProduction && token && userID && userName) {
             commit(SET_TOKEN, token);
+            commit(SET_USER_INFO, userID, userName);
         }
 
-        if (!isProduction && token) {
+        if (!isProduction && token && userID && userName) {
             commit(SET_TOKEN, token);
+            commit(SET_USER_INFO, userID, userName);
         }
     },
 };
@@ -88,15 +93,20 @@ const mutations = {
     },
     [SET_TOKEN](state, token) {
         localStorage.setItem(TOKEN_STORAGE_KEY, token);
-        // if (!isProduction) localStorage.setItem(TOKEN_STORAGE_KEY, token);
+        if (!isProduction) localStorage.setItem(TOKEN_STORAGE_KEY, token);
         session.defaults.headers.Authorization = `Token ${token}`;
         state.token = token;
     },
+    [SET_USER_INFO](state, userID, userName) {
+        state.user.id = userID;
+        state.user.name = userName;
+    },
     [SET_USER_DATA](state, data) {
         localStorage.setItem(USER_ID, data.id);
-        // if (!isProduction) localStorage.setItem(USER_ID, data.id);
+        if (!isProduction) localStorage.setItem(USER_ID, data.id);
+
         localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
-        // if (!isProduction) localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
+        if (!isProduction) localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
 
         state.user.id = data.id;
         state.user.name = `${data.first_name} ${data.last_name}`;

@@ -41,6 +41,16 @@ class Color(viewsets.ModelViewSet):
     queryset = models.Color.objects.all()
 
 
+class Designer(viewsets.ModelViewSet):
+    authentication_classes = TokenAuthentication,
+    permission_classes = {
+        permissions.IsAuthenticated,
+    }
+    serializer_class = serializers.Designer
+
+    queryset = models.Designer.objects.all()
+
+
 class Material(viewsets.ModelViewSet):
     authentication_classes = TokenAuthentication,
     permission_classes = {

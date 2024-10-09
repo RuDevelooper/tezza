@@ -11,13 +11,10 @@ const store = useStore();
 
 const items = ref([]);
 const columns = ref([
-    // 'id',
     'fav',
     'number',
-    // 'created_at',
     'deadline',
     'customer',
-    'items',
     'items_assembled',
     'comment_for_assembler',
     'assembler',
@@ -31,7 +28,7 @@ const headings = {
     number: 'Номер заказа',
     created_at: 'Дата',
     customer: 'Заказчик',
-    deadline: 'Отгрузка не позднее',
+    deadline: 'Закончить до',
     items: 'Изделий в заказе',
     items_assembled: 'Собрано',
     items_assembled_percent: '%',
@@ -186,12 +183,15 @@ const selcted_row = (val) => {
                                     {{ props.row.status }}
                                 </span>
                             </template>
+                            
                             <template #items="props">
                                 <div :data_sort="props.row.deadline">{{ props.row.items.length }}</div>
                             </template>
                             <template #items_assembled="props">
-                                <div :data_sort="props.row.due_date">{{ props.row.items.filter(x => x.status_name ==
-                            "Собран").length }}</div>
+                                <div :data_sort="props.row.items.length">
+                                    {{ props.row.items.filter(x => x.status_name == "Собран").length }}
+                                    из {{ props.row.items.length }}
+                                </div>
                             </template>
                             <template #actions="props">
                                 <div class="mb-4 me-2 custom-dropdown dropdown btn-group">

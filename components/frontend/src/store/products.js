@@ -15,8 +15,8 @@ export class Product {
         this.size = product.size;
         this.price = product.price;
         this.quantity = 1;
-        this.color = new Color(product.color);
-        this.material = new Material(product.material);
+        this.color = new Color(product.color_obj);
+        this.material = new Material(product.material_obj);
     }
 }
 
@@ -76,6 +76,7 @@ export default {
         async create({ commit }, payload) {
             try {
                 const res = await products.create(payload);
+                return res
             } catch (err) {
                 throw err;
             }
@@ -84,6 +85,7 @@ export default {
             try {
                 const res = await products.update(id, payload);
                 commit('setOrders', res.data);
+                return res
             } catch (err) {
                 throw err;
             }
