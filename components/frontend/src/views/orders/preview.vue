@@ -10,12 +10,22 @@ const store = useStore();
 import { useRoute } from 'vue-router';
 useMeta({ title: 'Заказ на сборку' });
 
+import { Modal } from 'bootstrap';
+
+let trackNumberModal = null;
+const trackNumberModalRef = ref(null)
+const initTrackNumberModal = () => {
+    trackNumberModal = new Modal(trackNumberModalRef.value)
+};
+
 const route = useRoute();
 
 const columns = ref([]);
+const trackNumber = ref(null)
 
 onMounted(() => {
     bind_data();
+    initTrackNumberModal();
 });
 const bind_data = () => {
     store.dispatch('orders/fetchById', { id: route.query.id })
@@ -26,9 +36,8 @@ const bind_data = () => {
         { key: 'side', label: 'Сторона', },
         { key: 'material', label: 'Материал' },
         { key: 'color', label: 'Цвет', },
-        // { key: 'priority', label: 'Приоритет', },
+        { key: 'price', label: 'Цена', },
         { key: 'status', label: 'Статус', },
-        // { key: 'action', label: '', },
     ];
 };
 
@@ -44,6 +53,52 @@ const setItemDone = (item_id) => {
         store.dispatch('orders/fetchById', { id: route.query.id })
     )
 }
+
+const add_track_number = () => {
+    store.dispatch('orders/set_track_number', {
+        "id": store.state.orders.order.id,
+        "delivery_tracking_number": trackNumber.value
+    }).then(
+        () => {
+            trackNumberModal.hide();
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                padding: '2em'
+            });
+            toast.fire({
+                icon: 'success',
+                title: `Трек-номер добавлен`,
+                padding: '2em'
+            });
+        }
+    )//.then(() => store.dispatch('orders/fetchFilter', assembler_filter))
+};
+
+const finish_order = () => {
+    store.dispatch('orders/finish_order', {
+        "id": store.state.orders.order.id,
+        "status": "completed"
+    }).then(
+        () => {
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                padding: '2em'
+            });
+            toast.fire({
+                icon: 'success',
+                title: `Заказ завершен`,
+                padding: '2em'
+            });
+        }
+    )//.then(() => store.dispatch('orders/fetchFilter', assembler_filter))
+};
+
 </script>
 
 <template>
@@ -95,7 +150,8 @@ const setItemDone = (item_id) => {
                                                                     src="@/assets/images/full_logo.svg" alt="company" />
                                                             </div>
                                                         </div>
-                                                        <div v-if="store.state.orders.order.customer" class="col-sm-8 align-self-center pt-5">
+                                                        <div v-if="store.state.orders.order.customer"
+                                                            class="col-sm-8 align-self-center pt-5">
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">Заказчик : </span>
                                                                 <span class="inv-date">
@@ -141,31 +197,39 @@ const setItemDone = (item_id) => {
                                                             <p class="inv-created-date">
                                                                 <span class="inv-title">ТРЕК-номер : </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.delivery_tracking_number }}
+                                                                    {{ store.state.orders.order.delivery_tracking_number
+                                                                    }}
                                                                 </span>
                                                             </p>
                                                         </div>
                                                         <div class="col-sm-4 align-self-start pt-5 text-sm-end">
+                                                            <p v-if="store.state.orders.order.designer_user" class="pb-3">
+                                                                <span class="inv-subtitle">Дизайнер: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.designer_user.name
+                                                                    }}
+                                                                </span>
+                                                            </p>
                                                             <p>
-                                                                <span class="inv-subtitle">Статус заказа: </span>
+                                                                <span>Статус заказа: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.status }}
                                                                 </span>
                                                             </p>
                                                             <p>
-                                                                <span class="inv-subtitle">Приоритет: </span>
+                                                                <span>Приоритет: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.priority }}
                                                                 </span>
                                                             </p>
-                                                            <p v-if="store.state.orders.order.created_by">
-                                                                <span class="inv-subtitle">Менеджер: </span>
+                                                            <p v-if="store.state.orders.order.created_by" class="pt-3">
+                                                                <span>Менеджер: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.manager_user.full_name
                                                                     }}
                                                                 </span>
                                                             </p>
-                                                            <p v-if="store.state.orders.order.assembler">
+                                                            <p v-if="store.state.orders.order.assembler" class="pt-3">
                                                                 <span class="inv-subtitle">Сборщик: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.assembler_user.full_name
@@ -175,21 +239,32 @@ const setItemDone = (item_id) => {
                                                             <p v-if="store.state.orders.order.assembling_start">
                                                                 <span class="inv-subtitle">Сборка начата: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.assembling_start.toLocaleDateString('ru-RU')
+                                                                    {{
+                                                                        store.state.orders.order.assembling_start.toLocaleDateString('ru-RU')
                                                                     }}
                                                                 </span>
                                                             </p>
                                                             <p v-if="store.state.orders.order.assembling_end">
                                                                 <span class="inv-subtitle">Сборка завершена: </span>
-                                                                <span>
-                                                                    {{ store.state.orders.order.assembling_end.toLocaleDateString('ru-RU')
+                                                                <span class="text-bold">
+                                                                    {{
+                                                                        store.state.orders.order.assembling_end.toLocaleDateString('ru-RU')
                                                                     }}
                                                                 </span>
                                                             </p>
-                                                            <p v-if="store.state.orders.order.picked_at">
+                                                            <p v-if="store.state.orders.order.picker" class="pt-3">
+                                                                <span class="inv-subtitle">Упаковщик: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.picker_user.full_name
+                                                                    }}
+                                                                </span>
+                                                            </p>
+                                                            <p v-if="store.state.orders.order.shipped_at">
                                                                 <span class="inv-subtitle">Отправлен: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.picked_at.toLocaleDateString('ru-RU') }}
+                                                                    {{
+                                                                        store.state.orders.order.shipped_at.toLocaleDateString('ru-RU')
+                                                                    }}
                                                                 </span>
                                                             </p>
                                                         </div>
@@ -215,13 +290,17 @@ const setItemDone = (item_id) => {
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
-                                                                        {{ store.state.orders.order.comment_for_manager }}
+                                                                        {{ store.state.orders.order.comment_for_manager
+                                                                        }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ store.state.orders.order.comment_for_assembler }}
+                                                                        {{
+                                                                            store.state.orders.order.comment_for_assembler
+                                                                        }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ store.state.orders.order.comment_for_picker }}
+                                                                        {{ store.state.orders.order.comment_for_picker
+                                                                        }}
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -254,14 +333,17 @@ const setItemDone = (item_id) => {
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.side }} - {{
-                                                                        item.product.side_point
-                                                                    }}
+                                                                            item.product.side_point
+                                                                        }}
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.material.title }}
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.color.title }}
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ item.product.price }} руб.
                                                                     </td>
                                                                     <td>
                                                                         {{ item.status_name }}
@@ -286,19 +368,42 @@ const setItemDone = (item_id) => {
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"
                                                 @click="print()">Печать</a>
                                         </div>
-                                        <!-- <div class="col-xl-12 col-md-3 col-sm-6">
-                                            <a href="javascript:;" class="btn btn-primary btn-send">Send Invoice</a>
+                                        <div v-if="store.state.orders.order.status == 'Отправлен'"
+                                            class="col-xl-12 col-md-3 col-sm-6" @click="trackNumberModal.show()">
+                                            <a href="javascript:;" class="btn btn-success btn-send">Трек-номер</a>
                                         </div>
-                                        <div class="col-xl-12 col-md-3 col-sm-6">
-                                            <a href="javascript:;" class="btn btn-success btn-download">Download</a>
+                                        <div v-if="store.state.orders.order.status == 'Отправлен'"
+                                            class="col-xl-12 col-md-3 col-sm-6" @click="finish_order()">
+                                            <a href="javascript:;" class="btn btn-info btn-send">Завершить</a>
                                         </div>
-                                        <div class="col-xl-12 col-md-3 col-sm-6">
-                                            <router-link to="/apps/invoice/edit"
-                                                class="btn btn-dark btn-edit">Edit</router-link>
-                                        </div> -->
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" ref="trackNumberModalRef" tabindex="-1" role="dialog"
+            aria-labelledby="trackNumberModalRef" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="trackNumberModalRef">Трек-номер</h5>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="col-form-label" for="trackNumber">Трек-номер</label>
+                        <input v-model="trackNumber" type="text" class="form-control" placeholder="Трек-номер"
+                            id="trackNumber" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i
+                                    class="flaticon-cancel-12"></i>Отмена</button>
+                            <button type="button" class="btn btn-primary" @click.prevent="add_track_number">
+                                Сохранить
+                            </button>
                         </div>
                     </div>
                 </div>

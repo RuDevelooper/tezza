@@ -27,8 +27,8 @@ class Side(serializers.BaseSerializer):
 
 
 class Product(serializers.ModelSerializer):
-    color = Color(many=False, read_only=True)
-    material = Material(many=False, read_only=True)
+    color_obj = Color(source='color', read_only=True)
+    material_obj = Material(source='material', read_only=True)
     side = serializers.CharField(source='get_side_display', read_only=True)
 
     class Meta:

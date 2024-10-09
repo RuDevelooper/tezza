@@ -9,31 +9,22 @@ useMeta({ title: 'Заказы' });
 
 const store = useStore();
 
-const items = ref([]);
 const columns = ref([
-    'id',
     'number',
     'created_at',
     'due_date',
     'customer',
-    // 'items',
     'items_assembled',
-    // 'comments',
     'assembler',
     'status',
 ]);
 const headings = {
-    id: (h, row, index) => {
-        return '';
-    },
     number: 'Номер',
     created_at: 'Создан',
     customer: 'Заказчик',
     due_date: 'Отгрузка',
     items: 'Изделий в заказе',
     items_assembled: 'Собрано',
-    items_assembled_percent: '%',
-    // comments: 'Комментарии',
     assembler: 'Сборщик',
     status: 'Статус',
     actions: '',
@@ -73,7 +64,6 @@ const table_option = ref({
         filterBy: "Фильтр",
     },
 });
-const selected_rows = ref([]);
 const statuses = ref({
     'Новый': 'badge-info',
     'Ожидает оплаты': 'badge-info',
@@ -82,32 +72,16 @@ const statuses = ref({
     'Собран': 'badge-success',
     'Покраска': 'badge-success',
     'Упаковка': 'badge-secondary',
-    'Отправлен': 'badge-dark',
+    'Отправлен': 'badge-secondary',
     'Завершен': 'badge-dark',
 });
 
 onMounted(() => {
     bind_data();
 });
-
+const assembler_filter = 'status__in=new,wait_payment,payed,assembly,assembled,coloring,packing,shipped&ordering=-due_date'
 const bind_data = () => {
-    store.dispatch('orders/fetchItems')
-};
-
-const delete_row = (item) => {
-    if (confirm('Are you sure want to delete selected row ?')) {
-        if (item) {
-            items.value = items.value.filter((d) => d.id != item.id);
-        } else {
-            items.value = items.value.filter((d) => !selected_rows.value.includes(d.id));
-        }
-    }
-};
-
-//checkbox selection
-const selcted_row = (val) => {
-    selected_rows.value.push(val);
-    return;
+    store.dispatch('orders/fetchFilter', assembler_filter)
 };
 </script>
 
@@ -143,27 +117,6 @@ const selcted_row = (val) => {
                                     </svg>
                                     Новый
                                 </router-link>
-
-                                <!-- <button type="button" class="btn ml-2 btn-danger" @click="delete_row()">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                        stroke-linejoin="round" class="feather feather-trash-2">
-                                        <polyline points="3 6 5 6 21 6"></polyline>
-                                        <path
-                                            d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                        </path>
-                                        <line x1="10" y1="11" x2="10" y2="17"></line>
-                                        <line x1="14" y1="11" x2="14" y2="17"></line>
-                                    </svg>
-                                    Удалить
-                                </button> -->
-                            </template>
-                            <template #id="props">
-                                <div class="checkbox-outline-primary custom-control custom-checkbox">
-                                    <input variant="primary" type="checkbox" class="custom-control-input"
-                                        :id="'chk' + props.row.id" @change="selcted_row(props.row.id)" />
-                                    <label class="custom-control-label" :for="'chk' + props.row.id"></label>
-                                </div>
                             </template>
                             <template #number="props">
                                 <router-link :to="{ path: '/orders/preview', query: { id: props.row.id } }">
@@ -194,60 +147,10 @@ const selcted_row = (val) => {
                             <template #items="props">
                                 <div :data_sort="props.row.due_date">{{ props.row.items.length }}</div>
                             </template>
-                            <!-- <template #comments="props">
-                                <div :data_sort="props.row.due_date">{{ props.row.comments.length }}</div>
-                            </template> -->
                             <template #items_assembled="props">
                                 <div :data_sort="props.row.items.length">
                                     {{ props.row.items.filter(x => x.status_name == "Собран").length }}
                                     из {{ props.row.items.length }}
-                                </div>
-                            </template>
-                            <template #actions="props">
-                                <div class="mb-4 me-2 custom-dropdown dropdown btn-group">
-                                    <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-more-horizontal">
-                                            <circle cx="12" cy="12" r="1"></circle>
-                                            <circle cx="19" cy="12" r="1"></circle>
-                                            <circle cx="5" cy="12" r="1"></circle>
-                                        </svg>
-                                    </a>
-
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pendingTask">
-                                        <li>
-                                            <router-link href="javascript:void(0);" to="/orders/edit"
-                                                class="dropdown-item action-edit"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-edit-3">
-                                                    <path d="M12 20h9"></path>
-                                                    <path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z">
-                                                    </path>
-                                                </svg>
-                                                Edit
-                                            </router-link>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);" @click="delete_row(props.row)"
-                                                class="dropdown-item action-delete"><svg
-                                                    xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-trash">
-                                                    <polyline points="3 6 5 6 21 6"></polyline>
-                                                    <path
-                                                        d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2">
-                                                    </path>
-                                                </svg>
-                                                Delete
-                                            </a>
-                                        </li>
-                                    </ul>
                                 </div>
                             </template>
                         </v-client-table>

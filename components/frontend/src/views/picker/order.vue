@@ -33,21 +33,12 @@ const bind_data = () => {
 const print = () => {
     window.print();
 };
-
-const setItemDone = (item_id) => {
-    store.dispatch(
-        'orders/setOrderItemDone',
-        { id: item_id, status: 'assembled' },
-    ).then(
-        () => store.dispatch('orders/fetchById', { id: route.query.id })
-    )
-}
-const add_favorites = () => {
-    store.dispatch('orders/update_assembler', {
+const mark_as_sended = () => {
+    store.dispatch('orders/update_picker', {
         "id": store.state.orders.order.id,
-        "assembler": store.state.auth.user.id,
-        "assembling_start": new Date(),
-        "status": "assembly",
+        "picker": store.state.auth.user.id,
+        "shipped_at": new Date(),
+        "status": "shipped",
     }).then(
         () => {
             const toast = window.Swal.mixin({
@@ -59,7 +50,7 @@ const add_favorites = () => {
             });
             toast.fire({
                 icon: 'success',
-                title: `Заказ добавлен к вашим`,
+                title: `Заказ отправлен`,
                 padding: '2em'
             });
         }
@@ -149,13 +140,13 @@ const add_favorites = () => {
                                                                     {{ store.state.orders.order.delivery_cost }} руб.
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-created-date">
+                                                            <!-- <p class="inv-created-date">
                                                                 <span class="inv-title">ТРЕК-номер : </span>
                                                                 <span class="inv-date">
                                                                     {{ store.state.orders.order.delivery_tracking_number
                                                                     }}
                                                                 </span>
-                                                            </p>
+                                                            </p> -->
                                                         </div>
                                                         <div class="col-sm-4 align-self-start text-end">
                                                             <p class="inv-street-addr">644105, Омск, ул. 4-я
@@ -225,9 +216,9 @@ const add_favorites = () => {
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"
                                                 @click="print()">Печать</a>
                                         </div>
-                                        <div v-if="store.state.orders.order.assembler_user == null && store.state.orders.order.status == 'Новый'"
-                                            class="col-xl-12 col-md-3 col-sm-6" @click="add_favorites()">
-                                            <a href="javascript:;" class="btn btn-success btn-send">Добавить к моим</a>
+                                        <div v-if="store.state.orders.order.status == 'Собран'"
+                                            class="col-xl-12 col-md-3 col-sm-6" @click="mark_as_sended()">
+                                            <a href="javascript:;" class="btn btn-success btn-send">Отправлен</a>
                                         </div>
                                     </div>
                                 </div>

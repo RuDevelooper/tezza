@@ -69,10 +69,12 @@ class Orders:
 
         status = validated_data.get('status')
         if status == 'assembled':
+            instance.assembled_at = datetime.utcnow()
+            instance.save()
             if instance.order.status == models.Order.Status.ASSEMBLY:
                 order = instance.order
                 if all(i.status == models.OrderItem.Status.ASSEMBLED for i in order.items.all()):
                     order.assembling_end = datetime.utcnow()
-                    order.change_status(models.Order.Status.ASSEMBLED.title())
+                    order.change_status(models.Order.Status.ASSEMBLED)
 
                 order.save()

@@ -5,10 +5,11 @@ from tezza import models
 admin.site.site_header = 'TEZZA'
 
 admin.site.register(models.Color)
-admin.site.register(models.Customer)
 admin.site.register(models.Material)
 admin.site.register(models.OrderLog)
-admin.site.register(models.OrderComment)
+
+
+# admin.site.register(models.OrderComment)
 
 
 @admin.register(models.Product)
@@ -43,7 +44,11 @@ class OrderItemAdmin(admin.ModelAdmin):
         'status',
         'priority',
         'price',
+        'added_at',
+        'assembled_at',
     ]
+    ordering = ['-added_at']
+    date_hierarchy = 'added_at'
 
 
 @admin.register(models.Order)
@@ -76,4 +81,51 @@ class OrderAdmin(admin.ModelAdmin):
         'priority',
         'status',
     ]
-    ordering = ["-created_at"]
+    ordering = ['-created_at']
+    date_hierarchy = 'created_at'
+
+
+@admin.register(models.Customer)
+class CustomerAdmin(admin.ModelAdmin):
+    list_display = [
+        'name',
+        'organisation',
+        'address',
+        'phone',
+    ]
+    search_fields = [
+        'organisation',
+        'name',
+        'address',
+        'phone',
+    ]
+    ordering = ["name"]
+
+
+@admin.register(models.Designer)
+class DesignerAdmin(admin.ModelAdmin):
+    list_display = [
+        'name',
+    ]
+    search_fields = [
+        'name',
+    ]
+    ordering = ["name"]
+
+
+@admin.register(models.MonthlyPlan)
+class MonthlyPlanAdmin(admin.ModelAdmin):
+    list_display = [
+        'year',
+        'month',
+        'items',
+        'added_at',
+    ]
+    search_fields = [
+        'year',
+        'month',
+    ]
+    ordering = [
+        'year',
+        'month',
+    ]

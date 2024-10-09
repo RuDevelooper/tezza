@@ -112,19 +112,19 @@ const add_favorites = () => {
                                                         </div>
 
                                                         <div class="col-sm-6 text-sm-end">
-                                                            <div class="">
+                                                            <!-- <div class="">
                                                                 <img class="invoice-logo"
                                                                     src="@/assets/images/full_logo.svg" alt="company" />
-                                                            </div>
+                                                            </div> -->
                                                         </div>
 
                                                         <div class="col-sm-8 align-self-center mt-3">
-                                                            <p class="inv-created-date">
+                                                            <!-- <p class="inv-created-date">
                                                                 <span class="inv-title">Дата заказа : </span>
                                                                 <span class="inv-date">
                                                                     {{ store.state.orders.order.created_at_local_date }}
                                                                 </span>
-                                                            </p>
+                                                            </p> -->
                                                             <p class="inv-due-date mt-1">
                                                                 <span class="inv-title">Завершить сборку до : </span>
                                                                 <span class="inv-date">
@@ -242,7 +242,7 @@ const add_favorites = () => {
 
                         <div class="col-xl-2">
                             <div class="invoice-actions-btn">
-                                <div class="invoice-action-btn">
+                                <div class="invoice-action-btn mt-0">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-3 col-sm-6">
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"

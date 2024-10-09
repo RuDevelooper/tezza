@@ -57,6 +57,10 @@ class Order {
             last_name: i.picker_user.last_name,
             full_name: i.picker_user.first_name + ' ' + i.picker_user.last_name,
         } : null;
+        let designer_user = i.designer_user ? {
+            id: i.designer_user.id,
+            name: i.designer_user.name,
+        } : null;
 
         let customer = i.customer ? {
             id: i.customer.id,
@@ -70,24 +74,6 @@ class Order {
         for (var item of i.items) {
             items.push(new OrderItem(item))
         };
-
-        // let comments = []
-        // for (var item of i.comments) {
-        //     comments.push(
-        //         {
-
-        //             id: item.id,
-        //             user: {
-        //                 id: item.user.id,
-        //                 first_name: item.user.first_name,
-        //                 last_name: item.user.last_name,
-        //             },
-        //             comment: item.comment,
-        //             added_at: new Date(item.added_at) || item.added_at,
-        //             order: item.order,
-        //         }
-        //     )
-        // };
 
         this.id = i.id;
         this.number = i.number;
@@ -103,6 +89,7 @@ class Order {
         this.assembler_user = assembler_user;
         this.manager_user = manager_user;
         this.picker_user = picker_user;
+        this.designer_user = designer_user;
         this.customer = customer;
         this.items = items;
         this.comment_for_manager = i.comment_for_manager;

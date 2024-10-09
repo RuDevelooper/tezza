@@ -13,6 +13,7 @@ urlpatterns = [
 router = routers.DefaultRouter()
 router.register('sides', api.Side, basename='sides', )
 router.register('colors', api.Color, basename='colors', )
+router.register('designers', api.Designer, basename='designers', )
 router.register('materials', api.Material, basename='materials', )
 router.register('products', api.Product, basename='products', )
 router.register('customers', api.Customer, basename='customers', )

@@ -16,12 +16,22 @@ import Multiselect from 'vue-multiselect'
 
 useMeta({ title: 'Новый заказ' });
 
+
+import { Modal } from 'bootstrap';
+
+let indiItemModal = null;
+const indiItemModalRef = ref(null)
+const initIndiItemModalRef = () => {
+    indiItemModal = new Modal(indiItemModalRef.value)
+};
+
 const store = useStore();
 
 const items = ref([]);
 
 const created_at = ref(null);
 const due_date = ref(null);
+const designer = ref(null);
 const order = ref({
     number: '',
 
@@ -53,7 +63,10 @@ onMounted(() => {
     due_date.value = dt;
     store.dispatch('materials/fetchItems')
     store.dispatch('colors/fetchItems')
+    store.dispatch('designers/fetchItems')
     // store.dispatch('sides/fetchItems')
+
+    initIndiItemModalRef()
 
 
 });
@@ -66,6 +79,26 @@ const add_item = () => {
         );
     }
     items.value.push({ 'item': { id: max_id + 1, ...default_item_values } });
+};
+const add_indi_item = (item) => {
+    let max_id = 0;
+    if (items.value && items.value.length) {
+        max_id = items.value.reduce(
+            (max, character) => (character.id > max ? character.id : max), items.value[0].id
+        );
+    }
+    items.value.push({
+        'item': {
+            id: max_id + 1,
+            sku: item.sku,
+            title: item.title,
+            quantity: 1,
+            material: item.material,
+            side: item.side,
+            color: item.color,
+            price: item.price,
+        }
+    });
 };
 
 const remove_item = (item) => {
@@ -82,7 +115,6 @@ const dueDateHandler = (selectedDates) => {
 
 const create_order = () => {
 
-
     var product_cost = items.value.reduce((acc, x) => acc + (x.item.price * x.item.quantity), 0);
 
     let order_items = []
@@ -92,9 +124,9 @@ const create_order = () => {
                 product: {
                     sku: item.item.sku,
                     title: item.item.title,
-                    material: item.item.material,
+                    material: item.item.material.id,
                     side: item.item.side,
-                    color: item.item.color,
+                    color: item.item.color.id,
                 },
                 price: item.item.price,
             });
@@ -114,6 +146,7 @@ const create_order = () => {
         created_at: order.value.created_at,
         due_date: order.value.due_date,
         products_cost: product_cost,
+        designer: designer.value,
         delivery_cost: order.value.delivery.cost,
         total_cost: product_cost + order.value.delivery.cost,
         created_by: store.state.auth.user.id,
@@ -138,10 +171,21 @@ const create_order = () => {
         new window.Swal('Ошибка!', error.message, 'error')
     });
 };
-
-const product = ref({
-    sku: null
+const product = ref({})
+const indiProduct = ref({
+    sku: null,
+    title: null,
+    color: null,
+    material: null,
+    side: null,
+    side_point: null,
+    size: null,
+    price: null,
 })
+const openIndiProductModal = () => {
+    indiProduct.value.sku = "INDI-" + order.value.number;
+    indiItemModal.show();
+}
 
 const findProducts = (query, _) => {
     if (query.length < 2) return;
@@ -153,6 +197,37 @@ import { VueDadata } from 'vue-dadata';
 import 'vue-dadata/dist/style.css';
 
 let dadataToken = process.env.VITE_APP_DADATA_API_KEY
+
+const add_indi_product = () => {
+    store.dispatch('products/create', {
+        sku: indiProduct.value.sku,
+        title: indiProduct.value.title,
+        color: indiProduct.value.color,
+        material: indiProduct.value.material,
+        side: indiProduct.value.side,
+        side_point: indiProduct.value.side_point,
+        size: indiProduct.value.size,
+        price: indiProduct.value.price,
+    }).then((res) => {
+        console.log(res.data)
+        add_indi_item(res.data)
+        indiItemModal.hide()
+        const toast = window.Swal.mixin({
+            toast: true,
+            position: 'top-end',
+            showConfirmButton: false,
+            timer: 3000,
+            padding: '2em'
+        });
+        toast.fire({
+            icon: 'success',
+            title: `Индивидуальное изделие с артикулом ${res.data.sku} создано`,
+            padding: '2em'
+        });
+    }).catch((error) => {
+        new window.Swal('Ошибка!', error.message, 'error')
+    });
+}
 
 </script>
 <style src="vue-multiselect/dist/vue-multiselect.min.css"></style>
@@ -331,6 +406,32 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                         </div>
                                     </div>
 
+                                    <div class="invoice-detail-terms mt-0 mb-4">
+                                        <div class="row justify-content-between">
+                                            <div class="col-md-5">
+                                                <div class="form-group mb-4">
+                                                    <label for="designer" class="pb-1">Дизайнер</label>
+                                                    <select v-model="designer" class="form-select form-select"
+                                                        id="designer">
+                                                        <option v-for="d in store.state.designers.designers" :key="d.id"
+                                                            :value="d.id">
+                                                            {{ d.name }}
+                                                        </option>
+                                                    </select>
+                                                </div>
+                                            </div>
+
+                                            <div class="col-md-5 text-end pt-4">
+                                                <button :disabled="!order.number" type="button"
+                                                    class="btn btn-outline-info" @click="openIndiProductModal()"
+                                                    data-bs-toggle="tooltip"
+                                                    title="Для добавления изделия нужно ввести номер заказа">
+                                                    Добавить индивидуальное изделие
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <div class="invoice-detail-items">
                                         <div class="table-responsive">
                                             <table class="table table-bordered item-table">
@@ -396,26 +497,6 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                                         </td>
 
                                                         <td class="text-end material">
-                                                            <!-- <select v-model="good.item.material.title"
-                                                                class="form-select form-select mb-1" id="material">
-                                                                <option
-                                                                    v-for="material in store.state.materials.materials"
-                                                                    :key="material.id">
-                                                                    {{ material.title }}
-                                                                </option>
-                                                            </select> -->
-                                                            <!-- <select v-model="good.item.color.title"
-                                                                class="form-select form-select mb-1" id="color">
-                                                                <option v-for="color in store.state.colors.colors"
-                                                                    :key="color.id">
-                                                                    {{ color.title }}
-                                                                </option>
-                                                            </select> -->
-                                                            <!-- <select v-model="good.item.side" class="form-select form-select"
-                                                                id="side">
-                                                                <option value="Слева">Слева</option>
-                                                                <option value="Справа">Справа</option>
-                                                            </select> -->
                                                             <input v-model="good.item.material.title"
                                                                 class="form-control form-control mb-1" id="material"
                                                                 placeholder="Материал" disabled />
@@ -508,7 +589,7 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                     <div class="invoice-action-tax-fields">
                                         <div class="form-group mb-0">
                                             <div class="col-sm-12">
-                                                <textarea v-model="order.notes.assembler" rows="5"
+                                                <textarea v-model="order.notes.assembler" rows="8"
                                                     id="invoice-detail-notes" class="form-control"
                                                     placeholder='Комментарий для сборщика'></textarea>
                                             </div>
@@ -522,7 +603,7 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                                     <div class="invoice-action-tax-fields">
                                         <div class="form-group mb-0">
                                             <div class="col-sm-12">
-                                                <textarea v-model="order.notes.picker" rows="5"
+                                                <textarea v-model="order.notes.picker" rows="8"
                                                     id="invoice-detail-notes" class="form-control"
                                                     placeholder='Комментарий для упаковщика'></textarea>
                                             </div>
@@ -534,15 +615,7 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                             <div class="invoice-actions-btn">
                                 <div class="invoice-action-btn">
                                     <div class="row">
-                                        <!-- <div class="col-xl-12 col-md-4">
-                                            <a href="javascript:;" class="btn btn-primary btn-send">Send Invoice</a>
-                                        </div>
                                         <div class="col-xl-12 col-md-4">
-                                            <router-link to="/apps/invoice/preview"
-                                                class="btn btn-dark btn-preview">Preview</router-link>
-                                        </div> -->
-                                        <div class="col-xl-12 col-md-4">
-
                                             <button type="button" class="btn btn-success w-100 mb-4 me-2"
                                                 @click="create_order()">Сохранить
                                                 заказ</button>
@@ -555,5 +628,97 @@ let dadataToken = process.env.VITE_APP_DADATA_API_KEY
                 </div>
             </div>
         </div>
+
+        <div class="modal fade" ref="indiItemModalRef" tabindex="-1" role="dialog" aria-labelledby="indiItemModalRef"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="indiItemModalRef">Добавить индивидуальное изделие</h5>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form action="javascript:void(0);">
+                            <div class="row">
+                                <div class="col-xl-6 col-md-12">
+                                    <div class="form-group mb-4">
+                                        <label>Артикул</label>
+                                        <input type="text" v-model="indiProduct.sku" class="form-control"
+                                            placeholder="Артикул" />
+                                    </div>
+                                </div>
+                                <div class="col-xl-6 col-md-12">
+                                    <div class="form-group mb-4">
+                                        <label>Размер, см</label>
+                                        <input type="number" v-model="indiProduct.size" class="form-control"
+                                            placeholder="Размер, см" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-12 col-md-12">
+                                    <div class="form-group mb-4">
+                                        <label>Наименование</label>
+                                        <textarea type="text" v-model="indiProduct.title" class="form-control"
+                                            placeholder="Наименование" maxlength="100" minlength="1" rows="3" />
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="row">
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <label>Материал</label>
+                                    <select v-model="indiProduct.material" class="form-select form-select"
+                                        id="material">
+                                        <option v-for="material in store.state.materials.materials" :value="material.id"
+                                            :key="material.id">
+                                            {{ material.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <label>Цвет</label>
+                                    <select v-model="indiProduct.color" class="form-select form-select" id="color">
+                                        <option v-for="color in store.state.colors.colors" :value="color.id"
+                                            :key="color.id">
+                                            {{ color.title }}
+                                        </option>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="row py-4">
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <label>Сторона</label>
+                                    <select v-model="indiProduct.side" class="form-select form-select" id="side">
+                                        <option value="Слева">Слева</option>
+                                        <option value="Справа">Справа</option>
+                                    </select>
+                                </div>
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <label>Признак для стороны</label>
+                                    <input type="text" v-model="indiProduct.side_point" class="form-control"
+                                        placeholder="Признак для стороны" />
+                                </div>
+                            </div>
+                            <div class="row justify-content-end pb-5">
+                                <div class="col-xl-6 col-md-6 col-sm-12">
+                                    <label>Цена, руб.</label>
+                                    <input type="number" v-model="indiProduct.price" class="form-control"
+                                        placeholder="Цена, руб." />
+                                </div>
+                            </div>
+                        </form>
+                        <div class="modal-footer pb-0">
+                            <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i
+                                    class="flaticon-cancel-12"></i>Отмена</button>
+                            <button type="button" class="btn btn-primary" @click.prevent="add_indi_product">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
     </div>
 </template>
