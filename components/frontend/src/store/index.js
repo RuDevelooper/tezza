@@ -5,6 +5,8 @@ import auth from './auth';
 import password from './password';
 import signup from './signup';
 import orders from './orders';
+import order_items from './order_items';
+import users from './users';
 import products from './products';
 import materials from './materials';
 import colors from './colors';
@@ -97,10 +99,12 @@ export default new createStore({
         password,
         signup,
         orders,
+        order_items,
         products,
         materials,
         colors,
         designers,
         sides,
+        users,
       },
 });

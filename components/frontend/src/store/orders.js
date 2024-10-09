@@ -1,18 +1,7 @@
 import { createStore } from 'vuex';
 import orders from '../api/orders';
 import { Product } from './products';
-
-class OrderItem {
-    constructor(item) {
-        this.id = item.id;
-        this.status = item.status;
-        this.status_name = item.status_name;
-        this.priority = item.priority;
-        this.product = new Product(item.product);
-        this.price = item.price;
-        this.order = item.order;
-    }
-}
+import { OrderItem } from './order_items';
 
 class Order {
     id = null;
