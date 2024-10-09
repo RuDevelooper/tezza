@@ -1,47 +1,29 @@
 <script setup>
 import { useStore } from 'vuex';
-import { onMounted, ref } from 'vue';
+import { onMounted, ref, computed } from 'vue';
 import '@/assets/sass/apps/invoice-list.scss';
 
 import { useMeta } from '@/composables/use-meta';
+useMeta({ title: 'Отчет по сборщику' });
 
-useMeta({ title: 'Заказы на упаковку' });
+//flatpickr
+import flatPickr from 'vue-flatpickr-component';
+import 'flatpickr/dist/flatpickr.css';
+import '@/assets/sass/forms/custom-flatpickr.css';
+
+import ApexChart from 'vue3-apexcharts';
 
 const store = useStore();
 
-const items = ref([]);
 const columns = ref([
-    // 'id',
-    // 'fav',
-    'number',
-    // 'created_at',
-    'deadline',
-    'customer',
-    'items',
-    // 'items_assembled',
-    'comment_for_picker',
-    'manager',
-    'assembler',
-    'status',
-    'actions',
+    'product',
+    'assembled_at',
+    'price',
 ]);
 const headings = {
-    // id: (h, row, index) => {
-    //     return '';
-    // },
-    number: 'Номер',
-    created_at: 'Создан',
-    customer: 'Заказчик',
-    deadline: 'Плановая дата',
-    items: 'Изделий',
-    items_assembled: 'Собрано',
-    items_assembled_percent: '%',
-    comment_for_picker: 'Комментарий',
-    manager: 'Менеджер',
-    assembler: 'Сборщик',
-    status: 'Статус',
-    fav: 'Мои',
-    actions: '',
+    product: 'Изделие',
+    assembled_at: 'Дата сборки',
+    price: 'Цена',
 }
 
 const table_option = ref({
@@ -53,17 +35,8 @@ const table_option = ref({
     pagination: { nav: 'scroll', chunk: 20 },
     resizableColumns: false,
     sortable: [
-        'number',
-        'created_at',
-        'customer',
-        'deadline',
-        'items',
-        'items_assembled',
-        'items_assembled_percent',
-        'comment_for_assembler',
-        'assembler',
-        'status',
-        'fav',
+        'product',
+        'price',
     ],
     sortIcon: {
         base: 'sort-icon-none',
@@ -79,7 +52,6 @@ const table_option = ref({
         filterBy: "Фильтр",
     },
 });
-const selected_rows = ref([]);
 const statuses = ref({
     'Новый': 'badge-info',
     'Ожидает оплаты': 'badge-info',
@@ -95,36 +67,113 @@ const statuses = ref({
 onMounted(() => {
     bind_data();
 });
-const assembler_filter = 'status__in=assembled&ordering=-due_date'
+const getCurrentMonthStartAndEnd = () => {
+    const startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
+    const endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+    return [startDate, endDate];
+}
+const assembler = ref(null);
+const dateRange = ref(null);
+let startDate = null;
+let endDate = null;
 const bind_data = () => {
-    store.dispatch('orders/fetchFilter', assembler_filter)
+    let currentMonth = getCurrentMonthStartAndEnd()
+    startDate = currentMonth[0]
+    endDate = currentMonth[1]
+    dateRange.value = [startDate, endDate];
+    store.dispatch('users/fetchItems')
 };
-
-const delete_row = (item) => {
-    if (confirm('Are you sure want to delete selected row ?')) {
-        if (item) {
-            items.value = items.value.filter((d) => d.id != item.id);
-        } else {
-            items.value = items.value.filter((d) => !selected_rows.value.includes(d.id));
-        }
+const changeRange = (range) => {
+    if (range.length == 1) {
+        startDate = range[0]
+    } else if (range.length == 2) {
+        startDate = range[0];
+        endDate = range[1];
+        change();
     }
-};
+}
+const change = () => {
+    if (assembler.value !== null) {
+        startDate.setHours(0, 0, 0, 0)
+        endDate.setHours(23, 59, 59, 0)
+        const order_items_filter = `status_name=assembled
+        &ordering=assembled_at
+        &order__assembler=${assembler.value}
+        &assembled_at__gte=${startDate.toISOString()}
+        &assembled_at__lte=${endDate.toISOString()}
+        `
+        store.dispatch('order_items/fetchFilter', order_items_filter)
+    }
+}
+function countAndSumByDate(objects) {
+    const result = {};
+    let totalValue = 0;
 
-const mark_as_sended = (item) => {
-    store.dispatch('orders/update_picker', {
-        "id": item.id,
-        "picker": store.state.auth.user.id,
-        "shipped_at": new Date(),
-        "status": "shipped",
-    })
-        .then(() => store.dispatch('orders/fetchFilter', assembler_filter))
-};
+    objects.forEach(obj => {
+        const date = obj.date.toISOString().split('T')[0];
+        if (!result[date]) {
+            result[date] = { count: 0, sum: 0 };
+        }
+        result[date].count += 1;
+        result[date].sum += obj.value;
+        totalValue += obj.value;
+    });
 
-//checkbox selection
-const selcted_row = (val) => {
-    selected_rows.value.push(val);
-    return;
-};
+    const sortedResult = Object.keys(result).sort().reduce((acc, key) => {
+        acc[key] = result[key];
+        return acc;
+    }, {});
+
+    return { dailyCounts: sortedResult, totalValue: totalValue };
+}
+
+//Statistics
+const total_visit_series = ref([{ data: [21, 9, 36, 12, 44, 25, 59, 41, 66, 25] }]);
+const total_visit_options = computed(() => {
+    const is_dark = store.state.is_dark_mode;
+    return {
+        chart: { sparkline: { enabled: true }, dropShadow: { enabled: true, top: 3, left: 1, blur: 3, color: '#009688', opacity: 0.7 } },
+        stroke: { curve: 'smooth', width: 2 },
+        markers: { size: 0 },
+        colors: ['#009688'],
+        grid: { padding: { top: 0, bottom: 0, left: 0 } },
+        tooltip: {
+            theme: is_dark ? 'dark' : 'light',
+            x: { show: false },
+            y: {
+                title: {
+                    formatter: function formatter() {
+                        return '';
+                    },
+                },
+            },
+        },
+        responsive: [{ breakPoint: 576, options: { chart: { height: 95 }, grid: { padding: { top: 45, bottom: 0, left: 0 } } } }],
+    };
+});
+const paid_visit_series = ref([{ data: [22, 19, 30, 47, 32, 44, 34, 55, 41, 69] }]);
+const paid_visit_options = computed(() => {
+    const is_dark = store.state.is_dark_mode;
+    return {
+        chart: { sparkline: { enabled: true }, dropShadow: { enabled: true, top: 1, left: 1, blur: 2, color: '#e2a03f', opacity: 0.7 } },
+        stroke: { curve: 'smooth', width: 2 },
+        markers: { size: 0 },
+        colors: ['#e2a03f'],
+        grid: { padding: { top: 0, bottom: 0, left: 0 } },
+        tooltip: {
+            theme: is_dark ? 'dark' : 'light',
+            x: { show: false },
+            y: {
+                title: {
+                    formatter: function formatter() {
+                        return '';
+                    },
+                },
+            },
+        },
+        responsive: [{ breakPoint: 576, options: { chart: { height: 95 }, grid: { padding: { top: 35, bottom: 0, left: 0 } } } }],
+    };
+});
 </script>
 
 <template>
@@ -135,97 +184,109 @@ const selcted_row = (val) => {
                     <div class="page-header">
                         <nav class="breadcrumb-one" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:;">Заказы на упаковку</a></li>
-                                <li class="breadcrumb-item active" aria-current="page"><span>Список</span></li>
+                                <li class="breadcrumb-item"><a href="javascript:;">Отчет</a></li>
+                                <li class="breadcrumb-item active" aria-current="page"><span>Сборщик</span></li>
                             </ol>
                         </nav>
                     </div>
                 </li>
             </ul>
         </teleport>
-
         <div class="row layout-top-spacing">
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-statistics">
+                    <div class="widget-heading">
+                        <h5>Отчет по сборщику</h5>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row">
+                            <div class="col-6">
+                                <label for="">Период</label>
+                                <div class="form-group mb-0">
+                                    <flat-pickr v-model="dateRange" :config="{ mode: 'range' }"
+                                        class="form-control flatpickr active text-center"
+                                        @on-change="changeRange"></flat-pickr>
+                                </div>
+                            </div>
+                            <div class="col-6">
+                                <label for="assembler">Сборщик</label>
+                                <select v-model="assembler" class="form-select form-select" id="assembler"
+                                    @change="change">
+                                    <option value="null" selected disabled>Выберите сотрудника</option>
+                                    <option v-for="user in store.state.users.users" :value="user.id" :key="user.id">
+                                        {{ `${user.first_name} ${user.last_name}` }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-statistics">
+                    <div class="widget-heading">
+                        <h5>Статистика</h5>
+                        <div class="task-action">
+                            <div class="dropdown btn-group">
+                                <a href="javascript:;" id="ddlStatistics" class="btn dropdown-toggle btn-icon-only"
+                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-more-horizontal">
+                                        <circle cx="12" cy="12" r="1"></circle>
+                                        <circle cx="19" cy="12" r="1"></circle>
+                                        <circle cx="5" cy="12" r="1"></circle>
+                                    </svg>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="widget-content">
+                        <div class="row">
+                            <div class="col-6">
+                                <div class="w-detail">
+                                    <p class="w-title">Всего изделий</p>
+                                    <p class="w-stats">
+                                        {{ store.state.order_items.order_items.length }}
+                                    </p>
+                                </div>
+                                <!-- <apex-chart v-if="total_visit_options" height="58" type="line"
+                                    :options="total_visit_options" :series="total_visit_series"></apex-chart> -->
+                            </div>
+                            <div class="col-6">
+                                <div class="w-detail">
+                                    <p class="w-title">Общая сумма</p>
+                                    <p class="w-stats">
+                                        {{ store.state.order_items.order_items.reduce(
+                                            (sum, item) => sum + Number(item.price), 0
+                                        ) }}
+                                    </p>
+                                </div>
+                                <!-- <apex-chart v-if="paid_visit_options" height="58" type="line"
+                                    :options="paid_visit_options" :series="paid_visit_series"></apex-chart> -->
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row layout-top-spacing" v-if="assembler">
             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                 <div class="panel br-6">
                     <div class="custom-table">
-                        <v-client-table :data="store.state.orders.orders" :columns="columns" :options="table_option">
-                            <template #fav="props">
-                                <div class="text-center">
-                                    <div v-if="props.row.assembler == store.state.auth.user.id">
-                                        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18"
-                                            viewBox="0 0 24 24" fill="currentColor" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-star text-warning" data-v-02c2cbc4="">
-                                            <polygon
-                                                points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2">
-                                            </polygon>
-                                        </svg>
-                                    </div>
-                                </div>
-                            </template>
-                            <template #number="props">
-                                <router-link :to="{ path: '/picker/order', query: { id: props.row.id } }">
-                                    <span class="inv-number">{{ props.row.number }}</span>
+                        <v-client-table :data="store.state.order_items.order_items" :columns="columns"
+                            :options="table_option">
+                            <template #product="props">
+                                <router-link :to="{ path: '/orders/preview', query: { id: props.row.order } }">
+                                    <span class="inv-number">{{ `${props.row.product?.sku} |
+                                        ${props.row.product?.title}`
+                                        }}</span>
                                 </router-link>
                             </template>
-                            <template #created_at="props">
-                                <div :data_sort="props.row.created_at">
-                                    {{ props.row.created_at.toLocaleDateString('ru') }}
-                                </div>
-                            </template>
-                            <template #assembler="props">
-                                <div>{{ props.row.assembler_user ? props.row.assembler_user.full_name : '' }}</div>
-                            </template>
-                            <template #manager="props">
-                                <div>{{ props.row.manager_user ? props.row.manager_user.full_name : '' }}</div>
-                            </template>
-                            <template #customer="props">
-                                <div>{{ props.row.customer.name || '' }}</div>
-                            </template>
-                            <template #deadline="props">
-                                <div :data_sort="props.row.deadline">{{ props.row.due_date.toLocaleDateString('ru') }}
-                                </div>
-                            </template>
-                            <template #status="props">
-                                <span class="badge inv-status" :class="statuses[props.row.status]">
-                                    {{ props.row.status }}
-                                </span>
-                            </template>
-                            <template #items="props">
-                                <div :data_sort="props.row.deadline">{{ props.row.items.length }}</div>
-                            </template>
-                            <template #items_assembled="props">
-                                <div :data_sort="props.row.due_date">{{ props.row.items.filter(x => x.status_name ==
-                                    "Собран").length }}</div>
-                            </template>
-                            <template #actions="props">
-                                <div class="mb-4 me-2 custom-dropdown dropdown btn-group">
-                                    <a class="btn dropdown-toggle btn-icon-only" href="#" role="button" id="pendingTask"
-                                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                        <svg xmlns="http://www.w3.org/2000/svg" style="width: 24px; height: 24px"
-                                            width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                            stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                            class="feather feather-more-horizontal">
-                                            <circle cx="12" cy="12" r="1"></circle>
-                                            <circle cx="19" cy="12" r="1"></circle>
-                                            <circle cx="5" cy="12" r="1"></circle>
-                                        </svg>
-                                    </a>
-                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="pendingTask">
-                                        <li>
-                                            <a href="javascript:void(0);" @click="mark_as_sended(props.row)"
-                                                class="dropdown-item action-send">
-                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
-                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
-                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
-                                                    class="feather feather-send" data-v-5522efca="">
-                                                    <line x1="22" y1="2" x2="11" y2="13"></line>
-                                                    <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
-                                                </svg>
-                                                Отправлен
-                                            </a>
-                                        </li>
-                                    </ul>
+                            <template #assembled_at="props">
+                                <div :data_sort="props.row.assembled_at">
+                                    {{ props.row.assembled_at?.toLocaleDateString('ru') }}
                                 </div>
                             </template>
                         </v-client-table>

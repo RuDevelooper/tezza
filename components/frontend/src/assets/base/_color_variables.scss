@@ -24,6 +24,14 @@ $l-danger: #fff5f5;
 $l-secondary: #f3effc;
 $l-dark: #e3e4eb;
 
+$d-primary: darken($primary, 30%);
+$d-info: darken($info, 30%);
+$d-success: darken($success, 30%);
+$d-warning: darken($warning, 30%);
+$d-danger: darken($danger, 30%);
+$d-secondary: darken($secondary, 30%);
+$d-dark: darken($dark, 30%);
+
 // 	=================
 //		More Colors
 //	=================

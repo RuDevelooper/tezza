@@ -1,3 +1,4 @@
+import django_filters
 from rest_framework import viewsets, permissions, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
@@ -114,6 +115,12 @@ class OrderItem(viewsets.ModelViewSet):
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.OrderItem
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = {
+        'status': ["in", "exact"],  # note the 'in' field
+        'order__assembler': ('exact',),
+        'assembled_at': ['gte', 'lte', 'exact', 'gt', 'lt'],
+    }
     queryset = models.OrderItem.objects.all()
 
 
