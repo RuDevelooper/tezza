@@ -36,7 +36,8 @@
                             <router-link to="/orders/list" @click="toggleMobileMenu">{{ $t('orders') }}</router-link>
                         </li>
                         <li>
-                            <router-link to="/orders/archive" @click="toggleMobileMenu">{{ $t('archive') }}</router-link>
+                            <router-link to="/orders/archive" @click="toggleMobileMenu">{{ $t('archive')
+                                }}</router-link>
                         </li>
                         <!-- <li>
                             <router-link to="/orders/add" @click="toggleMobileMenu">Новый</router-link>
@@ -109,6 +110,37 @@
                     <ul id="assembler" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
                             <router-link to="/assembler/orders" @click="toggleMobileMenu">
+                                {{ $t('orders') }}
+                            </router-link>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu">
+                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#cutter" aria-controls="cutter"
+                        aria-expanded="false">
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-target" data-v-5522efca="">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <circle cx="12" cy="12" r="6"></circle>
+                                <circle cx="12" cy="12" r="2"></circle>
+                            </svg>
+                            <span>{{ $t('cutter') }}</span>
+                        </div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-chevron-right">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <ul id="cutter" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                        <li>
+                            <router-link to="/cutter/orders" @click="toggleMobileMenu">
                                 {{ $t('orders') }}
                             </router-link>
                         </li>

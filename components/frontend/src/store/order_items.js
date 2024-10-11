@@ -12,6 +12,7 @@ export class OrderItem {
         this.product = new Product(item.product);
         this.price = item.price;
         this.order = item.order;
+        this.order_num = item.order_num;
     }
 };
 

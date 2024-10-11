@@ -20,6 +20,7 @@ class OrderItem(serializers.ModelSerializer):
     priority = serializers.CharField(source='get_priority_display',
                                      required=False)
     product = Product()
+    order_num = serializers.CharField(source='order.number', read_only=True)
 
     class Meta:
         model = models.OrderItem

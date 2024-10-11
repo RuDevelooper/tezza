@@ -121,6 +121,8 @@ class OrderItem(viewsets.ModelViewSet):
         'order__assembler': ('exact',),
         'assembled_at': ('gte', 'lte', 'exact', 'gt', 'lt'),
     }
+    ordering_fields = ['assembled_at', 'added_at']
+    ordering = ('-added_at',)
     queryset = models.OrderItem.objects.all()
 
 
