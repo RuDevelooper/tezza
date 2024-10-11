@@ -273,12 +273,6 @@ const finish_order = () => {
                                                                 </span>
                                                             </p>
                                                             <p class="inv-created-date">
-                                                                <span class="inv-title">Стоимость заказа : </span>
-                                                                <span class="inv-date">
-                                                                    {{ store.state.orders.order.total_cost }} руб.
-                                                                </span>
-                                                            </p>
-                                                            <p class="inv-created-date">
                                                                 <span class="inv-title">Стоимость изделий : </span>
                                                                 <span class="inv-date">
                                                                     {{ store.state.orders.order.products_cost }} руб.
@@ -288,6 +282,18 @@ const finish_order = () => {
                                                                 <span class="inv-title">Стоимость доставки : </span>
                                                                 <span class="inv-date">
                                                                     {{ store.state.orders.order.delivery_cost }} руб.
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Скидка : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.discount }} %
+                                                                </span>
+                                                            </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Стоимость заказа : </span>
+                                                                <span class="inv-date">
+                                                                    {{ store.state.orders.order.total_cost }} руб.
                                                                 </span>
                                                             </p>
                                                             <p class="inv-created-date">
