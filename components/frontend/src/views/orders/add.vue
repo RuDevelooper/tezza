@@ -118,7 +118,7 @@ const dueDateHandler = (selectedDates) => {
 }
 
 const create_order = () => {
-
+    countTotal();
     var product_cost = items.value.reduce((acc, x) => acc + (x.item.price * x.item.quantity), 0);
 
     let order_items = []
@@ -151,8 +151,9 @@ const create_order = () => {
         due_date: order.value.due_date,
         products_cost: product_cost,
         designer: designer.value,
+        discount: discountPercent.value,
         delivery_cost: order.value.delivery.cost,
-        total_cost: product_cost + order.value.delivery.cost,
+        total_cost: total.value,
         created_by: store.state.auth.user.id,
         comment_for_manager: order.value.notes.manager,
         comment_for_assembler: order.value.notes.assembler,
@@ -172,6 +173,7 @@ const create_order = () => {
         });
         router.push('/orders/list')
     }).catch((error) => {
+        console.log(error)
         new window.Swal('Ошибка!', error.message, 'error')
     });
 };
@@ -411,7 +413,7 @@ const countTotal = () => {
                                                         <div class="col-sm-9">
                                                             <input type="number" v-model="order.delivery.cost"
                                                                 id="total-cost" class="form-control form-control-sm"
-                                                                placeholder="Стоимость" @change="countTotal"/>
+                                                                placeholder="Стоимость" @change="countTotal" />
                                                         </div>
                                                     </div>
 
@@ -437,9 +439,8 @@ const countTotal = () => {
                                             <div class="col-md-3">
                                                 <div class="form-group mb-4">
                                                     <label for="designer" class="pb-1">Скидка</label>
-                                                    <input v-model="discountPercent" type="number"
-                                                        @change="countTotal" class="form-control px-3"
-                                                        placeholder="Скидка" />
+                                                    <input v-model="discountPercent" type="number" @change="countTotal"
+                                                        class="form-control px-3" placeholder="Скидка" />
                                                 </div>
                                             </div>
                                             <div class="col-md-4 text-end pt-4">
@@ -495,8 +496,7 @@ const countTotal = () => {
                                                                     selected-label="sku" select-label=""
                                                                     deselect-label="" placeholder="Артикул.."
                                                                     track-by="sku" label="sku"
-                                                                    @search-change="findProducts"
-                                                                    @select="countTotal">
+                                                                    @search-change="findProducts" @select="countTotal">
                                                                     <template #noOptions>
                                                                         <span>Введите 2 и более символов</span>
                                                                     </template>
@@ -535,10 +535,10 @@ const countTotal = () => {
                                                         <td class="text-end qty">
                                                             <input type="number" v-model="good.item.price"
                                                                 class="form-control form-control mb-1"
-                                                                placeholder="Цена"  @change="countTotal" disabled />
+                                                                placeholder="Цена" @change="countTotal" disabled />
                                                             <input type="number" v-model="good.item.quantity"
                                                                 class="form-control form-control"
-                                                                placeholder="Количество" @change="countTotal"/>
+                                                                placeholder="Количество" @change="countTotal" />
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -651,7 +651,9 @@ const countTotal = () => {
                                 <div class="invoice-action-btn">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-4">
-                                            <button type="button" class="btn btn-success w-100 mb-4 me-2"
+                                            <button
+                                                :disabled="!total || !order.number || !order.customer.organisation || !order.customer.name || !order.delivery.address || !order.customer.phone"
+                                                class="btn btn-success w-100 mb-4 me-2"
                                                 @click="create_order()">Сохранить
                                                 заказ</button>
                                         </div>
