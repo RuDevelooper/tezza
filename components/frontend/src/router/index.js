@@ -118,6 +118,18 @@ const orders = [
         beforeEnter: requireAuthenticated,
     },
     {
+        path: '/cutter/orders',
+        name: 'cutter_orders',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/cutter/orders.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/cutter/order',
+        name: 'cutter_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/cutter/order.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
         path: '/picker/orders',
         name: 'picker_orders',
         component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/picker/orders.vue'),

@@ -264,6 +264,7 @@ class OrderComment(models.Model):
 class OrderItem(models.Model):
     class Status(models.TextChoices):
         NEW = 'new', _('Новый')
+        CUT = 'cut', _('Резка')
         ASSEMBLY = 'assembly', _('Сборка')
         ASSEMBLED = 'assembled', _('Собран')
         COLORING = 'coloring', _('Покраска')

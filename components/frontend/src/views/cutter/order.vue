@@ -8,7 +8,7 @@ import { useStore } from 'vuex';
 const store = useStore();
 
 import { useRoute } from 'vue-router';
-useMeta({ title: 'Заказ на упаковку' });
+useMeta({ title: 'Заказ' });
 
 const route = useRoute();
 
@@ -26,35 +26,10 @@ const bind_data = () => {
         { key: 'side', label: 'Сторона', },
         { key: 'material', label: 'Материал' },
         { key: 'color', label: 'Цвет', },
-        { key: 'price', label: 'Цена', },
     ];
 };
-
 const print = () => {
     window.print();
-};
-const mark_as_sended = () => {
-    store.dispatch('orders/update_picker', {
-        "id": store.state.orders.order.id,
-        "picker": store.state.auth.user.id,
-        "shipped_at": new Date(),
-        "status": "shipped",
-    }).then(
-        () => {
-            const toast = window.Swal.mixin({
-                toast: true,
-                position: 'top-end',
-                showConfirmButton: false,
-                timer: 3000,
-                padding: '2em'
-            });
-            toast.fire({
-                icon: 'success',
-                title: `Заказ отправлен`,
-                padding: '2em'
-            });
-        }
-    ).then(() => store.dispatch('orders/fetchFilter', assembler_filter))
 };
 </script>
 
@@ -66,9 +41,9 @@ const mark_as_sended = () => {
                     <div class="page-header">
                         <nav class="breadcrumb-one" aria-label="breadcrumb">
                             <ol class="breadcrumb">
-                                <li class="breadcrumb-item"><a href="javascript:;">Заказы на упаковку</a></li>
+                                <li class="breadcrumb-item"><a href="javascript:;">Изделия на резку</a></li>
                                 <li class="breadcrumb-item">
-                                    <router-link to="/picker/orders" class="breadcrumb-item">
+                                    <router-link to="/cutter/orders" class="breadcrumb-item">
                                         Список
                                     </router-link>
                                 </li>
@@ -108,36 +83,53 @@ const mark_as_sended = () => {
                                                             </div>
                                                         </div>
 
-                                                        <div v-if="store.state.orders.order.customer"
-                                                            class="col-sm-8 align-self-center pt-3">
-                                                            <p class="inv-created-date">
-                                                                <span class="inv-title">Заказчик : </span>
+                                                        <div class="col-sm-8 align-self-center mt-3">
+                                                            <!-- <p class="inv-created-date">
+                                                                <span class="inv-title">Дата заказа : </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.customer.name }}
+                                                                    {{ store.state.orders.order.created_at_local_date }}
+                                                                </span>
+                                                            </p> -->
+                                                            <p class="inv-due-date mt-1">
+                                                                <span class="inv-title">Завершить сборку до : </span>
+                                                                <span class="inv-date">
+                                                                    {{
+                                                                        store.state.orders.order.assembler_deadline_locale_date
+                                                                    }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-created-date">
-                                                                <span class="inv-title">Организация : </span>
+                                                            <p class="inv-due-date mt-1">
+                                                                <span class="inv-title">Комментарий: </span>
                                                                 <span class="inv-date">
-                                                                    {{ store.state.orders.order.customer.organisation }}
+                                                                    {{ store.state.orders.order.comment_for_assembler }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-created-date">
-                                                                <span class="inv-title">Адрес : </span>
-                                                                <span class="inv-date">
-                                                                    {{ store.state.orders.order.customer.address }}
+                                                        </div>
+                                                        <div class="col-sm-4 align-self-start pt-3 text-sm-end">
+                                                            <p>
+                                                                <span class="inv-subtitle">Статус заказа: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.status }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-created-date">
-                                                                <span class="inv-title">Телефон : </span>
-                                                                <span class="inv-date">
-                                                                    {{ store.state.orders.order.customer_phone }}
+                                                            <p>
+                                                                <span class="inv-subtitle">Приоритет: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.priority }}
                                                                 </span>
                                                             </p>
-                                                            <p class="inv-created-date">
-                                                                <span class="inv-title">Стоимость доставки : </span>
-                                                                <span class="inv-date">
-                                                                    {{ store.state.orders.order.delivery_cost }} руб.
+                                                            <p v-if="store.state.orders.order.created_by">
+                                                                <span class="inv-subtitle">Менеджер: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.manager_user.full_name
+                                                                    }}
+                                                                </span>
+                                                            </p>
+                                                            <p v-if="store.state.orders.order.assembler">
+                                                                <span class="inv-subtitle">Сборщик: </span>
+                                                                <span>
+                                                                    {{ store.state.orders.order.assembler_user.full_name
+                                                                    }}
                                                                 </span>
                                                             </p>
                                                         </div>
@@ -165,7 +157,7 @@ const mark_as_sended = () => {
                                                                         {{ item.product.title }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.product.size }} см
+                                                                        {{ item.product.size }}
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.side }} - {{
@@ -177,10 +169,6 @@ const mark_as_sended = () => {
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.color.title }}
-                                                                    </td>
-                                                                    <td>
-                                                                        {{ item.product.price.toLocaleString('ru-RU') }}
-                                                                        руб.
                                                                     </td>
                                                                 </tr>
                                                             </tbody>
@@ -196,15 +184,11 @@ const mark_as_sended = () => {
 
                         <div class="col-xl-2">
                             <div class="invoice-actions-btn">
-                                <div class="invoice-action-btn">
+                                <div class="invoice-action-btn mt-0">
                                     <div class="row">
                                         <div class="col-xl-12 col-md-3 col-sm-6">
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"
                                                 @click="print()">Печать</a>
-                                        </div>
-                                        <div v-if="store.state.orders.order.status == 'Собран'"
-                                            class="col-xl-12 col-md-3 col-sm-6" @click="mark_as_sended()">
-                                            <a href="javascript:;" class="btn btn-success btn-send">Отправлен</a>
                                         </div>
                                     </div>
                                 </div>
