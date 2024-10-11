@@ -31,8 +31,8 @@ class ProductAdmin(admin.ModelAdmin):
         'side_point',
         'size',
         'price',
-        'color',
-        'material',
+        'color__title',
+        'material__title',
     ]
 
 
