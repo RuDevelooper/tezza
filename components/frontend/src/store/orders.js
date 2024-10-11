@@ -81,6 +81,7 @@ class Order {
         this.designer_user = designer_user;
         this.customer = customer;
         this.items = items;
+        this.discount = i.discount;
         this.comment_for_manager = i.comment_for_manager;
         this.comment_for_assembler = i.comment_for_assembler;
         this.comment_for_picker = i.comment_for_picker;

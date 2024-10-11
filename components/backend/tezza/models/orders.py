@@ -120,6 +120,12 @@ class Order(models.Model):
         decimal_places=2,
         verbose_name='Полная стоимость',
     )
+    discount = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0,
+        verbose_name='Скидка',
+    )
     assembling_start = models.DateTimeField(
         null=True,
         blank=True,
