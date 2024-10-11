@@ -117,9 +117,9 @@ class OrderItem(viewsets.ModelViewSet):
     serializer_class = serializers.OrderItem
     filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
     filterset_fields = {
-        'status': ["in", "exact"],  # note the 'in' field
+        'status': ("in", "exact"),  # note the 'in' field
         'order__assembler': ('exact',),
-        'assembled_at': ['gte', 'lte', 'exact', 'gt', 'lt'],
+        'assembled_at': ('gte', 'lte', 'exact', 'gt', 'lt'),
     }
     queryset = models.OrderItem.objects.all()
 

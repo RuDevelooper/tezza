@@ -18,6 +18,24 @@ const initTrackNumberModal = () => {
     trackNumberModal = new Modal(trackNumberModalRef.value)
 };
 
+let commentForManagerModal = null;
+const commentForManagerModalRef = ref(null)
+const initcommentForManagerModal = () => {
+    commentForManagerModal = new Modal(commentForManagerModalRef.value)
+};
+
+let commentForAssemblerModal = null;
+const commentForAssemblerModalRef = ref(null)
+const initcommentForAssemblerModal = () => {
+    commentForAssemblerModal = new Modal(commentForAssemblerModalRef.value)
+};
+
+let commentForPickerModal = null;
+const commentForPickerModalRef = ref(null)
+const initcommentForPickerModal = () => {
+    commentForPickerModal = new Modal(commentForPickerModalRef.value)
+};
+
 const route = useRoute();
 
 const columns = ref([]);
@@ -26,6 +44,9 @@ const trackNumber = ref(null)
 onMounted(() => {
     bind_data();
     initTrackNumberModal();
+    initcommentForManagerModal();
+    initcommentForAssemblerModal();
+    initcommentForPickerModal();
 });
 const bind_data = () => {
     store.dispatch('orders/fetchById', { id: route.query.id })
@@ -71,6 +92,81 @@ const add_track_number = () => {
             toast.fire({
                 icon: 'success',
                 title: `Трек-номер добавлен`,
+                padding: '2em'
+            });
+        }
+    )//.then(() => store.dispatch('orders/fetchFilter', assembler_filter))
+};
+
+const update_comment_for_manager = () => {
+    store.dispatch('orders/partial_update', {
+        "id": store.state.orders.order.id,
+        payload: {
+            "comment_for_manager": store.state.orders.order.comment_for_manager
+        }
+    }).then(
+        () => {
+            commentForManagerModal.hide();
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                padding: '2em'
+            });
+            toast.fire({
+                icon: 'success',
+                title: `Комментарий обновлен`,
+                padding: '2em'
+            });
+        }
+    )//.then(() => store.dispatch('orders/fetchFilter', assembler_filter))
+};
+
+const update_comment_for_assembler = () => {
+    store.dispatch('orders/partial_update', {
+        "id": store.state.orders.order.id,
+        payload: {
+            "comment_for_assembler": store.state.orders.order.comment_for_assembler
+        }
+    }).then(
+        () => {
+            commentForAssemblerModal.hide();
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                padding: '2em'
+            });
+            toast.fire({
+                icon: 'success',
+                title: `Комментарий обновлен`,
+                padding: '2em'
+            });
+        }
+    )//.then(() => store.dispatch('orders/fetchFilter', assembler_filter))
+};
+
+const update_comment_for_picker = () => {
+    store.dispatch('orders/partial_update', {
+        "id": store.state.orders.order.id,
+        payload: {
+            "comment_for_picker": store.state.orders.order.comment_for_picker
+        },
+    }).then(
+        () => {
+            commentForPickerModal.hide();
+            const toast = window.Swal.mixin({
+                toast: true,
+                position: 'top-end',
+                showConfirmButton: false,
+                timer: 3000,
+                padding: '2em'
+            });
+            toast.fire({
+                icon: 'success',
+                title: `Комментарий обновлен`,
                 padding: '2em'
             });
         }
@@ -203,7 +299,8 @@ const finish_order = () => {
                                                             </p>
                                                         </div>
                                                         <div class="col-sm-4 align-self-start pt-5 text-sm-end">
-                                                            <p v-if="store.state.orders.order.designer_user" class="pb-3">
+                                                            <p v-if="store.state.orders.order.designer_user"
+                                                                class="pb-3">
                                                                 <span class="inv-subtitle">Дизайнер: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.designer_user.name
@@ -368,6 +465,33 @@ const finish_order = () => {
                                             <a href="javascript:;" class="btn btn-secondary btn-print action-print"
                                                 @click="print()">Печать</a>
                                         </div>
+                                        <div class="btn-group custom-dropdown mb-4 me-2" role="group">
+                                            <button id="btnOutline" type="button"
+                                                class="btn btn-outline-primary dropdown-toggle"
+                                                data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                                Комментарии
+                                                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                    viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                    stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                    class="feather feather-chevron-down">
+                                                    <polyline points="6 9 12 15 18 9"></polyline>
+                                                </svg>
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="btndefault">
+                                                <li @click="commentForManagerModal.show()">
+                                                    <a href="javascript:;" class="dropdown-item"><i
+                                                            class="flaticon-home-fill-1 me-1"></i>Менеджер</a>
+                                                </li>
+                                                <li @click="commentForAssemblerModal.show()">
+                                                    <a href="javascript:;" class="dropdown-item"><i
+                                                            class="flaticon-gear-fill me-1"></i>Сборщик</a>
+                                                </li>
+                                                <li @click="commentForPickerModal.show()">
+                                                    <a href="javascript:;" class="dropdown-item"><i
+                                                            class="flaticon-bell-fill-2 me-1"></i>Упаковщик</a>
+                                                </li>
+                                            </ul>
+                                        </div>
                                         <div v-if="store.state.orders.order.status == 'Отправлен'"
                                             class="col-xl-12 col-md-3 col-sm-6" @click="trackNumberModal.show()">
                                             <a href="javascript:;" class="btn btn-success btn-send">Трек-номер</a>
@@ -379,6 +503,81 @@ const finish_order = () => {
                                     </div>
                                 </div>
                             </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" ref="commentForManagerModalRef" tabindex="-1" role="dialog"
+            aria-labelledby="commentForManagerModalRef" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentForManagerModalRef">Комментарий для менеджера</h5>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="col-form-label" for="commentForManager">Комментарий для менеджера</label>
+                        <textarea rows="8" v-model="store.state.orders.order.comment_for_manager" type="text"
+                            class="form-control" placeholder="Комментарий для менеджера" id="commentForManager" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i
+                                    class="flaticon-cancel-12"></i>Отмена</button>
+                            <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_manager">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" ref="commentForAssemblerModalRef" tabindex="-1" role="dialog"
+            aria-labelledby="commentForAssemblerModalRef" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentForAssemblerModalRef">Комментарий для сборщика</h5>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="col-form-label" for="commentForAssembler">Комментарий для сборщика</label>
+                        <textarea rows="8" v-model="store.state.orders.order.comment_for_assembler" type="text"
+                            class="form-control" placeholder="Комментарий для сборщика" id="commentForAssembler" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i
+                                    class="flaticon-cancel-12"></i>Отмена</button>
+                            <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_assembler">
+                                Сохранить
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="modal fade" ref="commentForPickerModalRef" tabindex="-1" role="dialog"
+            aria-labelledby="commentForPickerModalRef" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="commentForPickerModalRef">Комментарий для упаковщика</h5>
+                        <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+                            class="btn-close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <label class="col-form-label" for="commentForPicker">Комментарий для упаковщика</label>
+                        <textarea rows="8" v-model="store.state.orders.order.comment_for_picker" type="text"
+                            class="form-control" placeholder="Комментарий для упаковщика" id="commentForPicker" />
+                        <div class="modal-footer">
+                            <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal"><i
+                                    class="flaticon-cancel-12"></i>Отмена</button>
+                            <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_picker">
+                                Сохранить
+                            </button>
                         </div>
                     </div>
                 </div>

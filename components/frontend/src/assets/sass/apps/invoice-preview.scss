@@ -320,13 +320,15 @@
 }
 
 @page {
-  size: A4 landscape;
+  size: A4 portrait;
   margin: 12px 12px;
 }
 
 @media print {
   body * {
     visibility: hidden;
+    size: A4 portrait;
+    #header, #footer{display:none}
   }
 
   #ct {

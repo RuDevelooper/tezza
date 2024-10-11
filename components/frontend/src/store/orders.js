@@ -105,17 +105,23 @@ class Order {
         return '-';
     }
 
+    get assembler_deadline() {
+        if (!this.due_date) return null;
+
+        let deadline = new Date(this.due_date)
+        deadline.setDate(deadline.getDate() - 5)
+        return deadline
+    }
+
     get assembler_deadline_locale_date() {
         const options = {
-            weekday: 'long',
+            weekday: 'short',
             year: 'numeric',
             month: 'long',
             day: 'numeric',
         };
-        if (this.due_date) {
-            let deadline = new Date(this.due_date)
-            deadline.setDate(deadline.getDate() - 5)
-            return deadline.toLocaleDateString('ru-RU', options);
+        if (this.assembler_deadline) {
+            return this.assembler_deadline.toLocaleDateString('ru-RU', options);
         }
         return '-';
     }
@@ -287,6 +293,16 @@ export default {
             try {
                 const res = await orders.set_track_number(id, delivery_tracking_number);
                 commit('setOrder', res.data);
+                return res;
+            } catch (err) {
+                throw err;
+            }
+        },
+        async partial_update({ commit }, { id, payload }) {
+            try {
+                const res = await orders.partial_update(id, payload);
+                commit('setOrder', res.data);
+                return res;
             } catch (err) {
                 throw err;
             }
