@@ -15,6 +15,12 @@ class Designer(models.Model):
         max_length=100,
         verbose_name='Имя',
     )
+    comment = models.CharField(
+        max_length=255,
+        verbose_name='Комментарий',
+        null=True,
+        blank=True,
+    )
 
     class Meta:
         verbose_name = 'Дизайнер'
