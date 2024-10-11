@@ -67,9 +67,9 @@ class Product(models.Model):
     side = models.CharField(
         max_length=8,
         choices=Side.choices,
-        default=Side.LEFT,
         verbose_name='Сторона',
         null=True,
+        blank=True,
     )
     side_point = models.CharField(
         max_length=100,
