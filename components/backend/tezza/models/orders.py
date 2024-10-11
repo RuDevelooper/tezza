@@ -12,7 +12,7 @@ User.__str__ = lambda user: f'{user.first_name} {user.last_name}'
 
 class Designer(models.Model):
     name = models.CharField(
-        max_length=20,
+        max_length=100,
         verbose_name='Имя',
     )
 
@@ -147,6 +147,11 @@ class Order(models.Model):
         null=True,
         blank=True,
         verbose_name='Отправлен',
+    )
+    completed_at = models.DateTimeField(
+        null=True,
+        blank=True,
+        verbose_name='Завершен',
     )
     picker = models.ForeignKey(
         to=User,

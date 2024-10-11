@@ -16,6 +16,9 @@ export default {
   update(id, payload) {
     return session.put(`/orders/${id}/`, payload);
   },
+  partial_update(id, payload) {
+    return session.patch(`/orders/${id}/`, payload);
+  },
   update_assembler(id, assembler, status, assembling_start) {
     return session.patch(`/orders/${id}/`, { assembler, status, assembling_start });
   },

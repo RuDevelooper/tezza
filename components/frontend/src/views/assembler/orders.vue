@@ -14,7 +14,7 @@ const columns = ref([
     'fav',
     'number',
     'deadline',
-    'customer',
+    // 'customer',
     'items_assembled',
     'comment_for_assembler',
     'assembler',
@@ -115,11 +115,19 @@ const add_favorites = (item) => {
         .then(() => store.dispatch('orders/fetchFilter', assembler_filter))
 };
 
-//checkbox selection
-const selcted_row = (val) => {
-    selected_rows.value.push(val);
-    return;
-};
+const checkDate = (inputDate) => {
+    const today = new Date();
+    const tomorrow = new Date(today);
+    tomorrow.setDate(today.getDate() + 1);
+
+    if (inputDate.toDateString() === today.toDateString()) {
+        return 'warning';
+    } else if (inputDate.toDateString() === tomorrow.toDateString()) {
+        return 'success';
+    } else if (inputDate < today) {
+        return 'danger';
+    }
+}
 </script>
 
 <template>
@@ -175,7 +183,10 @@ const selcted_row = (val) => {
                                 <div>{{ props.row.customer.name || '' }}</div>
                             </template>
                             <template #deadline="props">
-                                <div :data_sort="props.row.deadline">{{ props.row.due_date.toLocaleDateString('ru') }}
+                                <div 
+                                :data_sort="props.row.assembler_deadline" 
+                                :class="`text-${checkDate(props.row.assembler_deadline)}`">
+                                    {{ props.row.assembler_deadline_locale_date }}
                                 </div>
                             </template>
                             <template #status="props">

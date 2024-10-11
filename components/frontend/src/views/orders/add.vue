@@ -32,6 +32,7 @@ const items = ref([]);
 const created_at = ref(null);
 const due_date = ref(null);
 const designer = ref(null);
+const discountPercent = ref(0);
 const order = ref({
     number: '',
 
@@ -79,6 +80,7 @@ const add_item = () => {
         );
     }
     items.value.push({ 'item': { id: max_id + 1, ...default_item_values } });
+    countTotal();
 };
 const add_indi_item = (item) => {
     let max_id = 0;
@@ -93,16 +95,18 @@ const add_indi_item = (item) => {
             sku: item.sku,
             title: item.title,
             quantity: 1,
-            material: item.material,
+            material: item.material_obj,
             side: item.side,
-            color: item.color,
+            color: item.color_obj,
             price: item.price,
         }
     });
+    countTotal();
 };
 
 const remove_item = (item) => {
-    items.value = items.value.filter((d) => d.item.id != item.id);
+    items.value = items.value.filter((d) => d.item.sku != item.sku);
+    countTotal();
 };
 
 const createdAtHandler = (selectedDates) => {
@@ -227,6 +231,16 @@ const add_indi_product = () => {
     }).catch((error) => {
         new window.Swal('Ошибка!', error.message, 'error')
     });
+}
+const total = ref(0)
+const discount = ref(0)
+const totalItemsPrice = ref(0)
+const countTotal = () => {
+    totalItemsPrice.value = items.value.reduce(
+        (acc, x) => acc + (x.item.price * x.item.quantity), 0
+    )
+    discount.value = Math.round(totalItemsPrice.value * discountPercent.value / 100)
+    total.value = totalItemsPrice.value - discount.value + order.value.delivery.cost
 }
 
 </script>
@@ -397,7 +411,7 @@ const add_indi_product = () => {
                                                         <div class="col-sm-9">
                                                             <input type="number" v-model="order.delivery.cost"
                                                                 id="total-cost" class="form-control form-control-sm"
-                                                                placeholder="Стоимость" />
+                                                                placeholder="Стоимость" @change="countTotal"/>
                                                         </div>
                                                     </div>
 
@@ -420,8 +434,15 @@ const add_indi_product = () => {
                                                     </select>
                                                 </div>
                                             </div>
-
-                                            <div class="col-md-5 text-end pt-4">
+                                            <div class="col-md-3">
+                                                <div class="form-group mb-4">
+                                                    <label for="designer" class="pb-1">Скидка</label>
+                                                    <input v-model="discountPercent" type="number"
+                                                        @change="countTotal" class="form-control px-3"
+                                                        placeholder="Скидка" />
+                                                </div>
+                                            </div>
+                                            <div class="col-md-4 text-end pt-4">
                                                 <button :disabled="!order.number" type="button"
                                                     class="btn btn-outline-info" @click="openIndiProductModal()"
                                                     data-bs-toggle="tooltip"
@@ -433,7 +454,8 @@ const add_indi_product = () => {
                                     </div>
 
                                     <div class="invoice-detail-items">
-                                        <div class="table-responsive">
+                                        <!-- <div class="table-responsive"> -->
+                                        <div>
                                             <table class="table table-bordered item-table">
                                                 <thead>
                                                     <tr>
@@ -473,7 +495,8 @@ const add_indi_product = () => {
                                                                     selected-label="sku" select-label=""
                                                                     deselect-label="" placeholder="Артикул.."
                                                                     track-by="sku" label="sku"
-                                                                    @search-change="findProducts">
+                                                                    @search-change="findProducts"
+                                                                    @select="countTotal">
                                                                     <template #noOptions>
                                                                         <span>Введите 2 и более символов</span>
                                                                     </template>
@@ -512,10 +535,10 @@ const add_indi_product = () => {
                                                         <td class="text-end qty">
                                                             <input type="number" v-model="good.item.price"
                                                                 class="form-control form-control mb-1"
-                                                                placeholder="Цена" disabled />
+                                                                placeholder="Цена"  @change="countTotal" disabled />
                                                             <input type="number" v-model="good.item.quantity"
                                                                 class="form-control form-control"
-                                                                placeholder="Количество" />
+                                                                placeholder="Количество" @change="countTotal"/>
                                                         </td>
                                                     </tr>
                                                 </tbody>
@@ -534,9 +557,20 @@ const add_indi_product = () => {
                                                         <div class="invoice-summary-label">Изделия</div>
                                                         <div class="invoice-summary-value">
                                                             <div class="subtotal-amount"><span class="currency">₽
-                                                                </span><span class="amount">
-                                                                    {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                        x.item.quantity), 0) }}
+                                                                </span>
+                                                                <span class="amount">
+                                                                    {{ totalItemsPrice }}
+                                                                </span>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <div class="invoice-totals-row invoice-summary-subtotal">
+                                                        <div class="invoice-summary-label">Скидка</div>
+                                                        <div class="invoice-summary-value">
+                                                            <div class="subtotal-amount"><span class="currency">₽
+                                                                </span>
+                                                                <span class="amount">
+                                                                    {{ discount }}
                                                                 </span>
                                                             </div>
                                                         </div>
@@ -545,8 +579,11 @@ const add_indi_product = () => {
                                                         <div class="invoice-summary-label">Доставка</div>
                                                         <div class="invoice-summary-value">
                                                             <div class="total-amount"><span class="currency">₽
-                                                                </span><span class="amount">{{ order.delivery.cost
-                                                                    }}</span></div>
+                                                                </span>
+                                                                <span class="amount">
+                                                                    {{ order.delivery.cost }}
+                                                                </span>
+                                                            </div>
                                                         </div>
                                                     </div>
                                                     <div class="invoice-totals-row invoice-summary-balance-due">
@@ -555,9 +592,7 @@ const add_indi_product = () => {
                                                             <div class="balance-due-amount"><span class="currency">₽
                                                                 </span>
                                                                 <span class="amount">
-                                                                    {{ items.reduce((acc, x) => acc + (x.item.price *
-                                                                        x.item.quantity),
-                                                                        0) + order.delivery.cost }}
+                                                                    {{ total }}
                                                                 </span>
                                                             </div>
                                                         </div>
