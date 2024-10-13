@@ -410,7 +410,7 @@ const finish_order = () => {
                                                                         {{ item.product.color.title }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.product.price }} руб.
+                                                                        {{ item.price }} руб.
                                                                     </td>
                                                                     <td>
                                                                         {{ item.status_name }}

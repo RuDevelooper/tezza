@@ -310,6 +310,12 @@ class OrderItem(models.Model):
         decimal_places=2,
         verbose_name='Цена',
     )
+    discount = models.DecimalField(
+        max_digits=5,
+        decimal_places=2,
+        default=0,
+        verbose_name='Скидка',
+    )
     assembled_at = models.DateTimeField(
         null=True,
         blank=True,

@@ -50,6 +50,7 @@ const default_item_values = {
     sku: '',
     title: '',
     quantity: 1,
+    discount: null,
     material: '',
     side: '',
     color: '',
@@ -133,6 +134,7 @@ const create_order = () => {
                     color: item.item.color.id,
                 },
                 price: item.item.price,
+                discount: item.item.discount,
             });
         }
 
@@ -235,13 +237,23 @@ const add_indi_product = () => {
     });
 }
 const total = ref(0)
-const discount = ref(0)
+const discount = ref(Number(0))
 const totalItemsPrice = ref(0)
 const countTotal = () => {
+    discount.value = Number(0)
+    for (var item of items.value) {
+        if (item.item.discount == undefined) continue;
+        let dis = Math.round(parseFloat(item.item.price) * parseFloat(item.item.discount) / 100);
+        if (dis == 0) continue;
+
+        discount.value += dis * item.item.quantity
+        // item.item.price = Math.round(parseFloat(item.item.price) - dis)
+    }
+
     totalItemsPrice.value = items.value.reduce(
         (acc, x) => acc + (x.item.price * x.item.quantity), 0
     )
-    discount.value = Math.round(totalItemsPrice.value * discountPercent.value / 100)
+    discount.value += Math.round(totalItemsPrice.value * discountPercent.value / 100)
     total.value = totalItemsPrice.value - discount.value + order.value.delivery.cost
 }
 
@@ -536,6 +548,9 @@ const countTotal = () => {
                                                             <input type="number" v-model="good.item.price"
                                                                 class="form-control form-control mb-1"
                                                                 placeholder="Цена" @change="countTotal" disabled />
+                                                            <input type="number" v-model="good.item.discount"
+                                                                class="form-control form-control mb-1"
+                                                                placeholder="Скидка" @change="countTotal" />
                                                             <input type="number" v-model="good.item.quantity"
                                                                 class="form-control form-control"
                                                                 placeholder="Количество" @change="countTotal" />
