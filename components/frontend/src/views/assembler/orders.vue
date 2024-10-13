@@ -91,8 +91,11 @@ onMounted(() => {
     bind_data();
 });
 const assembler_filter = 'status__in=new,wait_payment,payed,assembly&ordering=-due_date'
-const bind_data = () => {
-    store.dispatch('orders/fetchFilter', assembler_filter)
+const bind_data = async () => {
+    while (true) {
+        store.dispatch('orders/fetchFilter', assembler_filter);
+        await new Promise(r => setTimeout(r, 120_000));
+    }
 };
 
 const delete_row = (item) => {
