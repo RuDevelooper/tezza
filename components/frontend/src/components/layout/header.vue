@@ -105,7 +105,7 @@
                         </ul>
                     </div> -->
 
-                    <div class="dropdown nav-item message-dropdown btn-group">
+                    <!-- <div class="dropdown nav-item message-dropdown btn-group">
                         <a href="javascript:;" id="ddlmsg" data-bs-toggle="dropdown" aria-expanded="false"
                             class="btn dropdown-toggle btn-icon-only nav-link">
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
@@ -276,7 +276,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </div>
+                    </div> -->
 
                     <div class="dropdown nav-item user-profile-dropdown btn-group">
                         <a href="javascript:;" id="ddluser" data-bs-toggle="dropdown" aria-expanded="false"
@@ -287,6 +287,7 @@
                                 <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
                                 <circle cx="12" cy="7" r="4"></circle>
                             </svg>
+                            <span class="mx-2" style="color: #e9ecef;">{{ store.state.auth.user.name }}</span>
                         </a>
                         <ul class="dropdown-menu dropdown-menu-right" aria-labelledby="ddluser">
                             <li role="presentation">

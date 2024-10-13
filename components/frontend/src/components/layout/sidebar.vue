@@ -1,3 +1,46 @@
+<script setup>
+import Assembler from '@/views/report/assembler.vue';
+import { onMounted, ref } from 'vue';
+import { useStore } from 'vuex';
+const store = useStore();
+
+const menu_collapse = ref('dashboard');
+
+onMounted(() => {
+    const selector = document.querySelector('#sidebar a[href="' + window.location.pathname + '"]');
+    if (selector) {
+        const ul = selector.closest('ul.collapse');
+        if (ul) {
+            let ele = ul.closest('li.menu').querySelectorAll('.dropdown-toggle');
+            if (ele) {
+                ele = ele[0];
+                setTimeout(() => {
+                    ele.click();
+                });
+            }
+        } else {
+            selector.click();
+        }
+    };
+});
+
+const toggleMobileMenu = () => {
+    if (window.innerWidth < 991) {
+        store.commit('toggleSideBar', !store.state.is_show_sidebar);
+    }
+};
+
+const links = {
+    manager: ['Администратор', 'Менеджер'],
+    assembler: ['Администратор', 'Сборщик'],
+    picker: ['Администратор', 'Упаковщик'],
+    cutter: ['Администратор', 'Технолог'],
+    sender: ['Администратор', 'СДЭК'],
+    admin: ['Администратор'],
+};
+
+</script>
+
 <template>
     <!--  BEGIN SIDEBAR  -->
     <div class="sidebar-wrapper sidebar-theme">
@@ -6,7 +49,7 @@
 
             <perfect-scrollbar class="list-unstyled menu-categories" tag="ul"
                 :options="{ wheelSpeed: 0.5, swipeEasing: !0, minScrollbarLength: 40, maxScrollbarLength: 300, suppressScrollX: true }">
-                <li class="menu">
+                <li class="menu" v-show="links.manager.includes(store.state.auth.user.group)">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#orders"
                         aria-controls="dashboard" aria-expanded="false">
                         <div class="">
@@ -20,7 +63,7 @@
                                 <line x1="3" y1="12" x2="3.01" y2="12"></line>
                                 <line x1="3" y1="18" x2="3.01" y2="18"></line>
                             </svg>
-                            Администратор
+                            Менеджер
                         </div>
                         <div>
                             <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
@@ -86,7 +129,7 @@
                     </ul>
                 </li> -->
 
-                <li class="menu">
+                <li class="menu" v-show="links.assembler.includes(store.state.auth.user.group)">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#assembler"
                         aria-controls="assembler" aria-expanded="false">
                         <div class="">
@@ -116,7 +159,7 @@
                     </ul>
                 </li>
 
-                <li class="menu">
+                <li class="menu" v-show="links.cutter.includes(store.state.auth.user.group)">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#cutter" aria-controls="cutter"
                         aria-expanded="false">
                         <div class="">
@@ -141,13 +184,13 @@
                     <ul id="cutter" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
                         <li>
                             <router-link to="/cutter/orders" @click="toggleMobileMenu">
-                                {{ $t('orders') }}
+                                Изделия
                             </router-link>
                         </li>
                     </ul>
                 </li>
 
-                <li class="menu">
+                <li class="menu" v-show="links.picker.includes(store.state.auth.user.group)">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#picker" aria-controls="picker"
                         aria-expanded="false">
                         <div class="">
@@ -180,7 +223,39 @@
                     </ul>
                 </li>
 
-                <li class="menu">
+                <li class="menu" v-show="links.sender.includes(store.state.auth.user.group)">
+                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#sender" aria-controls="sender"
+                        aria-expanded="false">
+                        <div class="">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-truck" data-v-5522efca="">
+                                <rect x="1" y="3" width="15" height="13"></rect>
+                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                            </svg>
+                            <span>{{ $t('sender') }}</span>
+                        </div>
+                        <div>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                stroke-linejoin="round" class="feather feather-chevron-right">
+                                <polyline points="9 18 15 12 9 6"></polyline>
+                            </svg>
+                        </div>
+                    </a>
+
+                    <ul id="sender" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
+                        <li>
+                            <router-link to="/sender/orders" @click="toggleMobileMenu">
+                                {{ $t('orders') }}
+                            </router-link>
+                        </li>
+                    </ul>
+                </li>
+
+                <li class="menu" v-show="links.admin.includes(store.state.auth.user.group)">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#report" aria-controls="report"
                         aria-expanded="false">
                         <div class="">
@@ -826,35 +901,3 @@
     </div>
     <!--  END SIDEBAR  -->
 </template>
-
-<script setup>
-import { onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
-const store = useStore();
-
-const menu_collapse = ref('dashboard');
-
-onMounted(() => {
-    const selector = document.querySelector('#sidebar a[href="' + window.location.pathname + '"]');
-    if (selector) {
-        const ul = selector.closest('ul.collapse');
-        if (ul) {
-            let ele = ul.closest('li.menu').querySelectorAll('.dropdown-toggle');
-            if (ele) {
-                ele = ele[0];
-                setTimeout(() => {
-                    ele.click();
-                });
-            }
-        } else {
-            selector.click();
-        }
-    }
-});
-
-const toggleMobileMenu = () => {
-    if (window.innerWidth < 991) {
-        store.commit('toggleSideBar', !store.state.is_show_sidebar);
-    }
-};
-</script>

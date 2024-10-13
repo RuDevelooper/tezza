@@ -15,6 +15,8 @@ import {
 const TOKEN_STORAGE_KEY = 'TOKEN_STORAGE_KEY';
 const USER_ID = 'USER_ID';
 const USER_NAME = 'USER_NAME';
+const USER_GROUP = 'USER_GROUP';
+
 const isProduction = process.env.NODE_ENV === 'production';
 
 const initialState = {
@@ -24,6 +26,7 @@ const initialState = {
     user: {
         id: null,
         name: null,
+        group: null,
     }
 };
 
@@ -44,8 +47,6 @@ const actions = {
             .catch(() => commit(LOGIN_FAILURE));
     },
     logout({ commit }) {
-        commit(REMOVE_TOKEN);
-        commit(REMOVE_USER_DATA);
         return auth.logout()
             .then(() => commit(LOGOUT))
             .finally(() => {
@@ -57,19 +58,24 @@ const actions = {
         const token = localStorage.getItem(TOKEN_STORAGE_KEY);
         const userID = localStorage.getItem(USER_ID);
         const userName = localStorage.getItem(USER_NAME);
+        const userGroup = localStorage.getItem(USER_GROUP);
 
-        if (isProduction && !token && !(userID || userName)) {
+        if (isProduction && !token && !(userID && userName && userGroup)) {
             commit(REMOVE_USER_DATA);
         }
 
-        if (isProduction && token && userID && userName) {
+        if (isProduction && token && userID && userName && userGroup) {
             commit(SET_TOKEN, token);
-            commit(SET_USER_INFO, userID, userName);
+            commit(SET_USER_INFO, userID, userName, userGroup);
         }
 
-        if (!isProduction && token && userID && userName) {
+        if (!isProduction && token && userID && userName && userGroup) {
             commit(SET_TOKEN, token);
-            commit(SET_USER_INFO, userID, userName);
+            commit(SET_USER_INFO, {
+                user_id: userID,
+                user_name: userName,
+                user_group: userGroup
+            });
         }
     },
 };
@@ -97,19 +103,24 @@ const mutations = {
         session.defaults.headers.Authorization = `Token ${token}`;
         state.token = token;
     },
-    [SET_USER_INFO](state, userID, userName) {
-        state.user.id = userID;
-        state.user.name = userName;
+    [SET_USER_INFO](state, { user_id, user_name, user_group }) {
+        state.user.id = user_id;
+        state.user.name = user_name;
+        state.user.group = user_group;
     },
     [SET_USER_DATA](state, data) {
         localStorage.setItem(USER_ID, data.id);
         if (!isProduction) localStorage.setItem(USER_ID, data.id);
+
+        localStorage.setItem(USER_GROUP, data.groups[0]);
+        if (!isProduction) localStorage.setItem(USER_GROUP, data.groups[0]);
 
         localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
         if (!isProduction) localStorage.setItem(USER_NAME, `${data.first_name} ${data.last_name}`);
 
         state.user.id = data.id;
         state.user.name = `${data.first_name} ${data.last_name}`;
+        state.user.group = data.groups[0];
     },
     [REMOVE_TOKEN](state) {
         localStorage.removeItem(TOKEN_STORAGE_KEY);
@@ -119,9 +130,11 @@ const mutations = {
     [REMOVE_USER_DATA](state) {
         localStorage.removeItem(USER_ID);
         localStorage.removeItem(USER_NAME);
+        localStorage.removeItem(USER_GROUP);
 
         state.user.id = null;
         state.user.name = null;
+        state.user.group = null;
     },
 };
 

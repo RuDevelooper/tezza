@@ -5,12 +5,18 @@ from tezza.serializers import Customer, Product
 
 
 class User(serializers.ModelSerializer):
+    groups = serializers.SlugRelatedField(
+        many=True,
+        read_only=True,
+        slug_field='name',
+    )
     class Meta:
         model = models.User
         fields = (
             "id",
             "first_name",
             "last_name",
+            "groups",
         )
 
 

@@ -34,6 +34,7 @@ export default new createStore({
         },
         toggleSideBar(state, value) {
             state.is_show_sidebar = value;
+            localStorage.setItem('is_show_sidebar', value);
         },
         toggleSearch(state, value) {
             state.is_show_search = value;
@@ -75,7 +76,7 @@ export default new createStore({
             localStorage.setItem('menu_style', value);
             state.menu_style = value;
             if (!value || value === 'vertical') {
-                state.is_show_sidebar = true;
+                state.is_show_sidebar = false;
             } else if (value === 'collapsible-vertical') {
                 state.is_show_sidebar = false;
             }
