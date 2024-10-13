@@ -58,6 +58,7 @@ const bind_data = () => {
         { key: 'material', label: 'Материал' },
         { key: 'color', label: 'Цвет', },
         { key: 'price', label: 'Цена', },
+        { key: 'discount', label: 'Скидка', },
         { key: 'status', label: 'Статус', },
     ];
 };
@@ -446,7 +447,10 @@ const finish_order = () => {
                                                                         {{ item.product.color.title }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.product.price }} руб.
+                                                                        {{ item.price }} руб.
+                                                                    </td>
+                                                                    <td>
+                                                                        {{ item.discount }} %
                                                                     </td>
                                                                     <td>
                                                                         {{ item.status_name }}

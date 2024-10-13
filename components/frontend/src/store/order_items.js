@@ -8,6 +8,7 @@ export class OrderItem {
         this.status = item.status;
         this.status_name = item.status_name;
         this.priority = item.priority;
+        this.discount = item.discount;
         this.assembled_at = item.assembled_at ? new Date(item.assembled_at) : null;
         this.product = new Product(item.product);
         this.price = item.price;

@@ -179,7 +179,7 @@ const mark_as_sended = () => {
                                                                         {{ item.product.color.title }}
                                                                     </td>
                                                                     <td>
-                                                                        {{ item.product.price.toLocaleString('ru-RU') }}
+                                                                        {{ item.price.toLocaleString('ru-RU') }}
                                                                         руб.
                                                                     </td>
                                                                 </tr>
