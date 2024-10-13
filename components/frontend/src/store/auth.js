@@ -66,7 +66,11 @@ const actions = {
 
         if (isProduction && token && userID && userName && userGroup) {
             commit(SET_TOKEN, token);
-            commit(SET_USER_INFO, userID, userName, userGroup);
+            commit(SET_USER_INFO, {
+                user_id: userID,
+                user_name: userName,
+                user_group: userGroup
+            });
         }
 
         if (!isProduction && token && userID && userName && userGroup) {
