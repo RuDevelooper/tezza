@@ -66,8 +66,12 @@ onMounted(() => {
     bind_data();
 });
 const order_items_filter = `status=new&ordering=-added_at`
-const bind_data = () => {
-    store.dispatch('order_items/fetchFilter', order_items_filter)
+
+const bind_data = async () => {
+    while (true) {
+        store.dispatch('order_items/fetchFilter', order_items_filter);
+        await new Promise(r => setTimeout(r, 120_000));
+    }
 };
 
 const mark_as_cut = (item) => {
