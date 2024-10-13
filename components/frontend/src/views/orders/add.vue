@@ -134,7 +134,7 @@ const create_order = () => {
                     color: item.item.color.id,
                 },
                 price: item.item.price,
-                discount: item.item.discount,
+                discount: item.item.discount != '' ? item.item.discount : 0,
             });
         }
 
@@ -153,7 +153,7 @@ const create_order = () => {
         due_date: order.value.due_date,
         products_cost: product_cost,
         designer: designer.value,
-        discount: discountPercent.value,
+        discount: discountPercent.value != '' ? discountPercent.value : 0,
         delivery_cost: order.value.delivery.cost,
         total_cost: total.value,
         created_by: store.state.auth.user.id,
@@ -237,13 +237,13 @@ const add_indi_product = () => {
     });
 }
 const total = ref(0)
-const discount = ref(Number(0))
+const discount = ref(0)
 const totalItemsPrice = ref(0)
 const countTotal = () => {
-    discount.value = Number(0)
+    discount.value = 0
     for (var item of items.value) {
         if (item.item.discount == undefined) continue;
-        let dis = Math.round(parseFloat(item.item.price) * parseFloat(item.item.discount) / 100);
+        let dis = Math.round(parseFloat(item.item.price) * item.item.discount / 100);
         if (dis == 0) continue;
 
         discount.value += dis * item.item.quantity
