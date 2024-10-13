@@ -4,10 +4,12 @@ from rest_framework import routers
 from rest_framework.authtoken import views
 
 from tezza.views import api
+from tezza.views.logout import LogoutView
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/', views.obtain_auth_token),
+    path('api/logout/', LogoutView.as_view()),
 ]
 
 router = routers.DefaultRouter()

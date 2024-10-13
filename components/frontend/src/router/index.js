@@ -33,7 +33,7 @@ const requireUnauthenticated = (to, from, next) => {
 
 const redirectLogout = (to, from, next) => {
     store.dispatch('auth/logout')
-        .then(() => next('/'));
+        .then(() => next('/auth/login'));
 };
 
 const auth = [
@@ -67,8 +67,34 @@ const auth = [
         meta: { layout: 'auth' },
     },
 ]
+const links = {
+    manager: ['Администратор', 'Менеджер'],
+    assembler: ['Администратор', 'Сборщик'],
+    picker: ['Администратор', 'Упаковщик'],
+    cutter: ['Администратор', 'Технолог'],
+    sender: ['Администратор', 'СДЭК'],
+    admin: ['Администратор'],
+};
+const roleRouter = () => {
+    const start_page_match = {
+        'Менеджер': import('../views/orders/list.vue'),
+        'Сборщик': import('../views/assembler/orders.vue'),
+        'Упаковщик': import('../views/picker/orders.vue'),
+        'Технолог': import('../views/cutter/orders.vue'),
+        'СДЭК': import('../views/sender/orders.vue'),
+        'Администратор': import('../views/report/assembler.vue'),
+    }
+
+    return start_page_match[store.state.auth.user.group]
+}
 
 const orders = [
+    {
+        path: '/',
+        name: 'home',
+        component: roleRouter,
+        beforeEnter: requireAuthenticated,
+    },
     {
         path: '/orders/list',
         name: 'orders-list',
@@ -79,12 +105,6 @@ const orders = [
         path: '/orders/archive',
         name: 'orders-archive',
         component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/archive.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/',
-        name: 'home',
-        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/list.vue'),
         beforeEnter: requireAuthenticated,
     },
     {
@@ -127,6 +147,18 @@ const orders = [
         path: '/cutter/order',
         name: 'cutter_order',
         component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/cutter/order.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/sender/orders',
+        name: 'sender_orders',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/sender/orders.vue'),
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/sender/order',
+        name: 'sender_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/sender/order.vue'),
         beforeEnter: requireAuthenticated,
     },
     {

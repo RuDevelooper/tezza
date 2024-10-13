@@ -8,7 +8,7 @@ export default {
     return session.get('/user/');
   },
   logout() {
-    return session.post('/logout/', {});
+    return session.get('/logout/', {});
   },
   createAccount(username, password1, password2, email) {
     return session.post('/registration/', { username, password1, password2, email });
