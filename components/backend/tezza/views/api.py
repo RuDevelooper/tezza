@@ -144,3 +144,19 @@ class OrderLog(viewsets.ModelViewSet):
     serializer_class = serializers.OrderLog
 
     queryset = models.OrderLog.objects.all()
+
+
+class AssemblerTask(viewsets.ModelViewSet):
+    permission_classes = {
+        permissions.IsAuthenticated,
+    }
+    serializer_class = serializers.AssemblerTask
+    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filterset_fields = {
+        'status': ("in", "exact"),  # note the 'in' field
+        'order__assembler': ('exact',),
+        'completed_at': ('gte', 'lte', 'exact', 'gt', 'lt'),
+    }
+    ordering_fields = ['completed_at', 'created_at']
+    ordering = ('-created_at',)
+    queryset = models.Task.objects.all()

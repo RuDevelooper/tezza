@@ -29,7 +29,7 @@ const store = useStore();
 
 const items = ref([]);
 
-const created_at = ref(null);
+const ordered_at = ref(null);
 const due_date = ref(null);
 const designer = ref(null);
 const discountPercent = ref(0);
@@ -41,7 +41,7 @@ const order = ref({
     cost: { items: '', carrier: '' },
     notes: { manager: '', assembler: '', picker: '' },
 
-    created_at: '',
+    ordered_at: '',
     due_date: '',
 });
 
@@ -59,8 +59,8 @@ const default_item_values = {
 onMounted(() => {
     items.value.push({ 'item': { id: 1, ...default_item_values } });
     let dt = new Date();
-    created_at.value = new Date();
-    dt.setDate(dt.getDate() + 15);
+    ordered_at.value = new Date();
+    dt.setDate(dt.getDate() + 20);
     dt.setHours(0, 0, 0, 0);
     due_date.value = dt;
     store.dispatch('materials/fetchItems')
@@ -111,7 +111,7 @@ const remove_item = (item) => {
 };
 
 const createdAtHandler = (selectedDates) => {
-    order.value.created_at = selectedDates[0];
+    order.value.ordered_at = selectedDates[0];
 }
 
 const dueDateHandler = (selectedDates) => {
@@ -149,7 +149,7 @@ const create_order = () => {
             phone: order.value.customer.phone,
         },
         items: order_items,
-        created_at: order.value.created_at,
+        ordered_at: order.value.ordered_at,
         due_date: order.value.due_date,
         products_cost: product_cost,
         designer: designer.value,
@@ -160,6 +160,7 @@ const create_order = () => {
         comment_for_manager: order.value.notes.manager,
         comment_for_assembler: order.value.notes.assembler,
         comment_for_picker: order.value.notes.picker,
+        comment_for_sender: order.value.delivery.comment_for_sender,
     }).then((res) => {
         const toast = window.Swal.mixin({
             toast: true,
@@ -337,7 +338,7 @@ const countTotal = () => {
                                             <div class="col-md-3">
                                                 <div class="form-group mb-4">
                                                     <label for="date">Дата заказа</label>
-                                                    <flat-pickr v-model="created_at" @on-change="createdAtHandler"
+                                                    <flat-pickr v-model="ordered_at" @on-change="createdAtHandler"
                                                         class="form-control form-control-sm flatpickr active"
                                                         placeholder="Дата заказа"></flat-pickr>
                                                 </div>
@@ -429,6 +430,16 @@ const countTotal = () => {
                                                         </div>
                                                     </div>
 
+                                                    <div class="form-group row">
+                                                        <label for="comment_for_sender"
+                                                            class="col-sm-3 col-form-label col-form-label-sm">Комментарий</label>
+                                                        <div class="col-sm-9">
+                                                            <input type="text" v-model="order.delivery.comment_for_sender"
+                                                                id="comment_for_sender" class="form-control form-control-sm"
+                                                                placeholder="Комментарий" @change="countTotal" />
+                                                        </div>
+                                                    </div>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -440,6 +451,8 @@ const countTotal = () => {
                                                 <div class="form-group mb-4">
                                                     <label for="designer" class="pb-1">Дизайнер</label>
                                                     <select v-model="designer" class="form-select form-select"
+                                                        id="designer">
+                                                        <option value="null">Не выбран</option>
                                                         id="designer">
                                                         <option v-for="d in store.state.designers.designers" :key="d.id"
                                                             :value="d.id">

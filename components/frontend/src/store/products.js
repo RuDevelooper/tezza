@@ -12,7 +12,7 @@ export class Product {
         this.title = product.title;
         this.side = product.side;
         this.side_point = product.side_point;
-        this.size = product.size;
+        this.size = product.size2 ? `${product.size}/${product.size2}` : product.size;
         this.price = product.price;
         this.quantity = 1;
         this.color = new Color(product.color_obj);

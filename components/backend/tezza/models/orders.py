@@ -55,6 +55,10 @@ class Order(models.Model):
         default=datetime.utcnow,
         verbose_name='Создан',
     )
+    ordered_at = models.DateTimeField(
+        default=datetime.utcnow,
+        verbose_name='Дата заказа',
+    )
     due_date = models.DateTimeField(
         default=datetime.utcnow,
         verbose_name='Плановая отгрузка',
@@ -116,6 +120,12 @@ class Order(models.Model):
         blank=True,
     )
     comment_for_picker = models.CharField(
+        max_length=255,
+        verbose_name='Комментарий для упаковщика',
+        null=True,
+        blank=True,
+    )
+    comment_for_sender = models.CharField(
         max_length=255,
         verbose_name='Комментарий для упаковщика',
         null=True,
