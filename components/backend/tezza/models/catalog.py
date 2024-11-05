@@ -80,6 +80,13 @@ class Product(models.Model):
     size = models.IntegerField(
         default=0,
         verbose_name='Размер, см',
+        blank=True,
+        null=True,
+    )
+    size2 = models.IntegerField(
+        default=0,
+        verbose_name='Второй размер, см',
+        blank=True,
         null=True,
     )
     price = models.DecimalField(

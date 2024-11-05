@@ -10,6 +10,7 @@ class Order {
     comment_for_manager = null;
     comment_for_assembler = null;
     comment_for_picker = null;
+    comment_for_sender = null;
     due_date = null;
     priority = null;
     status = null;
@@ -85,7 +86,9 @@ class Order {
         this.comment_for_manager = i.comment_for_manager;
         this.comment_for_assembler = i.comment_for_assembler;
         this.comment_for_picker = i.comment_for_picker;
+        this.comment_for_sender = i.comment_for_sender;
         this.created_at = i.created_at ? new Date(i.created_at) : null;
+        this.ordered_at = i.ordered_at ? new Date(i.ordered_at) : null;
         this.due_date = i.due_date ? new Date(i.due_date) : null;
         this.assembling_start = i.assembling_start ? new Date(i.assembling_start) : null;
         this.assembling_end = i.assembling_end ? new Date(i.assembling_end) : null;
@@ -110,7 +113,7 @@ class Order {
         if (!this.due_date) return null;
 
         let deadline = new Date(this.due_date)
-        deadline.setDate(deadline.getDate() - 5)
+        deadline.setDate(deadline.getDate() - 10)
         return deadline
     }
 

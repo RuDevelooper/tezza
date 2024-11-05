@@ -129,3 +129,39 @@ class MonthlyPlanAdmin(admin.ModelAdmin):
         'year',
         'month',
     ]
+
+
+@admin.register(models.Task)
+class TaskAdmin(admin.ModelAdmin):
+    list_display = [
+        'order_item',
+        'work_type',
+        'status',
+        'assembler',
+        'created_at',
+        'due_date',
+        'completed_at',
+        # 'order_item__product',
+        # 'order_item__order',
+        'created_by',
+    ]
+    search_fields = [
+        'created_at',
+        'due_date',
+        'order_item',
+        'order_item__product__sku',
+        'order_item__order__number',
+        'created_by',
+        'work_type',
+        'status',
+        'assembler',
+        'completed_at',
+    ]
+    list_filter = [
+        'created_at',
+        'due_date',
+        'work_type',
+        'status',
+    ]
+    ordering = ['-created_at']
+    date_hierarchy = 'created_at'

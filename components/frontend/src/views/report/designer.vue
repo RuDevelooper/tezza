@@ -81,7 +81,7 @@ const bind_data = () => {
     startDate = currentMonth[0]
     endDate = currentMonth[1]
     dateRange.value = [startDate, endDate];
-    store.dispatch('users/fetchItems')
+    store.dispatch('users/fetchDesignersItems')
 };
 const changeRange = (range) => {
     if (range.length == 1) {
@@ -96,13 +96,12 @@ const change = () => {
     if (assembler.value !== null) {
         startDate.setHours(0, 0, 0, 0)
         endDate.setHours(23, 59, 59, 0)
-        const order_items_filter = `status_name=assembled
-        &ordering=assembled_at
-        &order__assembler=${assembler.value}
-        &assembled_at__gte=${startDate.toISOString()}
-        &assembled_at__lte=${endDate.toISOString()}
+        const orders_filter = `status_name=completed
+        &designer=${designer.value}
+        &completed_at__gte=${startDate.toISOString()}
+        &completed_at__lte=${endDate.toISOString()}
         `
-        store.dispatch('order_items/fetchFilter', order_items_filter)
+        store.dispatch('orders/fetchFilter', orders_filter)
     }
 }
 function countAndSumByDate(objects) {
