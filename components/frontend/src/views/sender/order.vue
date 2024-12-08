@@ -366,7 +366,7 @@ const finish_order = () => {
                                                             <tbody>
                                                                 <tr>
                                                                     <td>
-                                                                        {{ store.state.orders.order.comment_for_picker
+                                                                        {{ store.state.orders.order.comment_for_sender
                                                                         }}
                                                                     </td>
                                                                 </tr>

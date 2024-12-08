@@ -194,6 +194,36 @@ const report = [
         beforeEnter: requireAuthenticated,
     },
 ]
+const docs = [
+    {
+        path: '/docs/assembler_order',
+        name: 'docs_assembler_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/assembler/order.vue'),
+        meta: { layout: 'auth' },
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/docs/picker_order',
+        name: 'docs_picker_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/picker/order.vue'),
+        meta: { layout: 'auth' },
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/docs/manager_order',
+        name: 'docs_manager_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/manager/order.vue'),
+        meta: { layout: 'auth' },
+        beforeEnter: requireAuthenticated,
+    },
+    {
+        path: '/docs/sender_order',
+        name: 'docs_sender_order',
+        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/sender/order.vue'),
+        meta: { layout: 'auth' },
+        beforeEnter: requireAuthenticated,
+    },
+]
 
 
 // const dashboard = [
@@ -704,6 +734,7 @@ const routes = [
     ...auth,
     ...orders,
     ...report,
+    ...docs,
     // ...dashboard,
     // ...components,
     // ...fonts,
