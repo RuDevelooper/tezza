@@ -91,4 +91,8 @@ db.sqlite3
 
 .idea
 
-components/frontend/.env
+.env
+.pg_service.conf
+.pgpass
+*/*/venv/
+development/
