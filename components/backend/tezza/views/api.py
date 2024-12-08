@@ -1,7 +1,9 @@
-import django_filters
 from rest_framework import viewsets, permissions, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
+from rest_framework.filters import OrderingFilter
+
+from django_filters.rest_framework import DjangoFilterBackend
 
 from tezza import models, serializers
 
@@ -10,8 +12,9 @@ class UserViewSet(viewsets.ViewSet):
     """
     A simple ViewSet for listing or retrieving users.
     """
-    authentication_classes = TokenAuthentication,
-    http_method_names = ('get',)
+
+    authentication_classes = (TokenAuthentication,)
+    http_method_names = ("get",)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -23,7 +26,7 @@ class UserViewSet(viewsets.ViewSet):
 
 
 class User(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -33,7 +36,7 @@ class User(viewsets.ModelViewSet):
 
 
 class Color(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -43,7 +46,7 @@ class Color(viewsets.ModelViewSet):
 
 
 class Designer(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -53,7 +56,7 @@ class Designer(viewsets.ModelViewSet):
 
 
 class Material(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -63,7 +66,7 @@ class Material(viewsets.ModelViewSet):
 
 
 class Side(viewsets.ViewSetMixin):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
@@ -72,14 +75,16 @@ class Side(viewsets.ViewSetMixin):
 
 
 class Product(viewsets.ModelViewSet):
-    authentication_classes = TokenAuthentication,
+    authentication_classes = (TokenAuthentication,)
     permission_classes = {
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.Product
 
     filter_backends = [filters.SearchFilter]
-    search_fields = ['sku', ]
+    search_fields = [
+        "sku",
+    ]
 
     queryset = models.Product.objects.all()
 
@@ -102,11 +107,14 @@ class Order(viewsets.ModelViewSet):
     serializer_class = serializers.Order
 
     filterset_fields = {
-        'status': ["in", "exact"],  # note the 'in' field
-        'number': ["exact"]
+        "status": ["in", "exact"],  # note the 'in' field
+        "number": ["exact"],
     }
-    queryset = models.Order.objects.all().order_by('-created_at')
-    ordering_fields = ['created_at', 'due_date']
+
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    queryset = models.Order.objects.all()
+    ordering = "-created_at"
+    ordering_fields = ["created_at", "due_date"]
 
 
 class OrderItem(viewsets.ModelViewSet):
@@ -115,14 +123,14 @@ class OrderItem(viewsets.ModelViewSet):
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.OrderItem
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
-        'status': ("in", "exact"),  # note the 'in' field
-        'order__assembler': ('exact',),
-        'assembled_at': ('gte', 'lte', 'exact', 'gt', 'lt'),
+        "status": ("in", "exact"),  # note the 'in' field
+        "order__assembler": ("exact",),
+        "assembled_at": ("gte", "lte", "exact", "gt", "lt"),
     }
-    ordering_fields = ['assembled_at', 'added_at']
-    ordering = ('-added_at',)
+    ordering_fields = ["assembled_at", "added_at"]
+    ordering = ("-added_at",)
     queryset = models.OrderItem.objects.all()
 
 
@@ -151,12 +159,12 @@ class AssemblerTask(viewsets.ModelViewSet):
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.AssemblerTask
-    filter_backends = [django_filters.rest_framework.DjangoFilterBackend]
+    filter_backends = [DjangoFilterBackend, OrderingFilter]
     filterset_fields = {
-        'status': ("in", "exact"),  # note the 'in' field
-        'order__assembler': ('exact',),
-        'completed_at': ('gte', 'lte', 'exact', 'gt', 'lt'),
+        "status": ("in", "exact"),  # note the 'in' field
+        "order__assembler": ("exact",),
+        "completed_at": ("gte", "lte", "exact", "gt", "lt"),
     }
-    ordering_fields = ['completed_at', 'created_at']
-    ordering = ('-created_at',)
+    ordering_fields = ["completed_at", "created_at"]
+    ordering = ("-created_at",)
     queryset = models.Task.objects.all()

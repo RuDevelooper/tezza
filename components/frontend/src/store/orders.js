@@ -250,6 +250,7 @@ export default {
             try {
                 const res = await orders.fetchById(id);
                 commit('setOrder', res.data);
+                return res;
             } catch (err) {
                 throw err;
             }
