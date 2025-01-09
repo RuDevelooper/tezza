@@ -246,7 +246,7 @@ const print = () => {
                                       v-if="
                                         store.state.orders.order.assembler ==
                                           store.state.auth.user.id &&
-                                        item.status_name == 'Новый'
+                                        ['Новый', 'Резка'].includes(item.status_name)
                                       "
                                       class="btn btn-outline-success rounded-pill m-0"
                                       @click="setItemDone(item.id)"
