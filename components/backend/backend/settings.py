@@ -183,3 +183,14 @@ REST_FRAMEWORK = {
     ),
     'DEFAULT_FILTER_BACKENDS': ['django_filters.rest_framework.DjangoFilterBackend']
 }
+
+CACHES = {
+    # a cache alias or name. In this case, we use "default" as the alias.
+    "default": {
+        # Here, we're using the in-memory cache backend.
+        "BACKEND": "django.core.cache.backends.locmem.LocMemCache",
+
+        # LOCATION parameter gives a unique name or identifier to this cache instance.
+        "LOCATION": "tezza.cache",
+    }
+}
