@@ -70,6 +70,7 @@ const order_items_filter = `status=new&ordering=-added_at`
 const bind_data = async () => {
     while (true) {
         store.dispatch('order_items/fetchFilter', order_items_filter);
+        break;
         await new Promise(r => setTimeout(r, 300.0 * 1000));
     }
 };
