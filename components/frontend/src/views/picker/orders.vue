@@ -100,6 +100,7 @@ const assembler_filter = 'status__in=assembled&ordering=-due_date'
 const bind_data = async () => {
     while (true) {
         store.dispatch('orders/fetchFilter', assembler_filter);
+        break;
         await new Promise(r => setTimeout(r, 300.0 * 1000));
     }
 };

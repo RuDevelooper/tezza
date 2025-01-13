@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { onMounted, ref, nextTick } from "vue";
+import { onMounted, ref, nextTick, onUn } from "vue";
 import "@/assets/sass/apps/invoice-list.scss";
 
 import { useMeta } from "@/composables/use-meta";
@@ -104,6 +104,7 @@ const assembler_filter =
 const bind_data = async () => {
   while (true) {
     store.dispatch("orders/fetchFilter", assembler_filter);
+    break;
     await new Promise(r => setTimeout(r, 300.0 * 1000));
   }
 };
