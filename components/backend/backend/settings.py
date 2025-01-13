@@ -91,9 +91,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-
-    'django.middleware.cache.UpdateCacheMiddleware',
-    'django.middleware.cache.FetchFromCacheMiddleware',
 ]
 
 ROOT_URLCONF = 'backend.urls'
@@ -197,7 +194,3 @@ CACHES = {
         "LOCATION": "tezza.cache",
     }
 }
-
-CACHE_MIDDLEWARE_ALIAS  = ' ' # cache alias
-CACHE_MIDDLEWARE_SECONDS = 300 # number of seconds each page should be cached.
-CACHE_MIDDLEWARE_KEY_PREFIX = ''  # name of site if multiple sites are used
