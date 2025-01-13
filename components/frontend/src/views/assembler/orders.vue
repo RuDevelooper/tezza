@@ -1,6 +1,6 @@
 <script setup>
 import { useStore } from "vuex";
-import { onMounted, ref, nextTick, onUn } from "vue";
+import { onMounted, ref, nextTick } from "vue";
 import "@/assets/sass/apps/invoice-list.scss";
 
 import { useMeta } from "@/composables/use-meta";
