@@ -104,7 +104,7 @@ const assembler_filter =
 const bind_data = async () => {
   while (true) {
     store.dispatch("orders/fetchFilter", assembler_filter);
-    await new Promise((r) => setTimeout(r, 120_000));
+    await new Promise(r => setTimeout(r, 300.0 * 1000));
   }
 };
 
