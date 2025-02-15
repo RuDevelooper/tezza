@@ -11,8 +11,8 @@ const columns = [
   { key: "side", label: "Сторона" },
   { key: "material", label: "Материал" },
   { key: "color", label: "Цвет" },
-  { key: "price", label: "Цена" },
-  { key: "discount", label: "Скидка" },
+  // { key: "price", label: "Цена" },
+  // { key: "discount", label: "Скидка" },
 ];
 </script>
 
@@ -94,13 +94,13 @@ const columns = [
       <p v-if="order.created_by" class="pt-3">
         <span>Менеджер: </span>
         <span>
-          {{ order.manager_user.full_name }}
+          {{ order.created_by.full_name }}
         </span>
       </p>
       <p v-if="order.assembler" class="pt-3">
         <span class="inv-subtitle">Сборщик: </span>
         <span>
-          {{ order.assembler_user.full_name }}
+          {{ order.assembler.full_name }}
         </span>
       </p>
       <p v-if="order.assembling_start">
@@ -118,7 +118,7 @@ const columns = [
       <p v-if="order.picker" class="pt-3">
         <span class="inv-subtitle">Упаковщик: </span>
         <span>
-          {{ order.picker_user.full_name }}
+          {{ order.picker.full_name }}
         </span>
       </p>
       <p v-if="order.shipped_at">
@@ -159,8 +159,8 @@ const columns = [
     </table>
   </div>
 
-  <div class="table-responsive">
-    <table class="table table-hover">
+  <div class="table">
+    <table class="table">
       <thead>
         <tr>
           <th v-for="item in columns" :key="item.key" :class="[item.class]">
@@ -186,8 +186,8 @@ const columns = [
           <td>
             {{ item.product.color.title }}
           </td>
-          <td>{{ item.price }} руб.</td>
-          <td>{{ item.discount }} %</td>
+          <!-- <td>{{ item.price }} руб.</td>
+          <td>{{ item.discount }} %</td> -->
         </tr>
       </tbody>
     </table>

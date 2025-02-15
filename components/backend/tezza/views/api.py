@@ -1,7 +1,10 @@
+from typing import Dict, List
+
 from rest_framework import viewsets, permissions, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
 from rest_framework.filters import OrderingFilter
+from rest_framework.pagination import PageNumberPagination
 
 from django_filters.rest_framework import DjangoFilterBackend
 
@@ -104,17 +107,33 @@ class Order(viewsets.ModelViewSet):
     permission_classes = {
         permissions.IsAuthenticated,
     }
-    serializer_class = serializers.Order
+    # pagination_class = PageNumberPagination
+    # serializer_class = serializers.Order
 
-    filterset_fields = {
+    def get_serializer_class(self):
+        if hasattr(self, "action") and self.action == 'list':
+            return serializers.OrderSimple
+
+        return serializers.Order
+
+    filterset_fields: dict[str, list[str]] = {
         "status": ["in", "exact"],  # note the 'in' field
         "number": ["exact"],
     }
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]
-    queryset = models.Order.objects.all()
+    queryset = models.Order.objects.all().prefetch_related('items', 'items__product').select_related(
+        "created_by",
+        "customer",
+        "assembler",
+        "picker",
+        "designer",
+    )
     ordering = "-created_at"
     ordering_fields = ["created_at", "due_date"]
+
+    # def get_queryset(self):
+    #     return self.request.user.accounts.all()
 
 
 class OrderItem(viewsets.ModelViewSet):

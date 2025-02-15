@@ -278,7 +278,7 @@ const finish_order = () => {
                               </p>
                             </div>
 
-                            <div class="col-sm-6 text-sm-end">
+                            <!-- <div class="col-sm-6 text-sm-end">
                               <div class="">
                                 <img
                                   class="invoice-logo"
@@ -286,7 +286,7 @@ const finish_order = () => {
                                   alt="company"
                                 />
                               </div>
-                            </div>
+                            </div> -->
                             <div
                               v-if="store.state.orders.order.customer"
                               class="col-sm-8 align-self-center pt-5"
@@ -390,13 +390,40 @@ const finish_order = () => {
                               </p>
                               <p
                                 v-if="store.state.orders.order.created_by"
-                                class="pt-3"
+                                class="pt-3 "
                               >
                                 <span>Менеджер: </span>
+                                <strong>
+                                  {{
+                                    store.state.orders.order.created_by.full_name
+                                  }}
+                                </strong>
+                              </p>
+                              <p
+                                v-if="store.state.orders.order.ordered_at"
+                              >
+                                <span class="inv-subtitle"
+                                  >Принят:
+                                </span>
                                 <span>
                                   {{
-                                    store.state.orders.order.manager_user
-                                      .full_name
+                                    store.state.orders.order.ordered_at.toLocaleDateString(
+                                      "ru-RU"
+                                    )
+                                  }}
+                                </span>
+                              </p>
+                              <p
+                                v-if="store.state.orders.order.due_date"
+                              >
+                                <span class="inv-subtitle"
+                                  >Отправить до:
+                                </span>
+                                <span>
+                                  {{
+                                    store.state.orders.order.due_date.toLocaleDateString(
+                                      "ru-RU"
+                                    )
                                   }}
                                 </span>
                               </p>
@@ -407,8 +434,7 @@ const finish_order = () => {
                                 <span class="inv-subtitle">Сборщик: </span>
                                 <span>
                                   {{
-                                    store.state.orders.order.assembler_user
-                                      .full_name
+                                    store.state.orders.order.assembler.full_name
                                   }}
                                 </span>
                               </p>
@@ -426,11 +452,13 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
-                              <p v-if="store.state.orders.order.assembling_end">
+                              <p
+                                v-if="store.state.orders.order.assembling_end"
+                              >
                                 <span class="inv-subtitle"
                                   >Сборка завершена:
                                 </span>
-                                <span class="text-bold">
+                                <span>
                                   {{
                                     store.state.orders.order.assembling_end.toLocaleDateString(
                                       "ru-RU"
@@ -445,8 +473,7 @@ const finish_order = () => {
                                 <span class="inv-subtitle">Упаковщик: </span>
                                 <span>
                                   {{
-                                    store.state.orders.order.picker_user
-                                      .full_name
+                                    store.state.orders.order.picker.full_name
                                   }}
                                 </span>
                               </p>

@@ -84,7 +84,7 @@ const assembler_filter = 'status__in=new,wait_payment,payed,assembly,assembled,c
 const bind_data = async () => {
     while (true) {
         store.dispatch('orders/fetchFilter', assembler_filter)
-        break;
+        // break;
         await new Promise(r => setTimeout(r, 300.0 * 1000));
     }
 };
@@ -134,8 +134,7 @@ const bind_data = async () => {
                                 </div>
                             </template>
                             <template #assembler="props">
-                                <div>{{ props.row.assembler_user ? `${props.row.assembler_user.first_name}
-                                    ${props.row.assembler_user.last_name}` : '' }}</div>
+                                <div>{{ props.row.assembler }}</div>
                             </template>
                             <template #customer="props">
                                 <div>{{ props.row.customer.name || '' }}</div>
@@ -154,7 +153,7 @@ const bind_data = async () => {
                             </template>
                             <template #items_assembled="props">
                                 <div :data_sort="props.row.items.length">
-                                    {{ props.row.items.filter(x => x.status_name == "Собран").length }}
+                                    {{ props.row.items.filter(x => x.status == "Собран").length }}
                                     из {{ props.row.items.length }}
                                 </div>
                             </template>
