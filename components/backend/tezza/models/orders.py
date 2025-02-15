@@ -47,9 +47,16 @@ class Order(models.Model):
         NORMAL = 'normal', _('Обычный')
         HIGH = 'high', _('Высокий')
 
+    class DeliveryPayer(models.TextChoices):
+        CUSTOMER = 'customer', _('Покупатель')
+        COMPANY = 'company', _('Компания')
+
     number = models.CharField(
         max_length=100,
         verbose_name='Номер',
+        null=False,
+        unique=True,
+        blank=False,
     )
     created_at = models.DateTimeField(
         default=datetime.utcnow,
@@ -100,6 +107,12 @@ class Order(models.Model):
         verbose_name='Стоимость доставки',
         default=0,
         blank=True,
+    )
+    delivery_payer = models.CharField(
+        max_length=10,
+        choices=DeliveryPayer.choices,
+        null=True,
+        verbose_name='Оплата доставки',
     )
     delivery_tracking_number = models.CharField(
         max_length=20,
@@ -325,6 +338,14 @@ class OrderItem(models.Model):
         decimal_places=2,
         default=0,
         verbose_name='Скидка',
+    )
+    assembler = models.ForeignKey(
+        to=User,
+        related_name='assembled_order_items',
+        null=True,
+        blank=True,
+        on_delete=models.PROTECT,
+        verbose_name='Сборщик',
     )
     assembled_at = models.DateTimeField(
         null=True,

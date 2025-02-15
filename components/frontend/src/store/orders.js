@@ -5,88 +5,80 @@ import { OrderItem } from './order_items';
 
 class Order {
     id = null;
+    customer = null;
+    designer = null;
+    assembler = null;
+    created_by = null;
+    picker = null;
+    priority = null;
+    status_name = null;
+    delivery_payer_name = null;
     number = null;
     created_at = null;
+    ordered_at = null;
+    due_date = null;
+    status = null;
+    products_cost = null;
+    delivery_cost = null;
+    delivery_payer = null;
+    delivery_tracking_number = null;
     comment_for_manager = null;
     comment_for_assembler = null;
     comment_for_picker = null;
     comment_for_sender = null;
-    due_date = null;
-    priority = null;
-    status = null;
-    products_cost = null;
-    delivery_cost = null;
-    delivery_tracking_number = null;
     total_cost = null;
+    discount = null;
     assembling_start = null;
     assembling_end = null;
     picked_at = null;
     shipped_at = null;
-    created_by = null;
-    customer = null;
-    assembler = null;
-    assembler_user = null;
-    picker = null;
+    completed_at = null;
 
     constructor(i) {
-        let assembler_user = i.assembler_user ? {
-            id: i.assembler_user.id,
-            first_name: i.assembler_user.first_name,
-            last_name: i.assembler_user.last_name,
-            full_name: i.assembler_user.first_name + ' ' + i.assembler_user.last_name,
-        } : null;
-        let manager_user = i.manager_user ? {
-            id: i.manager_user.id,
-            first_name: i.manager_user.first_name,
-            last_name: i.manager_user.last_name,
-            full_name: i.manager_user.first_name + ' ' + i.manager_user.last_name,
-        } : null;
-        let picker_user = i.picker_user ? {
-            id: i.picker_user.id,
-            first_name: i.picker_user.first_name,
-            last_name: i.picker_user.last_name,
-            full_name: i.picker_user.first_name + ' ' + i.picker_user.last_name,
-        } : null;
-        let designer_user = i.designer_user ? {
-            id: i.designer_user.id,
-            name: i.designer_user.name,
-        } : null;
 
-        let customer = i.customer ? {
-            id: i.customer.id,
-            organisation: i.customer.organisation,
-            name: i.customer.name,
-            address: i.customer.address,
-            phone: i.customer.phone,
-        } : null;
+        Object.assign(this, i);
+
+        this.assembler = typeof i.assembler === 'object' && i.assembler != null ? {
+            id: i.assembler.id,
+            // first_name: i.assembler.first_name,
+            // last_name: i.assembler.last_name,
+            full_name: i.assembler.first_name + ' ' + i.assembler.last_name,
+        } : i.assembler;
+        this.created_by = typeof i.created_by === 'object' && i.created_by != null ? {
+            id: i.created_by.id,
+            // first_name: i.created_by.first_name,
+            // last_name: i.created_by.last_name,
+            full_name: i.created_by.first_name + ' ' + i.created_by.last_name,
+        } : i.created_by;
+        this.picker = typeof i.picker === 'object' && i.picker != null ? {
+            id: i.picker.id,
+            // first_name: i.picker.first_name,
+            // last_name: i.picker.last_name,
+            full_name: i.picker.first_name + ' ' + i.picker.last_name,
+        } : i.picker;
+        // let designer_user = i.designer_user ? {
+        //     id: i.designer_user.id,
+        //     name: i.designer_user.name,
+        // } : null;
+
+        // let customer = i.customer ? {
+        //     id: i.customer.id,
+        //     organisation: i.customer.organisation,
+        //     name: i.customer.name,
+        //     address: i.customer.address,
+        //     phone: i.customer.phone,
+        // } : null;
 
         let items = []
-        for (var item of i.items) {
-            items.push(new OrderItem(item))
+        for (var item of i.items) {            
+            try {
+                items.push(new OrderItem(item))
+            } catch (e) {
+                items.push(item)
+            }
         };
-
-        this.id = i.id;
-        this.number = i.number;
-        this.priority = i.priority;
+        this.items = items
         this.status = i.status_name;
-        this.products_cost = i.products_cost;
-        this.delivery_cost = i.delivery_cost;
-        this.delivery_tracking_number = i.delivery_tracking_number;
-        this.total_cost = i.total_cost;
-        this.created_by = i.created_by;
-        this.assembler = i.assembler;
-        this.picker = i.picker;
-        this.assembler_user = assembler_user;
-        this.manager_user = manager_user;
-        this.picker_user = picker_user;
-        this.designer_user = designer_user;
-        this.customer = customer;
-        this.items = items;
-        this.discount = i.discount;
-        this.comment_for_manager = i.comment_for_manager;
-        this.comment_for_assembler = i.comment_for_assembler;
-        this.comment_for_picker = i.comment_for_picker;
-        this.comment_for_sender = i.comment_for_sender;
         this.created_at = i.created_at ? new Date(i.created_at) : null;
         this.ordered_at = i.ordered_at ? new Date(i.ordered_at) : null;
         this.due_date = i.due_date ? new Date(i.due_date) : null;
@@ -207,6 +199,13 @@ export default {
             };
             state.orders = orders;
         },
+        addOrders(state, data) {
+            let orders = []
+            for (var i of data) {
+                orders.push(new Order(i));
+            };
+            state.orders.concat(orders);
+        },
     },
     getters: {
         layout(state) {
@@ -230,20 +229,30 @@ export default {
                 throw err;
             }
         },
-        async fetchFilter({ commit }, filters) {
-            try {
-                const res = await orders.fetchFilter(filters);
-                commit('setOrders', res.data);
-            } catch (err) {
-                throw err;
-            }
-        },
-        async fetchFilter({ commit }, filters) {
-            try {
-                const res = await orders.fetchFilter(filters);
-                commit('setOrders', res.data);
-            } catch (err) {
-                throw err;
+        async fetchFilterByChunk({ commit }, filters) {
+            const currentPage = 1;
+            const nextPage = true;
+            const isLoading = true;
+
+            let filters_ = filters + '&page_size=20';
+            commit('setOrders', []);
+
+            while (nextPage && isLoading) {
+                let filters__ = filters_ + `&page=${currentPage}`
+
+                try {
+                    const res = await orders.fetchFilter(filters__);
+                    commit('addOrders', res.data);
+                    nextPage = !!res.data.next;
+                    if (nextPage && !isLoading) {
+                        currentPage += 1;
+                        fetchData();
+                    }
+                } catch (err) {
+                    throw err;
+                } finally {
+                    isLoading = false;
+                }
             }
         },
         async fetchById({ commit }, { id }) {

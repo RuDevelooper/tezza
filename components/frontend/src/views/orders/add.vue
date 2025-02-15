@@ -20,9 +20,20 @@ useMeta({ title: 'Новый заказ' });
 import { Modal } from 'bootstrap';
 
 let indiItemModal = null;
+const resetIndiProduct = () => indiProduct.value = {
+    sku: null,
+    title: null,
+    color: null,
+    material: null,
+    side: null,
+    side_point: null,
+    size: null,
+    price: null,
+};
 const indiItemModalRef = ref(null)
 const initIndiItemModalRef = () => {
-    indiItemModal = new Modal(indiItemModalRef.value)
+    indiItemModal = new Modal(indiItemModalRef.value);
+    indiItemModalRef.value.addEventListener("hidden.bs.modal", resetIndiProduct);
 };
 
 const store = useStore();
@@ -218,7 +229,6 @@ const add_indi_product = () => {
         size: indiProduct.value.size,
         price: indiProduct.value.price,
     }).then((res) => {
-        console.log(res.data)
         add_indi_item(res.data)
         indiItemModal.hide()
         const toast = window.Swal.mixin({
@@ -410,7 +420,7 @@ const countTotal = () => {
                                                         </div>
                                                     </div>
 
-                                                    <div class="form-group row">
+                                                    <!-- <div class="form-group row">
                                                         <label for="delivery"
                                                             class="col-sm-3 col-form-label col-form-label-sm">ТК</label>
                                                         <div class="col-sm-9">
@@ -418,7 +428,7 @@ const countTotal = () => {
                                                                 id="delivery" class="form-control form-control-sm"
                                                                 placeholder="Транспортная компания" />
                                                         </div>
-                                                    </div>
+                                                    </div> -->
 
                                                     <div class="form-group row">
                                                         <label for="total-cost"
@@ -434,8 +444,10 @@ const countTotal = () => {
                                                         <label for="comment_for_sender"
                                                             class="col-sm-3 col-form-label col-form-label-sm">Комментарий</label>
                                                         <div class="col-sm-9">
-                                                            <input type="text" v-model="order.delivery.comment_for_sender"
-                                                                id="comment_for_sender" class="form-control form-control-sm"
+                                                            <input type="text"
+                                                                v-model="order.delivery.comment_for_sender"
+                                                                id="comment_for_sender"
+                                                                class="form-control form-control-sm"
                                                                 placeholder="Комментарий" @change="countTotal" />
                                                         </div>
                                                     </div>

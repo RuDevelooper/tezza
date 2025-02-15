@@ -44,15 +44,58 @@ class OrderItemAdmin(admin.ModelAdmin):
         'status',
         'priority',
         'price',
+        'discount',
         'added_at',
+        'assembler',
         'assembled_at',
     ]
+    search_fields = [
+        'product__sku',
+        'order__number',
+        'assembler__first_name',
+        'assembler__last_name',
+    ]
+    list_filter = [
+        'added_at',
+        'assembled_at',
+        'status',
+        'discount',
+        'priority',
+    ]
+    list_select_related = True
     ordering = ['-added_at']
     date_hierarchy = 'added_at'
 
 
+class OrderItemInline(admin.TabularInline):
+    model = models.OrderItem
+    fields = [
+        'product',
+        'status',
+        'priority',
+        'price',
+        'discount',
+        'assembled_at',
+        'assembler',
+    ]
+    readonly_fields = [
+        'product',
+        'assembled_at',
+        'assembler',
+        'status',
+        'price',
+        'discount',
+    ]
+    can_delete = False
+    show_change_link = True
+    extra = 0
+
+
 @admin.register(models.Order)
 class OrderAdmin(admin.ModelAdmin):
+    inlines = [
+        OrderItemInline,
+    ]
     list_display = [
         'number',
         'created_at',

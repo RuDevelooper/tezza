@@ -11,7 +11,7 @@ class Customer(models.Model):
         verbose_name="ФИО покупателя",
     )
     address = models.CharField(
-        max_length=100,
+        max_length=255,
         verbose_name="Адрес доставки",
     )
     phone = models.CharField(
