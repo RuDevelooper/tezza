@@ -8,12 +8,12 @@ const props = defineProps({
 
 <template>
   <div class="row pb-3">
-    <div class="col-sm-6">
+    <div class="col-8">
       <span class="h1">
         {{ order.number }}
       </span>
-    </div>
-    <div class="col-sm-8 align-self-end mt-3">
+    <!-- </div> -->
+    <!-- <div class="col-sm-8 align-self-end mt-3"> -->
       <p class="inv-due-date mt-1">
         <span class="inv-title">Завершить сборку до : </span>
         <span class="inv-date">
@@ -27,7 +27,7 @@ const props = defineProps({
         </span>
       </p>
     </div>
-    <div class="col-sm-4 align-self-start text-sm-end">
+    <div class="col-sm-4 align-self-start text-sm-end pt-2">
       <p>
         <span class="inv-subtitle">Статус заказа: </span>
         <span>
@@ -56,7 +56,7 @@ const props = defineProps({
   </div>
 
   <div class="table-responsive">
-    <table class="table table-hover">
+    <table class="table inv-table">
       <thead>
         <tr>
           <th>Артикул</th>
