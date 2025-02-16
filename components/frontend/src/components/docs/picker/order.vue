@@ -18,7 +18,7 @@ const props = defineProps({
         <img class="invoice-logo" src="@/assets/images/full_logo.svg" alt="company" />
       </div>
     </div>
-    <div v-if="order.customer" class="col-sm-8 align-self-start mt-3">
+    <div v-if="order.customer" class="col-12 align-self-start mt-3">
       <p class="inv-created-date">
         <span class="inv-title">Заказчик : </span>
         <span class="inv-date">
@@ -127,7 +127,7 @@ const props = defineProps({
         <img class="invoice-logo" src="@/assets/images/full_logo.svg" alt="company" />
       </div>
     </div>
-    <div v-if="order.customer" class="col-sm-8 align-self-start mt-3">
+    <div v-if="order.customer" class="col-12 align-self-start mt-3">
       <p class="inv-created-date">
         <span class="inv-title">Заказчик : </span>
         <span class="inv-date">
