@@ -343,6 +343,11 @@ h1 {
       display: none
     }
   }
+  
+  .invoice-logo {
+    width: 10rem;
+    height: 4rem;
+  }
 
 
   .inv-subtitle {
@@ -411,6 +416,11 @@ h1 {
     left: 0;
     right: 0;
     top: 0;
+  }
+  
+  .pagebreak {
+    clear: both;
+    page-break-after: always;
   }
 }
 

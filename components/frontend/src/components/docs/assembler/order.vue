@@ -44,13 +44,13 @@ const props = defineProps({
       <p v-if="order.created_by">
         <span class="inv-subtitle">Менеджер: </span>
         <span>
-          {{ order.manager_user.full_name }}
+          {{ order.created_by.full_name }}
         </span>
       </p>
       <p v-if="order.assembler">
         <span class="inv-subtitle">Сборщик: </span>
         <span>
-          {{ order.assembler_user.full_name }}
+          {{ order.assembler.full_name }}
         </span>
       </p>
     </div>

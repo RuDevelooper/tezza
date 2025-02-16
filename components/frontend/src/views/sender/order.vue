@@ -41,10 +41,17 @@ const bind_data = () => {
     ];
 };
 
+// const print = () => {
+//     window.print();
+// };
 const print = () => {
-    window.print();
+  let winPrint = window.open(
+    `/docs/sender_order?id=${store.state.orders.order.id}&print=true`,
+    "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
+  );
+  winPrint.focus();
+  winPrint.onafterprint = winPrint.close;
 };
-
 const setItemDone = (item_id) => {
     store.dispatch(
         'orders/setOrderItemDone',
@@ -284,11 +291,11 @@ const finish_order = () => {
                                                             </p>
                                                         </div>
                                                         <div class="col-sm-4 align-self-start pt-5 text-sm-end">
-                                                            <p v-if="store.state.orders.order.designer_user"
+                                                            <p v-if="store.state.orders.order.designer"
                                                                 class="pb-3">
                                                                 <span class="inv-subtitle">Дизайнер: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.designer_user.name
+                                                                    {{ store.state.orders.order.designer.name
                                                                     }}
                                                                 </span>
                                                             </p>
@@ -307,14 +314,14 @@ const finish_order = () => {
                                                             <p v-if="store.state.orders.order.created_by" class="pt-3">
                                                                 <span>Менеджер: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.manager_user.full_name
+                                                                    {{ store.state.orders.order.created_by.full_name
                                                                     }}
                                                                 </span>
                                                             </p>
                                                             <p v-if="store.state.orders.order.assembler" class="pt-3">
                                                                 <span class="inv-subtitle">Сборщик: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.assembler_user.full_name
+                                                                    {{ store.state.orders.order.assembler.full_name
                                                                     }}
                                                                 </span>
                                                             </p>
@@ -337,7 +344,7 @@ const finish_order = () => {
                                                             <p v-if="store.state.orders.order.picker" class="pt-3">
                                                                 <span class="inv-subtitle">Упаковщик: </span>
                                                                 <span>
-                                                                    {{ store.state.orders.order.picker_user.full_name
+                                                                    {{ store.state.orders.order.picker.full_name
                                                                     }}
                                                                 </span>
                                                             </p>

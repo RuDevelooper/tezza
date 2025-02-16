@@ -136,8 +136,7 @@ const print = () => {
                                                                 </span>
                                                             </p> -->
                               <p class="inv-due-date mt-1">
-                                <span class="inv-title"
-                                  >Завершить сборку до :
+                                <span class="inv-title">Завершить сборку до :
                                 </span>
                                 <span class="inv-date">
                                   {{
@@ -156,12 +155,9 @@ const print = () => {
                                 </span>
                               </p>
                             </div>
-                            <div
-                              class="col-sm-4 align-self-start pt-3 text-sm-end"
-                            >
+                            <div class="col-sm-4 align-self-start pt-3 text-sm-end">
                               <p>
-                                <span class="inv-subtitle"
-                                  >Статус заказа:
+                                <span class="inv-subtitle">Статус заказа:
                                 </span>
                                 <span>
                                   {{ store.state.orders.order.status }}
@@ -177,8 +173,7 @@ const print = () => {
                                 <span class="inv-subtitle">Менеджер: </span>
                                 <span>
                                   {{
-                                    store.state.orders.order.manager_user
-                                      .full_name
+                                    store.state.orders.order.created_by.full_name
                                   }}
                                 </span>
                               </p>
@@ -186,8 +181,7 @@ const print = () => {
                                 <span class="inv-subtitle">Сборщик: </span>
                                 <span>
                                   {{
-                                    store.state.orders.order.assembler_user
-                                      .full_name
+                                    store.state.orders.order.assembler.full_name
                                   }}
                                 </span>
                               </p>
@@ -200,20 +194,13 @@ const print = () => {
                             <table class="table table-hover">
                               <thead>
                                 <tr>
-                                  <th
-                                    v-for="item in columns"
-                                    :key="item.key"
-                                    :class="[item.class]"
-                                  >
+                                  <th v-for="item in columns" :key="item.key" :class="[item.class]">
                                     {{ item.label }}
                                   </th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr
-                                  v-for="item in store.state.orders.order.items"
-                                  :key="item.id"
-                                >
+                                <tr v-for="item in store.state.orders.order.items" :key="item.id">
                                   <td>
                                     {{ item.product.sku }}
                                   </td>
@@ -236,37 +223,16 @@ const print = () => {
                                   <td>
                                     {{ item.status_name }}
                                   </td>
-                                  <td
-                                    aria-colindex="5"
-                                    role="cell"
-                                    class="text-center"
-                                  >
-                                    <button
-                                      type="button"
-                                      v-if="
-                                        store.state.orders.order.assembler ==
-                                          store.state.auth.user.id &&
-                                        ['Новый', 'Резка'].includes(item.status_name)
-                                      "
-                                      class="btn btn-outline-success rounded-pill m-0"
-                                      @click="setItemDone(item.id)"
-                                    >
-                                      <svg
-                                        xmlns="http://www.w3.org/2000/svg"
-                                        width="24"
-                                        height="24"
-                                        viewBox="0 0 24 24"
-                                        fill="none"
-                                        stroke="currentColor"
-                                        stroke-width="2"
-                                        stroke-linecap="round"
-                                        stroke-linejoin="round"
-                                        class="feather feather-check me-2"
-                                        data-v-5522efca=""
-                                      >
-                                        <polyline
-                                          points="20 6 9 17 4 12"
-                                        ></polyline>
+                                  <td aria-colindex="5" role="cell" class="text-center">
+                                    <button type="button" v-if="
+                                      store.state.orders.order.assembler.id ==
+                                      store.state.auth.user.id &&
+                                      ['Новый', 'Резка'].includes(item.status_name)
+                                    " class="btn btn-outline-success rounded-pill m-0" @click="setItemDone(item.id)">
+                                      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
+                                        fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
+                                        stroke-linejoin="round" class="feather feather-check me-2" data-v-5522efca="">
+                                        <polyline points="20 6 9 17 4 12"></polyline>
                                       </svg>
                                       Собран
                                     </button>
@@ -288,24 +254,14 @@ const print = () => {
                 <div class="invoice-action-btn mt-0">
                   <div class="row">
                     <div class="col-xl-12 col-md-3 col-sm-6">
-                      <a
-                        href="javascript:;"
-                        class="btn btn-secondary btn-print action-print"
-                        @click="print()"
-                        >Печать</a
-                      >
+                      <a href="javascript:;" class="btn btn-secondary btn-print action-print"
+                        @click="print()">Печать</a>
                     </div>
-                    <div
-                      v-if="
-                        store.state.orders.order.assembler_user == null &&
-                        store.state.orders.order.status == 'Новый'
-                      "
-                      class="col-xl-12 col-md-3 col-sm-6"
-                      @click="add_favorites()"
-                    >
-                      <a href="javascript:;" class="btn btn-success btn-send"
-                        >Добавить к моим</a
-                      >
+                    <div v-if="
+                      store.state.orders.order.assembler == null &&
+                      store.state.orders.order.status == 'Новый'
+                    " class="col-xl-12 col-md-3 col-sm-6" @click="add_favorites()">
+                      <a href="javascript:;" class="btn btn-success btn-send">Добавить к моим</a>
                     </div>
                   </div>
                 </div>

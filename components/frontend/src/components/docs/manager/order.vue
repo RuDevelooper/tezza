@@ -52,10 +52,16 @@ const columns = [
         <span class="inv-title">Стоимость изделий : </span>
         <span class="inv-date"> {{ order.products_cost }} руб. </span>
       </p>
-      <p class="inv-created-date">
-        <span class="inv-title">Стоимость доставки : </span>
-        <span class="inv-date"> {{ order.delivery_cost }} руб. </span>
-      </p>
+      <div v-if="order.delivery_payer == 'customer'">
+        <p class="inv-created-date">
+          <span class="inv-title">Стоимость доставки : </span>
+          <span class="inv-date"> {{ order.delivery_cost }} руб. </span>
+        </p>
+        <p class="inv-created-date">
+          <span class="inv-title">Доставку оплачивает : </span>
+          <span class="inv-date"> {{ order.delivery_payer_name }}</span>
+        </p>
+      </div>
       <p class="inv-created-date">
         <span class="inv-title">Скидка : </span>
         <span class="inv-date"> {{ order.discount }} % </span>

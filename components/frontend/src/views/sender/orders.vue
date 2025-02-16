@@ -125,8 +125,8 @@ const bind_data = async () => {
                                 </div>
                             </template>
                             <template #assembler="props">
-                                <div>{{ props.row.assembler_user ? `${props.row.assembler_user.first_name}
-                                    ${props.row.assembler_user.last_name}` : '' }}</div>
+                                <div>{{ props.row.assembler ? `${props.row.assembler.first_name}
+                                    ${props.row.assembler.last_name}` : '' }}</div>
                             </template>
                             <template #customer="props">
                                 <div>{{ props.row.customer.name || '' }}</div>

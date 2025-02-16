@@ -48,7 +48,10 @@ class Orders:
         order_items = kwargs.pop('items')
         customer = kwargs.pop('customer')
         customer, created = models.Customer.objects.get_or_create(**customer)
-        order = models.Order.objects.create(customer=customer, **kwargs)
+        order = models.Order.objects.create(
+            customer=customer,
+            **kwargs
+        )
         order.change_status(status=models.Order.Status.NEW)
 
         for item in order_items:

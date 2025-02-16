@@ -8,6 +8,7 @@ class User(serializers.ModelSerializer):
     groups = serializers.SlugRelatedField(
         many=True,
         read_only=True,
+        required=False,
         slug_field='name',
     )
     class Meta:
@@ -98,18 +99,27 @@ class OrderSimple(serializers.ModelSerializer):
 
 
 class Order(serializers.ModelSerializer):
-    service = services.Orders()
-
     assembler = User()
     created_by= User()
     picker = User()
     designer = Designer()
-    customer = Customer(many=False)
+    customer = Customer()
     items = OrderItem(many=True)
     priority = serializers.CharField(source='get_priority_display',
                                      required=False,)
     status_name = serializers.CharField(source='get_status_display', required=False,)
     delivery_payer_name = serializers.CharField(source='get_delivery_payer_display', required=False,)
+
+    class Meta:
+        model = models.Order
+        fields = '__all__'
+
+
+class OrderCreate(serializers.ModelSerializer):
+    service = services.Orders()
+
+    customer = Customer(many=False)
+    items = OrderItem(many=True)
 
     class Meta:
         model = models.Order
