@@ -10,7 +10,7 @@ useMeta({ title: 'Архив заказов' });
 const store = useStore();
 const columns = ref([
     'number',
-    'created_at',
+    'ordered_at',
     'due_date',
     'customer',
     'items_assembled',
@@ -19,7 +19,7 @@ const columns = ref([
 ]);
 const headings = {
     number: 'Номер',
-    created_at: 'Создан',
+    ordered_at: 'Принят',
     customer: 'Заказчик',
     due_date: 'Отгрузка',
     items: 'Изделий в заказе',
@@ -39,7 +39,7 @@ const table_option = ref({
     resizableColumns: false,
     sortable: [
         'invoice',
-        'created_at',
+        'ordered_at',
         'customer',
         'deadline',
         'items',
@@ -116,8 +116,8 @@ const bind_data = async () => {
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>
-                            <template #created_at="props">
-                                <div :data_sort="props.row.created_at">{{ props.row.created_at.toLocaleDateString('ru')
+                            <template #ordered_at="props">
+                                <div :data_sort="props.row.ordered_at">{{ props.row.ordered_at.toLocaleDateString('ru')
                                     }}
                                 </div>
                             </template>
