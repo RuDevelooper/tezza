@@ -75,7 +75,7 @@ const table_option = ref({
   customFilters: [
     {
       name: "myOrders",
-      callback: (row, user_id) => row.assembler == user_id,
+      callback: (row, name) => row.assembler == name,
     },
     {
       name: "all",
@@ -152,7 +152,7 @@ const myOrdersOnlyFilter = () => {
   clickedMyOrdersOnly.value = !clickedMyOrdersOnly.value;
 
   if (clickedMyOrdersOnly.value) {
-    EventBus.emit("vue-tables.filter::myOrders", store.state.auth.user.id);
+    EventBus.emit("vue-tables.filter::myOrders", store.state.auth.user.name);
   } else {
     showTable.value = !showTable.value;
 
@@ -234,7 +234,7 @@ const myOrdersOnlyFilter = () => {
                       store.state.orders.orders.reduce(
                         (acc, e) =>
                           acc +
-                          (e.assembler == store.state.auth.user.id ? 1 : 0),
+                          (e.assembler == store.state.auth.user.name ? 1 : 0),
                         0
                       )
                     }}</span
@@ -283,7 +283,7 @@ const myOrdersOnlyFilter = () => {
                 <div>
                   {{
                     props.row.assembler
-                      ? props.row.assembler_user.full_name
+                      ? props.row.assembler
                       : ""
                   }}
                 </div>

@@ -29,9 +29,13 @@ const bind_data = () => {
         { key: 'price', label: 'Цена', },
     ];
 };
-
 const print = () => {
-    window.print();
+  let winPrint = window.open(
+    `/docs/picker_order?id=${store.state.orders.order.id}&print=true`,
+    "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
+  );
+  winPrint.focus();
+  winPrint.onafterprint = winPrint.close;
 };
 const mark_as_sended = () => {
     store.dispatch('orders/update_picker', {

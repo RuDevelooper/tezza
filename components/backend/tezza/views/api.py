@@ -111,10 +111,15 @@ class Order(viewsets.ModelViewSet):
     # serializer_class = serializers.Order
 
     def get_serializer_class(self):
+        if hasattr(self, "action") and self.action == 'retrieve':
+            return serializers.Order
+
         if hasattr(self, "action") and self.action == 'list':
             return serializers.OrderSimple
 
-        return serializers.Order
+        return serializers.OrderCreate
+
+
 
     filterset_fields: dict[str, list[str]] = {
         "status": ["in", "exact"],  # note the 'in' field

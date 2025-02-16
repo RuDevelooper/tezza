@@ -48,7 +48,7 @@ const order = ref({
     number: '',
 
     customer: { name: '', organisation: '', phone: '' },
-    delivery: { address: '', carrier: '', cost: 0 },
+    delivery: { address: '', carrier: '', payer: null, cost: 0 },
     cost: { items: '', carrier: '' },
     notes: { manager: '', assembler: '', picker: '' },
 
@@ -67,6 +67,16 @@ const default_item_values = {
     color: '',
     price: 0,
 }
+const delivery_payer_options = ref([
+    {
+        "name": "customer",
+        "value": "Покупатель"
+    },
+    {
+        "name": "company",
+        "value": "Компания"
+    }
+])
 onMounted(() => {
     items.value.push({ 'item': { id: 1, ...default_item_values } });
     let dt = new Date();
@@ -150,8 +160,7 @@ const create_order = () => {
         }
 
     }
-
-    store.dispatch('orders/create', {
+    let payload = {
         number: order.value.number,
         customer: {
             organisation: order.value.customer.organisation,
@@ -163,16 +172,18 @@ const create_order = () => {
         ordered_at: order.value.ordered_at,
         due_date: order.value.due_date,
         products_cost: product_cost,
-        designer: designer.value,
         discount: discountPercent.value != '' ? discountPercent.value : 0,
         delivery_cost: order.value.delivery.cost,
+        delivery_payer: order.value.delivery.payer,
         total_cost: total.value,
         created_by: store.state.auth.user.id,
         comment_for_manager: order.value.notes.manager,
         comment_for_assembler: order.value.notes.assembler,
         comment_for_picker: order.value.notes.picker,
         comment_for_sender: order.value.delivery.comment_for_sender,
-    }).then((res) => {
+    }
+    if (!!designer.value) payload['designer'] = designer.value;
+    store.dispatch('orders/create', payload).then((res) => {
         const toast = window.Swal.mixin({
             toast: true,
             position: 'top-end',
@@ -250,8 +261,10 @@ const add_indi_product = () => {
 const total = ref(0)
 const discount = ref(0)
 const totalItemsPrice = ref(0)
+const deliveryCost = ref(0)
 const countTotal = () => {
     discount.value = 0
+    deliveryCost.value = 0
     for (var item of items.value) {
         if (item.item.discount == undefined) continue;
         let dis = Math.round(parseFloat(item.item.price) * item.item.discount / 100);
@@ -264,8 +277,11 @@ const countTotal = () => {
     totalItemsPrice.value = items.value.reduce(
         (acc, x) => acc + (x.item.price * x.item.quantity), 0
     )
-    discount.value += Math.round(totalItemsPrice.value * discountPercent.value / 100)
-    total.value = totalItemsPrice.value - discount.value + order.value.delivery.cost
+    discount.value += Math.round(totalItemsPrice.value * discountPercent.value / 100);
+
+    if (order.value.delivery.payer == 'customer') deliveryCost.value += order.value.delivery.cost;
+
+    total.value = totalItemsPrice.value - discount.value + deliveryCost.value;
 }
 
 </script>
@@ -367,7 +383,7 @@ const countTotal = () => {
 
                                     <div class="invoice-detail-terms mt-0 mb-4">
                                         <div class="row justify-content-between">
-                                            <div class="col-xl-5 invoice-address-company">
+                                            <div class="col-xl-6 invoice-address-company">
                                                 <h4>Покупатель:</h4>
 
                                                 <div class="invoice-address-company-fields">
@@ -404,7 +420,7 @@ const countTotal = () => {
                                                 </div>
                                             </div>
 
-                                            <div class="col-xl-5 invoice-address-client">
+                                            <div class="col-xl-6 invoice-address-client ps-3">
                                                 <h4>Доставка:</h4>
 
                                                 <div class="invoice-address-client-fields">
@@ -439,6 +455,24 @@ const countTotal = () => {
                                                                 placeholder="Стоимость" @change="countTotal" />
                                                         </div>
                                                     </div>
+                                                    <div class="form-group row">
+                                                        <label for="payer"
+                                                            class="col-sm-3 col-form-label col-form-label-sm">
+                                                            Оплачивает
+                                                        </label>
+                                                        <div class="col-sm-9">
+                                                            <select v-model="order.delivery.payer"
+                                                                class="form-select form-select-sm" id="payer"
+                                                                @change="countTotal">
+                                                                <option value="null" disabled>Выберите плательщика
+                                                                </option>
+                                                                <option v-for="option in delivery_payer_options"
+                                                                    :value="option.name" :key="option.name">
+                                                                    {{ option.value }}
+                                                                </option>
+                                                            </select>
+                                                        </div>
+                                                    </div>
 
                                                     <div class="form-group row">
                                                         <label for="comment_for_sender"
@@ -467,7 +501,7 @@ const countTotal = () => {
                                                         <option value="null">Не выбран</option>
                                                         id="designer">
                                                         <option v-for="d in store.state.designers.designers" :key="d.id"
-                                                            :value="d.id">
+                                                            :value="d">
                                                             {{ d.name }}
                                                         </option>
                                                     </select>
@@ -482,10 +516,16 @@ const countTotal = () => {
                                             </div>
                                             <div class="col-md-4 text-end pt-4">
                                                 <button :disabled="!order.number" type="button"
-                                                    class="btn btn-outline-info" @click="openIndiProductModal()"
-                                                    data-bs-toggle="tooltip"
+                                                    class="btn btn-lg btn-outline-info px-3"
+                                                    @click="openIndiProductModal()" data-bs-toggle="tooltip"
                                                     title="Для добавления изделия нужно ввести номер заказа">
-                                                    Добавить индивидуальное изделие
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24"
+                                                        viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                                        stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                                                        class="feather feather-plus me-2">
+                                                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                                                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                                                    </svg>Индивидуальное изделие
                                                 </button>
                                             </div>
                                         </div>
@@ -767,6 +807,7 @@ const countTotal = () => {
                                 <div class="col-xl-6 col-md-6 col-sm-12">
                                     <label>Сторона</label>
                                     <select v-model="indiProduct.side" class="form-select form-select" id="side">
+                                        <option value="null">-</option>
                                         <option value="Слева">Слева</option>
                                         <option value="Справа">Справа</option>
                                     </select>
