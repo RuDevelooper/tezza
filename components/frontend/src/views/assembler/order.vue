@@ -225,7 +225,7 @@ const print = () => {
                                   </td>
                                   <td aria-colindex="5" role="cell" class="text-center">
                                     <button type="button" v-if="
-                                      store.state.orders.order.assembler.id ==
+                                      store.state.orders.order.assembler?.id ==
                                       store.state.auth.user.id &&
                                       ['Новый', 'Резка'].includes(item.status_name)
                                     " class="btn btn-outline-success rounded-pill m-0" @click="setItemDone(item.id)">
