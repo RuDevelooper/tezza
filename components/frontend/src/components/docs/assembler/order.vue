@@ -1,5 +1,5 @@
 <script setup>
-import "@/assets/sass/apps/invoice-preview.scss";
+import "@/assets/sass/apps/invoice-print.scss";
 
 const props = defineProps({
   order: {},
@@ -9,7 +9,6 @@ const props = defineProps({
 <template>
   <div class="row pb-3">
     <div class="col-sm-6">
-      <span class="h1">Заказ :</span>
       <span class="h1">
         {{ order.number }}
       </span>
