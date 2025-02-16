@@ -167,6 +167,7 @@ export default {
     state: {
         order: Order,
         orders: [],
+        orders_archive: [],
         add: {
             id: null,
             number: null,
@@ -199,6 +200,13 @@ export default {
             };
             state.orders = orders;
         },
+        setOrdersToArchive(state, data) {
+            let orders = []
+            for (var i of data) {
+                orders.push(new Order(i));
+            };
+            state.orders_archive = orders;
+        },
         addOrders(state, data) {
             let orders = []
             for (var i of data) {
@@ -225,6 +233,14 @@ export default {
             try {
                 const res = await orders.fetchFilter(filters);
                 commit('setOrders', res.data);
+            } catch (err) {
+                throw err;
+            }
+        },
+        async fetchFilterToArchive({ commit }, filters) {
+            try {
+                const res = await orders.fetchFilter(filters);
+                commit('setOrdersToArchive', res.data);
             } catch (err) {
                 throw err;
             }
