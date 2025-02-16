@@ -78,9 +78,13 @@ const statuses = ref({
 onMounted(() => {
     bind_data();
 });
-const assembler_filter = 'status=completed&ordering=-due_date'
-const bind_data = () => {
-    store.dispatch('orders/fetchFilter', assembler_filter)
+const assembler_filter = 'status=completed&ordering=-shipped_at'
+const bind_data = async () => {
+    while (true) {
+        store.dispatch('orders/fetchFilterToArchive', assembler_filter)
+        // break;
+        await new Promise(r => setTimeout(r, 300.0 * 1000));
+    }
 };
 </script>
 
@@ -106,7 +110,7 @@ const bind_data = () => {
             <div class="col-xl-12 col-lg-12 col-sm-12 layout-spacing">
                 <div class="panel br-6">
                     <div class="custom-table">
-                        <v-client-table :data="store.state.orders.orders" :columns="columns" :options="table_option">
+                        <v-client-table :data="store.state.orders.orders_archive" :columns="columns" :options="table_option">
                             <template #number="props">
                                 <router-link :to="{ path: '/orders/preview', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>

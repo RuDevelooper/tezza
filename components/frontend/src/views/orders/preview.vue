@@ -413,6 +413,20 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
+                              <!-- <p
+                                v-if="store.state.orders.order.created_at"
+                              >
+                                <span class="inv-subtitle"
+                                  >Создан:
+                                </span>
+                                <span>
+                                  {{
+                                    store.state.orders.order.created_at.toLocaleDateString(
+                                      "ru-RU"
+                                    )
+                                  }}
+                                </span>
+                              </p> -->
                               <p
                                 v-if="store.state.orders.order.due_date"
                               >
