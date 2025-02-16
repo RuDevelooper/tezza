@@ -30,12 +30,12 @@ const bind_data = () => {
     ];
 };
 const print = () => {
-  let winPrint = window.open(
-    `/docs/picker_order?id=${store.state.orders.order.id}&print=true`,
-    "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
-  );
-  winPrint.focus();
-  winPrint.onafterprint = winPrint.close;
+    let winPrint = window.open(
+        `/docs/picker_order?id=${store.state.orders.order.id}&print=true`,
+        "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
+    );
+    winPrint.focus();
+    winPrint.onafterprint = winPrint.close;
 };
 const mark_as_sended = () => {
     store.dispatch('orders/update_picker', {
@@ -144,6 +144,12 @@ const mark_as_sended = () => {
                                                                     {{ store.state.orders.order.delivery_cost }} руб.
                                                                 </span>
                                                             </p>
+                                                            <p class="inv-created-date">
+                                                                <span class="inv-title">Доставку оплачивает : </span>
+                                                                <span class="inv-date"> {{
+                                                                    store.state.orders.order.delivery_payer_name
+                                                                    }}</span>
+                                                            </p>
                                                         </div>
                                                     </div>
                                                 </div>
@@ -173,8 +179,8 @@ const mark_as_sended = () => {
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.side }} - {{
-                                                                        item.product.side_point
-                                                                    }}
+                                                                            item.product.side_point
+                                                                        }}
                                                                     </td>
                                                                     <td>
                                                                         {{ item.product.material.title }}

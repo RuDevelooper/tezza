@@ -45,12 +45,12 @@ const bind_data = () => {
 //     window.print();
 // };
 const print = () => {
-  let winPrint = window.open(
-    `/docs/sender_order?id=${store.state.orders.order.id}&print=true`,
-    "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
-  );
-  winPrint.focus();
-  winPrint.onafterprint = winPrint.close;
+    let winPrint = window.open(
+        `/docs/sender_order?id=${store.state.orders.order.id}&print=true`,
+        "fullscreen=yes,toolbar=0,scrollbars=0,status=0"
+    );
+    winPrint.focus();
+    winPrint.onafterprint = winPrint.close;
 };
 const setItemDone = (item_id) => {
     store.dispatch(
@@ -271,6 +271,12 @@ const finish_order = () => {
                                                                 </span>
                                                             </p>
                                                             <p class="inv-created-date">
+                                                                <span class="inv-title">Доставку оплачивает : </span>
+                                                                <span class="inv-date"> {{
+                                                                    store.state.orders.order.delivery_payer_name
+                                                                    }}</span>
+                                                            </p>
+                                                            <p class="inv-created-date">
                                                                 <span class="inv-title">Скидка : </span>
                                                                 <span class="inv-date">
                                                                     {{ store.state.orders.order.discount }} %
@@ -291,8 +297,7 @@ const finish_order = () => {
                                                             </p>
                                                         </div>
                                                         <div class="col-sm-4 align-self-start pt-5 text-sm-end">
-                                                            <p v-if="store.state.orders.order.designer"
-                                                                class="pb-3">
+                                                            <p v-if="store.state.orders.order.designer" class="pb-3">
                                                                 <span class="inv-subtitle">Дизайнер: </span>
                                                                 <span>
                                                                     {{ store.state.orders.order.designer.name

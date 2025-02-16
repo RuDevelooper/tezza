@@ -287,10 +287,7 @@ const finish_order = () => {
                                 />
                               </div>
                             </div> -->
-                            <div
-                              v-if="store.state.orders.order.customer"
-                              class="col-sm-8 align-self-center pt-5"
-                            >
+                            <div v-if="store.state.orders.order.customer" class="col-sm-8 align-self-center pt-5">
                               <p class="inv-created-date">
                                 <span class="inv-title">Заказчик : </span>
                                 <span class="inv-date">
@@ -321,8 +318,7 @@ const finish_order = () => {
                                 </span>
                               </p>
                               <p class="inv-created-date">
-                                <span class="inv-title"
-                                  >Стоимость изделий :
+                                <span class="inv-title">Стоимость изделий :
                                 </span>
                                 <span class="inv-date">
                                   {{ store.state.orders.order.products_cost }}
@@ -330,13 +326,16 @@ const finish_order = () => {
                                 </span>
                               </p>
                               <p class="inv-created-date">
-                                <span class="inv-title"
-                                  >Стоимость доставки :
+                                <span class="inv-title">Стоимость доставки :
                                 </span>
                                 <span class="inv-date">
                                   {{ store.state.orders.order.delivery_cost }}
                                   руб.
                                 </span>
+                              </p>
+                              <p class="inv-created-date">
+                                <span class="inv-title">Доставку оплачивает : </span>
+                                <span class="inv-date"> {{ store.state.orders.order.delivery_payer_name }}</span>
                               </p>
                               <p class="inv-created-date">
                                 <span class="inv-title">Скидка : </span>
@@ -345,8 +344,7 @@ const finish_order = () => {
                                 </span>
                               </p>
                               <p class="inv-created-date">
-                                <span class="inv-title"
-                                  >Стоимость заказа :
+                                <span class="inv-title">Стоимость заказа :
                                 </span>
                                 <span class="inv-date">
                                   {{ store.state.orders.order.total_cost }} руб.
@@ -362,13 +360,8 @@ const finish_order = () => {
                                 </span>
                               </p>
                             </div>
-                            <div
-                              class="col-sm-4 align-self-start pt-5 text-sm-end"
-                            >
-                              <p
-                                v-if="store.state.orders.order.designer_user"
-                                class="pb-3"
-                              >
+                            <div class="col-sm-4 align-self-start pt-5 text-sm-end">
+                              <p v-if="store.state.orders.order.designer_user" class="pb-3">
                                 <span class="inv-subtitle">Дизайнер: </span>
                                 <span>
                                   {{
@@ -388,10 +381,7 @@ const finish_order = () => {
                                   {{ store.state.orders.order.priority }}
                                 </span>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.created_by"
-                                class="pt-3 "
-                              >
+                              <p v-if="store.state.orders.order.created_by" class="pt-3 ">
                                 <span>Менеджер: </span>
                                 <strong>
                                   {{
@@ -399,11 +389,8 @@ const finish_order = () => {
                                   }}
                                 </strong>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.ordered_at"
-                              >
-                                <span class="inv-subtitle"
-                                  >Принят:
+                              <p v-if="store.state.orders.order.ordered_at">
+                                <span class="inv-subtitle">Принят:
                                 </span>
                                 <span>
                                   {{
@@ -427,11 +414,8 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p> -->
-                              <p
-                                v-if="store.state.orders.order.due_date"
-                              >
-                                <span class="inv-subtitle"
-                                  >Отправить до:
+                              <p v-if="store.state.orders.order.due_date">
+                                <span class="inv-subtitle">Отправить до:
                                 </span>
                                 <span>
                                   {{
@@ -441,10 +425,7 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.assembler"
-                                class="pt-3"
-                              >
+                              <p v-if="store.state.orders.order.assembler" class="pt-3">
                                 <span class="inv-subtitle">Сборщик: </span>
                                 <span>
                                   {{
@@ -452,11 +433,8 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.assembling_start"
-                              >
-                                <span class="inv-subtitle"
-                                  >Сборка начата:
+                              <p v-if="store.state.orders.order.assembling_start">
+                                <span class="inv-subtitle">Сборка начата:
                                 </span>
                                 <span>
                                   {{
@@ -466,11 +444,8 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.assembling_end"
-                              >
-                                <span class="inv-subtitle"
-                                  >Сборка завершена:
+                              <p v-if="store.state.orders.order.assembling_end">
+                                <span class="inv-subtitle">Сборка завершена:
                                 </span>
                                 <span>
                                   {{
@@ -480,10 +455,7 @@ const finish_order = () => {
                                   }}
                                 </span>
                               </p>
-                              <p
-                                v-if="store.state.orders.order.picker"
-                                class="pt-3"
-                              >
+                              <p v-if="store.state.orders.order.picker" class="pt-3">
                                 <span class="inv-subtitle">Упаковщик: </span>
                                 <span>
                                   {{
@@ -553,20 +525,13 @@ const finish_order = () => {
                             <table class="table table-hover">
                               <thead>
                                 <tr>
-                                  <th
-                                    v-for="item in columns"
-                                    :key="item.key"
-                                    :class="[item.class]"
-                                  >
+                                  <th v-for="item in columns" :key="item.key" :class="[item.class]">
                                     {{ item.label }}
                                   </th>
                                 </tr>
                               </thead>
                               <tbody>
-                                <tr
-                                  v-for="item in store.state.orders.order.items"
-                                  :key="item.id"
-                                >
+                                <tr v-for="item in store.state.orders.order.items" :key="item.id">
                                   <td>
                                     {{ item.product.sku }}
                                   </td>
@@ -608,85 +573,47 @@ const finish_order = () => {
                 <div class="invoice-action-btn">
                   <div class="row">
                     <div class="col-xl-12 col-md-3 col-sm-6">
-                      <a
-                        href="javascript:;"
-                        class="btn btn-secondary btn-print action-print"
-                        @click="print()"
-                        >Печать</a
-                      >
+                      <a href="javascript:;" class="btn btn-secondary btn-print action-print"
+                        @click="print()">Печать</a>
                     </div>
                     <div class="col-xl-12 col-md-3 col-sm-6">
-                      <div
-                        class="btn-group custom-dropdown mb-4 me-2"
-                        role="group"
-                      >
-                        <button
-                          id="btnOutline"
-                          type="button"
-                          class="btn btn-outline-primary dropdown-toggle"
-                          data-bs-toggle="dropdown"
-                          aria-haspopup="true"
-                          aria-expanded="false"
-                        >
+                      <div class="btn-group custom-dropdown mb-4 me-2" role="group">
+                        <button id="btnOutline" type="button" class="btn btn-outline-primary dropdown-toggle"
+                          data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Комментарии
-                          <svg
-                            xmlns="http://www.w3.org/2000/svg"
-                            width="24"
-                            height="24"
-                            viewBox="0 0 24 24"
-                            fill="none"
-                            stroke="currentColor"
-                            stroke-width="2"
-                            stroke-linecap="round"
-                            stroke-linejoin="round"
-                            class="feather feather-chevron-down"
-                          >
+                          <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none"
+                            stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"
+                            class="feather feather-chevron-down">
                             <polyline points="6 9 12 15 18 9"></polyline>
                           </svg>
                         </button>
                         <ul class="dropdown-menu" aria-labelledby="btndefault">
                           <li @click="commentForManagerModal.show()">
-                            <a href="javascript:;" class="dropdown-item"
-                              ><i class="flaticon-home-fill-1 me-1"></i
-                              >Менеджер</a
-                            >
+                            <a href="javascript:;" class="dropdown-item"><i
+                                class="flaticon-home-fill-1 me-1"></i>Менеджер</a>
                           </li>
                           <li @click="commentForAssemblerModal.show()">
-                            <a href="javascript:;" class="dropdown-item"
-                              ><i class="flaticon-gear-fill me-1"></i>Сборщик</a
-                            >
+                            <a href="javascript:;" class="dropdown-item"><i
+                                class="flaticon-gear-fill me-1"></i>Сборщик</a>
                           </li>
                           <li @click="commentForPickerModal.show()">
-                            <a href="javascript:;" class="dropdown-item"
-                              ><i class="flaticon-bell-fill-2 me-1"></i
-                              >Упаковщик</a
-                            >
+                            <a href="javascript:;" class="dropdown-item"><i
+                                class="flaticon-bell-fill-2 me-1"></i>Упаковщик</a>
                           </li>
                           <li @click="commentForSenderModal.show()">
-                            <a href="javascript:;" class="dropdown-item"
-                              ><i class="flaticon-bell-fill-2 me-1"></i>СДЭК</a
-                            >
+                            <a href="javascript:;" class="dropdown-item"><i
+                                class="flaticon-bell-fill-2 me-1"></i>СДЭК</a>
                           </li>
                         </ul>
                       </div>
                     </div>
-                    <div
-                      v-if="store.state.orders.order.status == 'Отправлен'"
-                      class="col-xl-12 col-md-3 col-sm-6"
-                      @click="trackNumberModal.show()"
-                    >
-                      <a href="javascript:;" class="btn btn-success btn-send"
-                        >Трек-номер</a
-                      >
+                    <div v-if="store.state.orders.order.status == 'Отправлен'" class="col-xl-12 col-md-3 col-sm-6"
+                      @click="trackNumberModal.show()">
+                      <a href="javascript:;" class="btn btn-success btn-send">Трек-номер</a>
                     </div>
-                    <div
-                      v-if="store.state.orders.order.status == 'Отправлен'"
-                      class="col-xl-12 col-md-3 col-sm-6"
-                      @click="finish_order()"
-                    >
-                      <a href="javascript:;" class="btn btn-info btn-send"
-                        >Завершить</a
-                      >
+                    <div v-if="store.state.orders.order.status == 'Отправлен'" class="col-xl-12 col-md-3 col-sm-6"
+                      @click="finish_order()">
+                      <a href="javascript:;" class="btn btn-info btn-send">Завершить</a>
                     </div>
                   </div>
                 </div>
@@ -697,54 +624,26 @@ const finish_order = () => {
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      ref="commentForManagerModalRef"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="commentForManagerModalRef"
-      aria-hidden="true"
-    >
+    <div class="modal fade" ref="commentForManagerModalRef" tabindex="-1" role="dialog"
+      aria-labelledby="commentForManagerModalRef" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="commentForManagerModalRef">
               Комментарий для менеджера
             </h5>
-            <button
-              type="button"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              class="btn-close"
-            ></button>
+            <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+              class="btn-close"></button>
           </div>
           <div class="modal-body">
-            <label class="col-form-label" for="commentForManager"
-              >Комментарий для менеджера</label
-            >
-            <textarea
-              rows="8"
-              v-model="store.state.orders.order.comment_for_manager"
-              type="text"
-              class="form-control"
-              placeholder="Комментарий для менеджера"
-              id="commentForManager"
-            />
+            <label class="col-form-label" for="commentForManager">Комментарий для менеджера</label>
+            <textarea rows="8" v-model="store.state.orders.order.comment_for_manager" type="text" class="form-control"
+              placeholder="Комментарий для менеджера" id="commentForManager" />
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
                 <i class="flaticon-cancel-12"></i>Отмена
               </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="update_comment_for_manager"
-              >
+              <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_manager">
                 Сохранить
               </button>
             </div>
@@ -753,54 +652,26 @@ const finish_order = () => {
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      ref="commentForAssemblerModalRef"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="commentForAssemblerModalRef"
-      aria-hidden="true"
-    >
+    <div class="modal fade" ref="commentForAssemblerModalRef" tabindex="-1" role="dialog"
+      aria-labelledby="commentForAssemblerModalRef" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="commentForAssemblerModalRef">
               Комментарий для сборщика
             </h5>
-            <button
-              type="button"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              class="btn-close"
-            ></button>
+            <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+              class="btn-close"></button>
           </div>
           <div class="modal-body">
-            <label class="col-form-label" for="commentForAssembler"
-              >Комментарий для сборщика</label
-            >
-            <textarea
-              rows="8"
-              v-model="store.state.orders.order.comment_for_assembler"
-              type="text"
-              class="form-control"
-              placeholder="Комментарий для сборщика"
-              id="commentForAssembler"
-            />
+            <label class="col-form-label" for="commentForAssembler">Комментарий для сборщика</label>
+            <textarea rows="8" v-model="store.state.orders.order.comment_for_assembler" type="text" class="form-control"
+              placeholder="Комментарий для сборщика" id="commentForAssembler" />
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
                 <i class="flaticon-cancel-12"></i>Отмена
               </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="update_comment_for_assembler"
-              >
+              <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_assembler">
                 Сохранить
               </button>
             </div>
@@ -809,54 +680,26 @@ const finish_order = () => {
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      ref="commentForPickerModalRef"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="commentForPickerModalRef"
-      aria-hidden="true"
-    >
+    <div class="modal fade" ref="commentForPickerModalRef" tabindex="-1" role="dialog"
+      aria-labelledby="commentForPickerModalRef" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="commentForPickerModalRef">
               Комментарий для упаковщика
             </h5>
-            <button
-              type="button"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              class="btn-close"
-            ></button>
+            <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+              class="btn-close"></button>
           </div>
           <div class="modal-body">
-            <label class="col-form-label" for="commentForPicker"
-              >Комментарий для упаковщика</label
-            >
-            <textarea
-              rows="8"
-              v-model="store.state.orders.order.comment_for_picker"
-              type="text"
-              class="form-control"
-              placeholder="Комментарий для упаковщика"
-              id="commentForPicker"
-            />
+            <label class="col-form-label" for="commentForPicker">Комментарий для упаковщика</label>
+            <textarea rows="8" v-model="store.state.orders.order.comment_for_picker" type="text" class="form-control"
+              placeholder="Комментарий для упаковщика" id="commentForPicker" />
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
                 <i class="flaticon-cancel-12"></i>Отмена
               </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="update_comment_for_picker"
-              >
+              <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_picker">
                 Сохранить
               </button>
             </div>
@@ -865,54 +708,26 @@ const finish_order = () => {
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      ref="commentForSenderModalRef"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="commentForSenderModalRef"
-      aria-hidden="true"
-    >
+    <div class="modal fade" ref="commentForSenderModalRef" tabindex="-1" role="dialog"
+      aria-labelledby="commentForSenderModalRef" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="commentForSenderModalRef">
               Комментарий для СДЭК
             </h5>
-            <button
-              type="button"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              class="btn-close"
-            ></button>
+            <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+              class="btn-close"></button>
           </div>
           <div class="modal-body">
-            <label class="col-form-label" for="commentForSender"
-              >Комментарий для СДЭК</label
-            >
-            <textarea
-              rows="8"
-              v-model="store.state.orders.order.comment_for_sender"
-              type="text"
-              class="form-control"
-              placeholder="Комментарий для СДЭК"
-              id="commentForPicker"
-            />
+            <label class="col-form-label" for="commentForSender">Комментарий для СДЭК</label>
+            <textarea rows="8" v-model="store.state.orders.order.comment_for_sender" type="text" class="form-control"
+              placeholder="Комментарий для СДЭК" id="commentForPicker" />
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
                 <i class="flaticon-cancel-12"></i>Отмена
               </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="update_comment_for_sender"
-              >
+              <button type="button" class="btn btn-primary" @click.prevent="update_comment_for_sender">
                 Сохранить
               </button>
             </div>
@@ -921,49 +736,23 @@ const finish_order = () => {
       </div>
     </div>
 
-    <div
-      class="modal fade"
-      ref="trackNumberModalRef"
-      tabindex="-1"
-      role="dialog"
-      aria-labelledby="trackNumberModalRef"
-      aria-hidden="true"
-    >
+    <div class="modal fade" ref="trackNumberModalRef" tabindex="-1" role="dialog" aria-labelledby="trackNumberModalRef"
+      aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered" role="document">
         <div class="modal-content">
           <div class="modal-header">
             <h5 class="modal-title" id="trackNumberModalRef">Трек-номер</h5>
-            <button
-              type="button"
-              data-dismiss="modal"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-              class="btn-close"
-            ></button>
+            <button type="button" data-dismiss="modal" data-bs-dismiss="modal" aria-label="Close"
+              class="btn-close"></button>
           </div>
           <div class="modal-body">
             <label class="col-form-label" for="trackNumber">Трек-номер</label>
-            <input
-              v-model="trackNumber"
-              type="text"
-              class="form-control"
-              placeholder="Трек-номер"
-              id="trackNumber"
-            />
+            <input v-model="trackNumber" type="text" class="form-control" placeholder="Трек-номер" id="trackNumber" />
             <div class="modal-footer">
-              <button
-                type="button"
-                class="btn"
-                data-dismiss="modal"
-                data-bs-dismiss="modal"
-              >
+              <button type="button" class="btn" data-dismiss="modal" data-bs-dismiss="modal">
                 <i class="flaticon-cancel-12"></i>Отмена
               </button>
-              <button
-                type="button"
-                class="btn btn-primary"
-                @click.prevent="add_track_number"
-              >
+              <button type="button" class="btn btn-primary" @click.prevent="add_track_number">
                 Сохранить
               </button>
             </div>
