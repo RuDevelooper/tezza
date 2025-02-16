@@ -130,7 +130,7 @@ class Order(viewsets.ModelViewSet):
         "designer",
     )
     ordering = "-created_at"
-    ordering_fields = ["created_at", "due_date"]
+    ordering_fields = ["created_at", "due_date", "ordered_at"]
 
     # def get_queryset(self):
     #     return self.request.user.accounts.all()

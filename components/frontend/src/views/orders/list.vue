@@ -79,7 +79,7 @@ const statuses = ref({
 onMounted(() => {
     bind_data();
 });
-const assembler_filter = 'status__in=new,wait_payment,payed,assembly,assembled,coloring,packing,shipped&ordering=-ordered_at'
+const assembler_filter = 'status__in=new,wait_payment,payed,assembly,assembled,coloring,packing,shipped&ordering=-created_at'
 
 const bind_data = async () => {
     while (true) {
