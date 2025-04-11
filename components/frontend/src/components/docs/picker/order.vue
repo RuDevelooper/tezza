@@ -47,7 +47,7 @@ const props = defineProps({
         <span class="inv-title">Стоимость изделий : </span>
         <span class="inv-date"> {{ order.products_cost }} руб. </span>
       </p>
-      <div v-if="order.delivery_payer == 'customer'">
+      <div>
         <p class="inv-created-date">
           <span class="inv-title">Стоимость доставки : </span>
           <span class="inv-date"> {{ order.delivery_cost }} руб. </span>
