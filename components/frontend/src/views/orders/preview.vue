@@ -551,7 +551,7 @@ const finish_order = () => {
                                   <td>
                                     {{ item.product.color.title }}
                                   </td>
-                                  <td>{{ item.price }} руб.</td>
+                                  <td>{{ item.price * (1 - item.discount / 100) }} руб.</td>
                                   <td>{{ item.discount }} %</td>
                                   <td>
                                     {{ item.status_name }}

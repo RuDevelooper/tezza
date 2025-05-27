@@ -112,7 +112,7 @@ const bind_data = async () => {
                     <div class="custom-table">
                         <v-client-table :data="store.state.orders.orders_archive" :columns="columns" :options="table_option">
                             <template #number="props">
-                                <router-link :to="{ path: '/orders/preview', query: { id: props.row.id } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/orders/preview', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>

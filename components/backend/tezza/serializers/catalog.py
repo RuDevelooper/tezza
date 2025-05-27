@@ -29,7 +29,7 @@ class Side(serializers.BaseSerializer):
 class Product(serializers.ModelSerializer):
     color_obj = Color(source='color', read_only=True)
     material_obj = Material(source='material', read_only=True)
-    side = serializers.CharField(source='get_side_display', read_only=True)
+    side_repr = serializers.CharField(source='get_side_display', read_only=True)
 
     class Meta:
         model = models.Product

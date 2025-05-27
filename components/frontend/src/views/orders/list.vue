@@ -124,7 +124,7 @@ const bind_data = async () => {
                                 </router-link>
                             </template>
                             <template #number="props">
-                                <router-link :to="{ path: '/orders/preview', query: { id: props.row.id } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/orders/preview', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>

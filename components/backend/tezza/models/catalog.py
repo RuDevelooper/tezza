@@ -77,8 +77,10 @@ class Product(models.Model):
         blank=True,
         null=True,
     )
-    size = models.IntegerField(
+    size = models.DecimalField(
         default=0,
+        decimal_places=2,
+        max_digits=6,
         verbose_name='Размер, см',
         blank=True,
         null=True,

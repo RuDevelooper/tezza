@@ -115,7 +115,7 @@ const bind_data = async () => {
                             <template #beforeFilter>
                             </template>
                             <template #number="props">
-                                <router-link :to="{ path: '/sender/order', query: { id: props.row.id } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/sender/order', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>
