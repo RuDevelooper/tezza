@@ -278,7 +278,7 @@ const paid_visit_options = computed(() => {
                         <v-client-table :data="store.state.order_items.order_items" :columns="columns"
                             :options="table_option">
                             <template #product="props">
-                                <router-link :to="{ path: '/orders/preview', query: { id: props.row.order } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/orders/preview', query: { id: props.row.order } }">
                                     <span class="inv-number">{{ `${props.row.product?.sku} |
                                         ${props.row.product?.title}`
                                         }}</span>

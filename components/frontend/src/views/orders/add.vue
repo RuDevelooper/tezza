@@ -118,7 +118,7 @@ const add_indi_item = (item) => {
             title: item.title,
             quantity: 1,
             material: item.material_obj,
-            side: item.side,
+            side: item.side_repr,
             color: item.color_obj,
             price: item.price,
         }
@@ -808,8 +808,8 @@ const countTotal = () => {
                                     <label>Сторона</label>
                                     <select v-model="indiProduct.side" class="form-select form-select" id="side">
                                         <option value="null">-</option>
-                                        <option value="Слева">Слева</option>
-                                        <option value="Справа">Справа</option>
+                                        <option value="L">Слева</option>
+                                        <option value="R">Справа</option>
                                     </select>
                                 </div>
                                 <div class="col-xl-6 col-md-6 col-sm-12">

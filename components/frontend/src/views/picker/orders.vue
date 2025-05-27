@@ -169,7 +169,7 @@ const selcted_row = (val) => {
                                 </div>
                             </template>
                             <template #number="props">
-                                <router-link :to="{ path: '/picker/order', query: { id: props.row.id } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/picker/order', query: { id: props.row.id } }">
                                     <span class="inv-number">{{ props.row.number }}</span>
                                 </router-link>
                             </template>

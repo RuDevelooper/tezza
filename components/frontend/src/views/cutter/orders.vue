@@ -144,7 +144,7 @@ const chk = ref({});
                                 </div>
                             </template>
                             <template #order_num="props">
-                                <router-link :to="{ path: '/cutter/order', query: { id: props.row.order } }">
+                                <router-link target="_blank" rel="noopener noreferrer" :to="{ path: '/cutter/order', query: { id: props.row.order } }">
                                     <span class="inv-number">{{ props.row.order_num }}</span>
                                 </router-link>
                             </template>

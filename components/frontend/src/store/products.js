@@ -10,7 +10,7 @@ export class Product {
         // this.id = product.id;
         this.sku = product.sku;
         this.title = product.title;
-        this.side = product.side;
+        this.side = product.side_repr;
         this.side_point = product.side_point;
         this.size = product.size2 ? `${product.size}/${product.size2}` : product.size;
         this.price = product.price;
