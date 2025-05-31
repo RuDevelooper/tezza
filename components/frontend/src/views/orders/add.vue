@@ -151,7 +151,7 @@ const create_order = () => {
                     sku: item.item.sku,
                     title: item.item.title,
                     material: item.item.material.id,
-                    side: item.item.side,
+                    // side: item.item.side,
                     color: item.item.color.id,
                 },
                 price: item.item.price,
