@@ -57,7 +57,7 @@ class DailyAssemblyStatsView(View):
             percent = total_value / total * 100
             j = {
                 'assembler_id': i['order__assembler__id'],
-                'assembler': f'{i['order__assembler__first_name']} {i['order__assembler__last_name']}',
+                'assembler': f"{i['order__assembler__first_name']} {i['order__assembler__last_name']}",
                 'items_count': i['items_count'],
                 'total_value': total_value,
                 'percent': percent
