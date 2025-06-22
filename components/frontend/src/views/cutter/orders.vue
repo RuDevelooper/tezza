@@ -34,7 +34,7 @@ const headings = {
 
 const table_option = ref({
   headings: headings,
-  perPage: 50,
+  perPage: 100,
   perPageValues: [25, 50, 100, 200],
   skin: "table table-hover",
   columnsClasses: { actions: "actions text-center" },
