@@ -265,7 +265,7 @@ const myOrdersOnlyFilter = () => {
                 </div>
               </template>
               <template #number="props">
-                <router-link
+                <router-link target="_blank" rel="noopener noreferrer"
                   :to="{
                     path: '/assembler/order',
                     query: { id: props.row.id },
