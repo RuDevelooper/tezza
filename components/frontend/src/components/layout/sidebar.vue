@@ -156,6 +156,11 @@ const links = {
                                 {{ $t('orders') }}
                             </router-link>
                         </li>
+                        <li>
+                            <router-link to="/assembler/chart" @click="toggleMobileMenu">
+                                {{ $t('chart') }}
+                            </router-link>
+                        </li>
                     </ul>
                 </li>
 

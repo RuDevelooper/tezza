@@ -124,6 +124,7 @@ class Order(viewsets.ModelViewSet):
     filterset_fields: dict[str, list[str]] = {
         "status": ["in", "exact"],  # note the 'in' field
         "number": ["exact"],
+        "assembler": ["exact"],
     }
 
     filter_backends = [DjangoFilterBackend, OrderingFilter]

@@ -11,7 +11,7 @@ export class OrderItem {
         this.discount = item.discount;
         this.assembled_at = item.assembled_at ? new Date(item.assembled_at) : null;
         this.product = new Product(item.product);
-        this.price = item.price;
+        this.price = Number.parseFloat(item.price);
         this.order = item.order;
         this.order_num = item.order_num;
     }
