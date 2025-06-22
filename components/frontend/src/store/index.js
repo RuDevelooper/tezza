@@ -12,6 +12,7 @@ import materials from './materials';
 import colors from './colors';
 import designers from './designers';
 import sides from './sides';
+import chart from './chart';
 
 export default new createStore({
     state: {
@@ -107,5 +108,6 @@ export default new createStore({
         designers,
         sides,
         users,
+        chart,
       },
 });

@@ -3,13 +3,15 @@ from django.urls import path, include
 from rest_framework import routers
 from rest_framework.authtoken import views
 
-from tezza.views import api
+from tezza.views import api, chart
 from tezza.views.logout import LogoutView
+from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/login/', views.obtain_auth_token),
     path('api/logout/', LogoutView.as_view()),
+    path('api/chart/', chart.DailyAssemblyStatsView.as_view()),
 ]
 
 router = routers.DefaultRouter()
@@ -32,3 +34,4 @@ router.register('user', api.UserViewSet, basename='user', )
 urlpatterns += [
     path('api/', include(router.urls)),
 ]
+urlpatterns += debug_toolbar_urls()
