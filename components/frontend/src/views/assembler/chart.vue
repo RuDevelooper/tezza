@@ -1,258 +1,394 @@
 <script setup>
-import '@/assets/sass/widgets/widgets.scss';
-import { onMounted, computed, ref } from 'vue';
-import { useStore } from 'vuex';
-import ApexChart from 'vue3-apexcharts';
+import "@/assets/sass/widgets/widgets.scss";
+import { onMounted, computed, ref } from "vue";
+import { useStore } from "vuex";
+import ApexChart from "vue3-apexcharts";
 
-import { useMeta } from '@/composables/use-meta';
-useMeta({ title: 'Чарт' });
+import { useMeta } from "@/composables/use-meta";
+useMeta({ title: "Чарт" });
 
 const store = useStore();
 
 onMounted(() => {
-    bind_data();
+  bind_data();
 });
-const order_items_filter = `assembler=${store.state.auth.user.id}`
-
+const order_items_filter = `assembler=${store.state.auth.user.id}`;
 
 //Statistics
 const total_items = ref([{ data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]);
 const total_count = ref(0);
 const total_price = ref(0);
 const total_items_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    return {
-        chart: { sparkline: { enabled: true }, dropShadow: { enabled: true, top: 3, left: 1, blur: 3, color: '#009688', opacity: 0.7 } },
-        stroke: { curve: 'smooth', width: 2 },
-        markers: { size: 0 },
-        colors: ['#009688'],
-        grid: { padding: { top: 0, bottom: 0, left: 0 } },
-        tooltip: {
-            theme: is_dark ? 'dark' : 'light',
-            x: { show: false },
-            y: {
-                title: {
-                    formatter: function formatter() {
-                        return '';
-                    },
-                },
-            },
+  const is_dark = store.state.is_dark_mode;
+  return {
+    chart: {
+      sparkline: { enabled: true },
+      dropShadow: {
+        enabled: true,
+        top: 3,
+        left: 1,
+        blur: 3,
+        color: "#009688",
+        opacity: 0.7,
+      },
+    },
+    stroke: { curve: "smooth", width: 2 },
+    markers: { size: 0 },
+    colors: ["#009688"],
+    grid: { padding: { top: 0, bottom: 0, left: 0 } },
+    tooltip: {
+      theme: is_dark ? "dark" : "light",
+      x: { show: false },
+      y: {
+        title: {
+          formatter: function formatter() {
+            return "";
+          },
         },
-        responsive: [{ breakPoint: 576, options: { chart: { height: 95 }, grid: { padding: { top: 45, bottom: 0, left: 0 } } } }],
-    };
+      },
+    },
+    responsive: [
+      {
+        breakPoint: 576,
+        options: {
+          chart: { height: 95 },
+          grid: { padding: { top: 45, bottom: 0, left: 0 } },
+        },
+      },
+    ],
+  };
 });
 
 const total_cost_series = ref([{ data: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0] }]);
 const paid_visit_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    return {
-        chart: { sparkline: { enabled: true }, dropShadow: { enabled: true, top: 1, left: 1, blur: 2, color: '#e2a03f', opacity: 0.7 } },
-        stroke: { curve: 'smooth', width: 2 },
-        markers: { size: 0 },
-        colors: ['#e2a03f'],
-        grid: { padding: { top: 0, bottom: 0, left: 0 } },
-        tooltip: {
-            theme: is_dark ? 'dark' : 'light',
-            x: { show: false },
-            y: {
-                title: {
-                    formatter: function formatter() {
-                        return '';
-                    },
-                },
-            },
+  const is_dark = store.state.is_dark_mode;
+  return {
+    chart: {
+      sparkline: { enabled: true },
+      dropShadow: {
+        enabled: true,
+        top: 1,
+        left: 1,
+        blur: 2,
+        color: "#e2a03f",
+        opacity: 0.7,
+      },
+    },
+    stroke: { curve: "smooth", width: 2 },
+    markers: { size: 0 },
+    colors: ["#e2a03f"],
+    grid: { padding: { top: 0, bottom: 0, left: 0 } },
+    tooltip: {
+      theme: is_dark ? "dark" : "light",
+      x: { show: false },
+      y: {
+        title: {
+          formatter: function formatter() {
+            return "";
+          },
         },
-        responsive: [{ breakPoint: 576, options: { chart: { height: 95 }, grid: { padding: { top: 35, bottom: 0, left: 0 } } } }],
-    };
+      },
+    },
+    responsive: [
+      {
+        breakPoint: 576,
+        options: {
+          chart: { height: 95 },
+          grid: { padding: { top: 35, bottom: 0, left: 0 } },
+        },
+      },
+    ],
+  };
 });
 const startDate = new Date(new Date().getFullYear(), new Date().getMonth(), 1);
-const endDate = new Date(new Date().getFullYear(), new Date().getMonth() + 1, 0);
+const endDate = new Date(
+  new Date().getFullYear(),
+  new Date().getMonth() + 1,
+  0,
+);
 const bind_data = () => {
-    store.dispatch('orders/fetchFilter', order_items_filter).then(() => calculateChart());
-    store.dispatch(
-        'chart/fetch',
-        `start_date=${startDate.getTime() / 1000}&end_date=${endDate.getTime() / 1000}`
-    );
-
-
+  store
+    .dispatch("orders/fetchFilter", order_items_filter)
+    .then(() => calculateChart());
+  store.dispatch(
+    "chart/fetch",
+    `start_date=${startDate.getTime() / 1000}&end_date=${
+      endDate.getTime() / 1000
+    }`,
+  );
 };
 
 const calculateChart = () => {
-    const counts = {};
-    const cost_count = {}
-    store.state.orders.orders.forEach(order => {
-        order.items.forEach(item => {
-            if (item.assembled_at == null) return;
+  const counts = {};
+  const cost_count = {};
+  store.state.orders.orders.forEach((order) => {
+    order.items.forEach((item) => {
+      if (item.assembled_at == null) return;
 
-            const date = new Date(item.assembled_at);
-            const year = date.getFullYear();
-            const month = date.getMonth() + 1; // 1-12
-            const key = `${year}-${month.toString().padStart(2, '0')}`; // "2023-05"
+      const date = new Date(item.assembled_at);
+      const year = date.getFullYear();
+      const month = date.getMonth() + 1; // 1-12
+      const key = `${year}-${month.toString().padStart(2, "0")}`; // "2023-05"
 
-            counts[key] = (counts[key] || 0) + 1;
-            cost_count[key] = (cost_count[key] || 0) + Number.parseFloat(item.price);
-
-        });
+      counts[key] = (counts[key] || 0) + 1;
+      cost_count[key] = (cost_count[key] || 0) + Number.parseFloat(item.price);
     });
+  });
 
-    // Преобразуем в массив объектов { key, count } и сортируем по году и месяцу
-    const sortedKeys = Object.keys(counts).sort();
-    const sortedCostKeys = Object.keys(cost_count).sort();
+  // Преобразуем в массив объектов { key, count } и сортируем по году и месяцу
+  const sortedKeys = Object.keys(counts).sort();
+  const sortedCostKeys = Object.keys(cost_count).sort();
 
-    total_items.value[0].data = sortedKeys.map(key => counts[key]);
-    total_cost_series.value[0].data = sortedCostKeys.map(key => cost_count[key]);
-    total_count.value = total_items.value[0].data.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    total_price.value = total_cost_series.value[0].data.reduce((accumulator, currentValue) => accumulator + Number.parseFloat(currentValue), 0);
-
-
-}
+  total_items.value[0].data = sortedKeys.map((key) => counts[key]);
+  total_cost_series.value[0].data = sortedCostKeys.map(
+    (key) => cost_count[key],
+  );
+  total_count.value = total_items.value[0].data.reduce(
+    (accumulator, currentValue) => accumulator + currentValue,
+    0,
+  );
+  total_price.value = total_cost_series.value[0].data.reduce(
+    (accumulator, currentValue) =>
+      accumulator + Number.parseFloat(currentValue),
+    0,
+  );
+};
 
 //unique visitors
 const unique_visitor_series = ref([
-    { name: 'Direct', data: [58, 44, 55, 57, 56, 61, 58, 63, 60, 66, 56, 63] },
-    { name: 'Organic', data: [91, 76, 85, 101, 98, 87, 105, 91, 114, 94, 66, 70] },
+  { name: "Direct", data: [58, 44, 55, 57, 56, 61, 58, 63, 60, 66, 56, 63] },
+  {
+    name: "Organic",
+    data: [91, 76, 85, 101, 98, 87, 105, 91, 114, 94, 66, 70],
+  },
 ]);
 const unique_visitor_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    return {
-        chart: { toolbar: { show: false } },
-        dataLabels: { enabled: false },
-        stroke: { show: true, width: 2, colors: ['transparent'] },
-        colors: ['#5c1ac3', '#ffbb44'],
-        dropShadow: { enabled: true, opacity: 0.3, blur: 1, left: 1, top: 1, color: '#515365' },
-        plotOptions: { bar: { horizontal: false, columnWidth: '55%', borderRadius: 10 } },
-        legend: { position: 'bottom', horizontalAlign: 'center', fontSize: '14px', markers: { width: 12, height: 12 }, itemMargin: { horizontal: 0, vertical: 8 } },
-        grid: { borderColor: is_dark ? '#191e3a' : '#e0e6ed' },
-        xaxis: {
-            categories: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'],
-            axisBorder: { show: true, color: is_dark ? '#3b3f5c' : '#e0e6ed' },
+  const is_dark = store.state.is_dark_mode;
+  return {
+    chart: { toolbar: { show: false } },
+    dataLabels: { enabled: false },
+    stroke: { show: true, width: 2, colors: ["transparent"] },
+    colors: ["#5c1ac3", "#ffbb44"],
+    dropShadow: {
+      enabled: true,
+      opacity: 0.3,
+      blur: 1,
+      left: 1,
+      top: 1,
+      color: "#515365",
+    },
+    plotOptions: {
+      bar: { horizontal: false, columnWidth: "55%", borderRadius: 10 },
+    },
+    legend: {
+      position: "bottom",
+      horizontalAlign: "center",
+      fontSize: "14px",
+      markers: { width: 12, height: 12 },
+      itemMargin: { horizontal: 0, vertical: 8 },
+    },
+    grid: { borderColor: is_dark ? "#191e3a" : "#e0e6ed" },
+    xaxis: {
+      categories: [
+        "Jan",
+        "Feb",
+        "Mar",
+        "Apr",
+        "May",
+        "Jun",
+        "Jul",
+        "Aug",
+        "Sep",
+        "Oct",
+        "Nov",
+        "Dec",
+      ],
+      axisBorder: { show: true, color: is_dark ? "#3b3f5c" : "#e0e6ed" },
+    },
+    yaxis: {
+      tickAmount: 6,
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shade: is_dark ? "dark" : "light",
+        type: "vertical",
+        shadeIntensity: 0.3,
+        inverseColors: false,
+        opacityFrom: 1,
+        opacityTo: 0.8,
+        stops: [0, 100],
+      },
+    },
+    tooltip: {
+      theme: is_dark ? "dark" : "light",
+      y: {
+        formatter: function (val) {
+          return val;
         },
-        yaxis: {
-            tickAmount: 6,
-        },
-        fill: {
-            type: 'gradient',
-            gradient: { shade: is_dark ? 'dark' : 'light', type: 'vertical', shadeIntensity: 0.3, inverseColors: false, opacityFrom: 1, opacityTo: 0.8, stops: [0, 100] },
-        },
-        tooltip: {
-            theme: is_dark ? 'dark' : 'light',
-            y: {
-                formatter: function (val) {
-                    return val;
-                },
-            },
-        },
-    };
+      },
+    },
+  };
 });
 
 //Followers
-const followers_series = ref([{ name: 'Sales', data: [38, 60, 38, 52, 36, 40, 28] }]);
+const followers_series = ref([
+  { name: "Sales", data: [38, 60, 38, 52, 36, 40, 28] },
+]);
 const followers_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    let option = {
-        chart: { sparkline: { enabled: true } },
-        stroke: { curve: 'smooth', width: 2 },
-        colors: ['#4361ee'],
-        yaxis: { min: 0, show: false },
-        tooltip: { theme: is_dark ? 'dark' : 'light', x: { show: false } },
+  const is_dark = store.state.is_dark_mode;
+  let option = {
+    chart: { sparkline: { enabled: true } },
+    stroke: { curve: "smooth", width: 2 },
+    colors: ["#4361ee"],
+    yaxis: { min: 0, show: false },
+    tooltip: { theme: is_dark ? "dark" : "light", x: { show: false } },
+  };
+  if (is_dark) {
+    option["fill"] = {
+      type: "gradient",
+      gradient: {
+        type: "vertical",
+        shadeIntensity: 1,
+        inverseColors: !1,
+        opacityFrom: 0.3,
+        opacityTo: 0.05,
+        stops: [100, 100],
+      },
     };
-    if (is_dark) {
-        option['fill'] = { type: 'gradient', gradient: { type: 'vertical', shadeIntensity: 1, inverseColors: !1, opacityFrom: 0.3, opacityTo: 0.05, stops: [100, 100] } };
-    }
-    return option;
+  }
+  return option;
 });
 
 //Referral
-const referral_series = ref([{ name: 'Sales', data: [60, 28, 52, 38, 40, 36, 38] }]);
+const referral_series = ref([
+  { name: "Sales", data: [60, 28, 52, 38, 40, 36, 38] },
+]);
 const referral_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    let option = {
-        chart: { sparkline: { enabled: true } },
-        stroke: { curve: 'smooth', width: 2 },
-        colors: ['#e7515a'],
-        yaxis: { min: 0, show: false },
-        tooltip: { theme: is_dark ? 'dark' : 'light', x: { show: false } },
+  const is_dark = store.state.is_dark_mode;
+  let option = {
+    chart: { sparkline: { enabled: true } },
+    stroke: { curve: "smooth", width: 2 },
+    colors: ["#e7515a"],
+    yaxis: { min: 0, show: false },
+    tooltip: { theme: is_dark ? "dark" : "light", x: { show: false } },
+  };
+  if (is_dark) {
+    option["fill"] = {
+      type: "gradient",
+      gradient: {
+        type: "vertical",
+        shadeIntensity: 1,
+        inverseColors: !1,
+        opacityFrom: 0.3,
+        opacityTo: 0.05,
+        stops: [100, 100],
+      },
     };
-    if (is_dark) {
-        option['fill'] = { type: 'gradient', gradient: { type: 'vertical', shadeIntensity: 1, inverseColors: !1, opacityFrom: 0.3, opacityTo: 0.05, stops: [100, 100] } };
-    }
-    return option;
+  }
+  return option;
 });
 
 //Engagement
-const engagement_series = ref([{ name: 'Sales', data: [28, 50, 36, 60, 38, 52, 38] }]);
+const engagement_series = ref([
+  { name: "Sales", data: [28, 50, 36, 60, 38, 52, 38] },
+]);
 const engagement_options = computed(() => {
-    const is_dark = store.state.is_dark_mode;
-    let option = {
-        chart: { sparkline: { enabled: true } },
-        stroke: { curve: 'smooth', width: 2 },
-        colors: ['#1abc9c'],
-        yaxis: { min: 0, show: false },
-        tooltip: { theme: is_dark ? 'dark' : 'light', x: { show: false } },
+  const is_dark = store.state.is_dark_mode;
+  let option = {
+    chart: { sparkline: { enabled: true } },
+    stroke: { curve: "smooth", width: 2 },
+    colors: ["#1abc9c"],
+    yaxis: { min: 0, show: false },
+    tooltip: { theme: is_dark ? "dark" : "light", x: { show: false } },
+  };
+  if (is_dark) {
+    option["fill"] = {
+      type: "gradient",
+      gradient: {
+        type: "vertical",
+        shadeIntensity: 1,
+        inverseColors: !1,
+        opacityFrom: 0.3,
+        opacityTo: 0.05,
+        stops: [100, 100],
+      },
     };
-    if (is_dark) {
-        option['fill'] = { type: 'gradient', gradient: { type: 'vertical', shadeIntensity: 1, inverseColors: !1, opacityFrom: 0.3, opacityTo: 0.05, stops: [100, 100] } };
-    }
-    return option;
+  }
+  return option;
 });
 </script>
 <template>
-    <div class="layout-px-spacing dash_2">
-        <teleport to="#breadcrumb">
-            <ul class="navbar-nav flex-row">
-                <li>
-                    <div class="page-header">
-                        <nav class="breadcrumb-one" aria-label="breadcrumb">
-                            <ol class="breadcrumb">
-                                <li class="breadcrumb-item">
-                                    <a href="javascript:;">Заказы на сборку</a>
-                                </li>
-                                <li class="breadcrumb-item active" aria-current="page">
-                                    <span>Чарт</span>
-                                </li>
-                            </ol>
-                        </nav>
-                    </div>
+  <div class="layout-px-spacing dash_2">
+    <teleport to="#breadcrumb">
+      <ul class="navbar-nav flex-row">
+        <li>
+          <div class="page-header">
+            <nav class="breadcrumb-one" aria-label="breadcrumb">
+              <ol class="breadcrumb">
+                <li class="breadcrumb-item">
+                  <a href="javascript:;">Заказы на сборку</a>
                 </li>
-            </ul>
-        </teleport>
+                <li class="breadcrumb-item active" aria-current="page">
+                  <span>Чарт</span>
+                </li>
+              </ol>
+            </nav>
+          </div>
+        </li>
+      </ul>
+    </teleport>
 
-        <div class="row layout-top-spacing">
-            <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
-                <div class="widget widget-visitor-by-browser">
-                    <div class="widget-heading">
-                        <h5>Чарт - текущий месяц</h5>
-                    </div>
-                    <div class="widget-content">
-                        <div v-for="item in store.state.chart.chart" :key="item.id" class="browser-list chart">
-                            <div class="w-icon icon-fill-primary">
-                                <div class="avatar avatar-xl avatar-success m-1">
-                                    <span class="avatar-title rounded-circle">{{ item.assembler[0] }}</span>
-                                </div>
-                            </div>
-                            <div class="w-browser-details">
-                                <div class="w-browser-info">
-                                    <h6>{{ item.assembler }} - {{ item.items_count }} изделий</h6>
-                                    <p class="browser-count">{{ item.percent }}%</p>
-                                </div>
-                                <div class="w-browser-stats">
-                                    <div class="progress">
-                                        <div role="progressbar" aria-valuemin="0" aria-valuemax="100"
-                                            :aria-valuenow=item.percent class="progress-bar"
-                                            :style="`width: ${item.percent}%`"></div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+    <div class="row layout-top-spacing">
+      <div class="col-xl-6 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
+        <div class="widget widget-visitor-by-browser">
+          <div class="widget-heading">
+            <h5>Чарт - текущий месяц</h5>
+          </div>
+          <div class="widget-content">
+            <div
+              v-for="item in store.state.chart.chart"
+              :key="item.id"
+              class="browser-list chart"
+            >
+              <div class="w-icon icon-fill-primary">
+                <div class="avatar avatar-xl avatar-success m-1">
+                  <span class="avatar-title rounded-circle">{{
+                    item.assembler[0]
+                  }}</span>
                 </div>
+              </div>
+              <div class="w-browser-details">
+                <div class="w-browser-info">
+                  <h6>{{ item.assembler }} - {{ item.items_count }} изделий</h6>
+                  <p class="browser-count">{{ item.percent }}%</p>
+                </div>
+                <div class="w-browser-stats">
+                  <div class="progress">
+                    <div
+                      role="progressbar"
+                      aria-valuemin="0"
+                      aria-valuemax="100"
+                      :aria-valuenow="item.percent"
+                      class="progress-bar"
+                      :style="`width: ${item.percent}%`"
+                    ></div>
+                  </div>
+                </div>
+              </div>
             </div>
+          </div>
+        </div>
+      </div>
 
-            <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
-                <div class="widget widget-statistics">
-                    <div class="widget-heading">
-                        <h5>Мои изделия - весь период</h5>
-                        <!-- <div class="task-action">
+      <div
+        v-if="total_count"
+        class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing"
+      >
+        <div class="widget widget-statistics">
+          <div class="widget-heading">
+            <h5>Мои изделия - весь период</h5>
+            <!-- <div class="task-action">
                             <div class="dropdown btn-group">
                                 <a href="javascript:;" id="ddlStatistics" class="btn dropdown-toggle btn-icon-only"
                                     data-bs-toggle="dropdown" aria-expanded="false">
@@ -270,30 +406,42 @@ const engagement_options = computed(() => {
                                 </ul>
                             </div>
                         </div> -->
-                    </div>
-                    <div class="widget-content">
-                        <div class="row">
-                            <div class="col-6">
-                                <div class="w-detail">
-                                    <p class="w-title">Собрано всего</p>
-                                    <p class="w-stats">{{ total_count.toLocaleString("ru-RU") }}</p>
-                                </div>
-                                <apex-chart v-if="total_items_options" height="256" type="line"
-                                    :options="total_items_options" :series="total_items"></apex-chart>
-                            </div>
-                            <div class="col-6">
-                                <div class="w-detail">
-                                    <p class="w-title">Польза</p>
-                                    <!-- <p class="w-stats">{{ total_price.toLocaleString("ru-RU") }} руб.</p> -->
-                                </div>
-                                <apex-chart v-if="paid_visit_options" height="256" type="line"
-                                    :options="paid_visit_options" :series="total_cost_series"></apex-chart>
-                            </div>
-                        </div>
-                    </div>
+          </div>
+          <div class="widget-content">
+            <div class="row">
+              <div class="col-6">
+                <div class="w-detail">
+                  <p class="w-title">Собрано всего</p>
+                  <p class="w-stats">
+                    {{ total_count.toLocaleString("ru-RU") }}
+                  </p>
                 </div>
+                <apex-chart
+                  v-if="total_items_options"
+                  height="256"
+                  type="line"
+                  :options="total_items_options"
+                  :series="total_items"
+                ></apex-chart>
+              </div>
+              <div class="col-6">
+                <div class="w-detail">
+                  <p class="w-title">Польза</p>
+                  <!-- <p class="w-stats">{{ total_price.toLocaleString("ru-RU") }} руб.</p> -->
+                </div>
+                <apex-chart
+                  v-if="paid_visit_options"
+                  height="256"
+                  type="line"
+                  :options="paid_visit_options"
+                  :series="total_cost_series"
+                ></apex-chart>
+              </div>
             </div>
-<!-- 
+          </div>
+        </div>
+      </div>
+      <!-- 
             <div class="col-xl-4 col-lg-6 col-md-6 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-expenses">
                     <div class="widget-heading">
@@ -908,6 +1056,6 @@ const engagement_options = computed(() => {
                     </div>
                 </div>
             </div> -->
-        </div>
     </div>
+  </div>
 </template>
