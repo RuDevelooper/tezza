@@ -114,9 +114,7 @@ const print = () => {
                           <div class="row">
                             <div class="col-sm-12 col-12 me-auto">
                               <p class="inv-list-number">
-                                <span class="h1">Заказ: </span>
-                                <span class="h1">
-                                  {{ store.state.orders.order.number }}
+                                <span class="h1">Заказ: {{ store.state.orders.order.number }}
                                 </span>
                               </p>
                             </div>
