@@ -72,7 +72,7 @@ const bind_data = () => {
     store.dispatch(
         'chart/fetch',
         `start_date=${startDate.getTime() / 1000}&end_date=${endDate.getTime() / 1000}`
-    ).then((data) => console.log(data));
+    );
 
 
 };
