@@ -48,8 +48,8 @@ class Order(models.Model):
         HIGH = 'high', _('Высокий')
 
     class DeliveryPayer(models.TextChoices):
-        CUSTOMER = 'customer', _('Покупатель')
-        COMPANY = 'company', _('Компания')
+        CUSTOMER = 'customer', _('Получатель')
+        COMPANY = 'company', _('Отправитель')
 
     number = models.CharField(
         max_length=100,

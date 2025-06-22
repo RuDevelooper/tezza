@@ -70,11 +70,11 @@ const default_item_values = {
 const delivery_payer_options = ref([
     {
         "name": "customer",
-        "value": "Покупатель"
+        "value": "Получатель"
     },
     {
         "name": "company",
-        "value": "Компания"
+        "value": "Отправитель"
     }
 ])
 onMounted(() => {
