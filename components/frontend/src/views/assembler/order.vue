@@ -112,9 +112,9 @@ const print = () => {
                       <div class="content-section">
                         <div class="inv--head-section inv--detail-section mb-0">
                           <div class="row">
-                            <div class="col-sm-6 col-12 me-auto">
+                            <div class="col-sm-12 col-12 me-auto">
                               <p class="inv-list-number">
-                                <span class="h1">Заказ :</span>
+                                <span class="h1">Заказ: </span>
                                 <span class="h1">
                                   {{ store.state.orders.order.number }}
                                 </span>
