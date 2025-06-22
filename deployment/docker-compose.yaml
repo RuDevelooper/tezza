@@ -20,7 +20,7 @@ services:
       context: ..
       dockerfile: deployment/backend/Dockerfile
     env_file:
-      - ../components/backend/backend/.env
+      - ../config.env
     volumes:
       - ../staticfiles:/app/staticfiles
     ports:
