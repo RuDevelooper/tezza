@@ -81,7 +81,11 @@ const bind_data = () => {
     startDate = currentMonth[0]
     endDate = currentMonth[1]
     dateRange.value = [startDate, endDate];
-    store.dispatch('users/fetchItems')
+    store.dispatch('users/fetchItems');
+    store.dispatch(
+        'chart/fetch',
+        `start_date=${startDate.getTime() / 1000}&end_date=${endDate.getTime() / 1000}`
+    );
 };
 const changeRange = (range) => {
     if (range.length == 1) {
@@ -193,6 +197,36 @@ const paid_visit_options = computed(() => {
             </ul>
         </teleport>
         <div class="row layout-top-spacing">
+            <div class="col-xl-12 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
+                <div class="widget widget-visitor-by-browser">
+                    <div class="widget-heading">
+                        <h5>Чарт - текущий месяц</h5>
+                    </div>
+                    <div class="widget-content">
+                        <div v-for="item in store.state.chart.chart" :key="item.id" class="browser-list chart">
+                            <div class="w-icon icon-fill-primary">
+                                <div class="avatar avatar-xl avatar-success m-1">
+                                    <span class="avatar-title rounded-circle">{{ item.assembler[0] }}</span>
+                                </div>
+                            </div>
+                            <div class="w-browser-details">
+                                <div class="w-browser-info">
+                                    <h6>{{ item.assembler }} - {{ item.items_count }} изделий</h6>
+                                    <p class="browser-count">{{ item.percent }}%</p>
+                                </div>
+                                <div class="w-browser-stats">
+                                    <div class="progress">
+                                        <div role="progressbar" aria-valuemin="0" aria-valuemax="100"
+                                            :aria-valuenow=item.percent class="progress-bar"
+                                            :style="`width: ${item.percent}%`"></div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
             <div class="col-xl-6 col-lg-12 col-md-12 col-sm-12 col-12 layout-spacing">
                 <div class="widget widget-statistics">
                     <div class="widget-heading">
