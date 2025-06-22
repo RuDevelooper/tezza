@@ -5,7 +5,7 @@ from rest_framework.authtoken import views
 
 from tezza.views import api, chart
 from tezza.views.logout import LogoutView
-from debug_toolbar.toolbar import debug_toolbar_urls
+# from debug_toolbar.toolbar import debug_toolbar_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
@@ -34,4 +34,4 @@ router.register('user', api.UserViewSet, basename='user', )
 urlpatterns += [
     path('api/', include(router.urls)),
 ]
-urlpatterns += debug_toolbar_urls()
+# urlpatterns += debug_toolbar_urls()
