@@ -283,8 +283,8 @@ const engagement_options = computed(() => {
                             </div>
                             <div class="col-6">
                                 <div class="w-detail">
-                                    <p class="w-title">Общая сумма</p>
-                                    <p class="w-stats">{{ total_price.toLocaleString("ru-RU") }} руб.</p>
+                                    <p class="w-title">Польза</p>
+                                    <!-- <p class="w-stats">{{ total_price.toLocaleString("ru-RU") }} руб.</p> -->
                                 </div>
                                 <apex-chart v-if="paid_visit_options" height="256" type="line"
                                     :options="paid_visit_options" :series="total_cost_series"></apex-chart>
