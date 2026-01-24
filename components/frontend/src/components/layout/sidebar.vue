@@ -1,88 +1,132 @@
 <script setup>
-import Assembler from '@/views/report/assembler.vue';
-import { onMounted, ref } from 'vue';
-import { useStore } from 'vuex';
+import Assembler from "@/views/report/assembler.vue";
+import { onMounted, ref } from "vue";
+import { useStore } from "vuex";
 const store = useStore();
 
-const menu_collapse = ref('dashboard');
+const menu_collapse = ref("dashboard");
 
 onMounted(() => {
-    const selector = document.querySelector('#sidebar a[href="' + window.location.pathname + '"]');
-    if (selector) {
-        const ul = selector.closest('ul.collapse');
-        if (ul) {
-            let ele = ul.closest('li.menu').querySelectorAll('.dropdown-toggle');
-            if (ele) {
-                ele = ele[0];
-                setTimeout(() => {
-                    ele.click();
-                });
-            }
-        } else {
-            selector.click();
-        }
-    };
+  const selector = document.querySelector(
+    '#sidebar a[href="' + window.location.pathname + '"]',
+  );
+  if (selector) {
+    const ul = selector.closest("ul.collapse");
+    if (ul) {
+      let ele = ul.closest("li.menu").querySelectorAll(".dropdown-toggle");
+      if (ele) {
+        ele = ele[0];
+        setTimeout(() => {
+          ele.click();
+        });
+      }
+    } else {
+      selector.click();
+    }
+  }
 });
 
 const toggleMobileMenu = () => {
-    if (window.innerWidth < 991) {
-        store.commit('toggleSideBar', !store.state.is_show_sidebar);
-    }
+  if (window.innerWidth < 991) {
+    store.commit("toggleSideBar", !store.state.is_show_sidebar);
+  }
 };
 
 const links = {
-    manager: ['Администратор', 'Менеджер'],
-    assembler: ['Администратор', 'Сборщик'],
-    picker: ['Администратор', 'Упаковщик'],
-    cutter: ['Администратор', 'Технолог'],
-    sender: ['Администратор', 'СДЭК'],
-    admin: ['Администратор'],
+  manager: ["Администратор", "Менеджер"],
+  assembler: ["Администратор", "Сборщик"],
+  picker: ["Администратор", "Упаковщик"],
+  cutter: ["Администратор", "Технолог"],
+  sender: ["Администратор", "СДЭК"],
+  admin: ["Администратор"],
 };
-
 </script>
 
 <template>
-    <!--  BEGIN SIDEBAR  -->
-    <div class="sidebar-wrapper sidebar-theme">
-        <nav ref="menu" id="sidebar">
-            <div class="shadow-bottom"></div>
+  <!--  BEGIN SIDEBAR  -->
+  <div class="sidebar-wrapper sidebar-theme">
+    <nav ref="menu" id="sidebar">
+      <div class="shadow-bottom"></div>
 
-            <perfect-scrollbar class="list-unstyled menu-categories" tag="ul"
-                :options="{ wheelSpeed: 0.5, swipeEasing: !0, minScrollbarLength: 40, maxScrollbarLength: 300, suppressScrollX: true }">
-                <li class="menu" v-show="links.manager.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#orders"
-                        aria-controls="dashboard" aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-list" data-v-02c2cbc4="">
-                                <line x1="8" y1="6" x2="21" y2="6"></line>
-                                <line x1="8" y1="12" x2="21" y2="12"></line>
-                                <line x1="8" y1="18" x2="21" y2="18"></line>
-                                <line x1="3" y1="6" x2="3.01" y2="6"></line>
-                                <line x1="3" y1="12" x2="3.01" y2="12"></line>
-                                <line x1="3" y1="18" x2="3.01" y2="18"></line>
-                            </svg>
-                            Менеджер
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+      <perfect-scrollbar
+        class="list-unstyled menu-categories"
+        tag="ul"
+        :options="{
+          wheelSpeed: 0.5,
+          swipeEasing: !0,
+          minScrollbarLength: 40,
+          maxScrollbarLength: 300,
+          suppressScrollX: true,
+        }"
+      >
+        <li
+          class="menu"
+          v-show="links.manager.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#orders"
+            aria-controls="dashboard"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-list"
+                data-v-02c2cbc4=""
+              >
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+              Менеджер
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="orders" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/orders/list" @click="toggleMobileMenu">{{ $t('orders') }}</router-link>
-                        </li>
-                        <li>
-                            <router-link to="/orders/archive" @click="toggleMobileMenu">{{ $t('archive')
-                                }}</router-link>
-                        </li>
-                        <!-- <li>
+          <ul
+            id="orders"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/orders/list" @click="toggleMobileMenu">{{
+                $t("orders")
+              }}</router-link>
+            </li>
+            <li>
+              <router-link to="/orders/archive" @click="toggleMobileMenu">{{
+                $t("archive")
+              }}</router-link>
+            </li>
+            <!-- <li>
                             <router-link to="/orders/add" @click="toggleMobileMenu">Новый</router-link>
                         </li>
                         <li>
@@ -91,10 +135,10 @@ const links = {
                         <li>
                             <router-link to="/orders/preview" @click="toggleMobileMenu">Предпросмотр</router-link>
                         </li> -->
-                    </ul>
-                </li>
+          </ul>
+        </li>
 
-                <!-- <li class="menu">
+        <!-- <li class="menu">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#dashboard"
                         aria-controls="dashboard" aria-expanded="false">
                         <div class="">
@@ -129,174 +173,334 @@ const links = {
                     </ul>
                 </li> -->
 
-                <li class="menu" v-show="links.assembler.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#assembler"
-                        aria-controls="assembler" aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-code" data-v-02c2cbc4="">
-                                <polyline points="16 18 22 12 16 6"></polyline>
-                                <polyline points="8 6 2 12 8 18"></polyline>
-                            </svg>
-                            <span>{{ $t('assembler') }}</span>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+        <li
+          class="menu"
+          v-show="links.assembler.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#assembler"
+            aria-controls="assembler"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-code"
+                data-v-02c2cbc4=""
+              >
+                <polyline points="16 18 22 12 16 6"></polyline>
+                <polyline points="8 6 2 12 8 18"></polyline>
+              </svg>
+              <span>{{ $t("assembler") }}</span>
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="assembler" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/assembler/orders" @click="toggleMobileMenu">
-                                {{ $t('orders') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link to="/assembler/chart" @click="toggleMobileMenu">
-                                {{ $t('chart') }}
-                            </router-link>
-                        </li>
-                    </ul>
-                </li>
+          <ul
+            id="assembler"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/assembler/orders" @click="toggleMobileMenu">
+                {{ $t("orders") }}
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/assembler/chart" @click="toggleMobileMenu">
+                {{ $t("chart") }}
+              </router-link>
+            </li>
+          </ul>
+        </li>
 
-                <li class="menu" v-show="links.cutter.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#cutter" aria-controls="cutter"
-                        aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-target" data-v-5522efca="">
-                                <circle cx="12" cy="12" r="10"></circle>
-                                <circle cx="12" cy="12" r="6"></circle>
-                                <circle cx="12" cy="12" r="2"></circle>
-                            </svg>
-                            <span>{{ $t('cutter') }}</span>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+        <li
+          class="menu"
+          v-show="links.cutter.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#cutter"
+            aria-controls="cutter"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-target"
+                data-v-5522efca=""
+              >
+                <circle cx="12" cy="12" r="10"></circle>
+                <circle cx="12" cy="12" r="6"></circle>
+                <circle cx="12" cy="12" r="2"></circle>
+              </svg>
+              <span>{{ $t("cutter") }}</span>
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="cutter" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/cutter/orders" @click="toggleMobileMenu">
-                                Изделия
-                            </router-link>
-                        </li>
-                    </ul>
-                </li>
+          <ul
+            id="cutter"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/cutter/orders" @click="toggleMobileMenu">
+                Изделия
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/cutter/orders-indi" @click="toggleMobileMenu">
+                INDI Изделия
+              </router-link>
+            </li>
+          </ul>
+        </li>
 
-                <li class="menu" v-show="links.picker.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#picker" aria-controls="picker"
-                        aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-box" data-v-02c2cbc4="">
-                                <path
-                                    d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z">
-                                </path>
-                                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                                <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                            </svg>
-                            <span>{{ $t('picker') }}</span>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+        <li
+          class="menu"
+          v-show="links.picker.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#picker"
+            aria-controls="picker"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-box"
+                data-v-02c2cbc4=""
+              >
+                <path
+                  d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"
+                ></path>
+                <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                <line x1="12" y1="22.08" x2="12" y2="12"></line>
+              </svg>
+              <span>{{ $t("picker") }}</span>
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="picker" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/picker/orders" @click="toggleMobileMenu">
-                                {{ $t('orders') }}
-                            </router-link>
-                        </li>
-                    </ul>
-                </li>
+          <ul
+            id="picker"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/picker/orders" @click="toggleMobileMenu">
+                {{ $t("orders") }}
+              </router-link>
+            </li>
+          </ul>
+        </li>
 
-                <li class="menu" v-show="links.sender.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#sender" aria-controls="sender"
-                        aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-truck" data-v-5522efca="">
-                                <rect x="1" y="3" width="15" height="13"></rect>
-                                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
-                                <circle cx="5.5" cy="18.5" r="2.5"></circle>
-                                <circle cx="18.5" cy="18.5" r="2.5"></circle>
-                            </svg>
-                            <span>{{ $t('sender') }}</span>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+        <li
+          class="menu"
+          v-show="links.sender.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#sender"
+            aria-controls="sender"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-truck"
+                data-v-5522efca=""
+              >
+                <rect x="1" y="3" width="15" height="13"></rect>
+                <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                <circle cx="18.5" cy="18.5" r="2.5"></circle>
+              </svg>
+              <span>{{ $t("sender") }}</span>
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="sender" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/sender/orders" @click="toggleMobileMenu">
-                                {{ $t('orders') }}
-                            </router-link>
-                        </li>
-                    </ul>
-                </li>
+          <ul
+            id="sender"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/sender/orders" @click="toggleMobileMenu">
+                {{ $t("orders") }}
+              </router-link>
+            </li>
+          </ul>
+        </li>
 
-                <li class="menu" v-show="links.admin.includes(store.state.auth.user.group)">
-                    <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#report" aria-controls="report"
-                        aria-expanded="false">
-                        <div class="">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-bar-chart-2" data-v-5522efca="">
-                                <line x1="18" y1="20" x2="18" y2="10"></line>
-                                <line x1="12" y1="20" x2="12" y2="4"></line>
-                                <line x1="6" y1="20" x2="6" y2="14"></line>
-                            </svg>
-                            <span>{{ $t('report') }}</span>
-                        </div>
-                        <div>
-                            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"
-                                fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"
-                                stroke-linejoin="round" class="feather feather-chevron-right">
-                                <polyline points="9 18 15 12 9 6"></polyline>
-                            </svg>
-                        </div>
-                    </a>
+        <li
+          class="menu"
+          v-show="links.admin.includes(store.state.auth.user.group)"
+        >
+          <a
+            class="dropdown-toggle"
+            data-bs-toggle="collapse"
+            data-bs-target="#report"
+            aria-controls="report"
+            aria-expanded="false"
+          >
+            <div class="">
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-bar-chart-2"
+                data-v-5522efca=""
+              >
+                <line x1="18" y1="20" x2="18" y2="10"></line>
+                <line x1="12" y1="20" x2="12" y2="4"></line>
+                <line x1="6" y1="20" x2="6" y2="14"></line>
+              </svg>
+              <span>{{ $t("report") }}</span>
+            </div>
+            <div>
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                width="24"
+                height="24"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                stroke-width="2"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                class="feather feather-chevron-right"
+              >
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </div>
+          </a>
 
-                    <ul id="report" class="collapse submenu list-unstyled" data-bs-parent="#sidebar">
-                        <li>
-                            <router-link to="/report/assembler" @click="toggleMobileMenu">
-                                {{ $t('assembler') }}
-                            </router-link>
-                        </li>
-                        <li>
-                            <router-link to="/report/designer" @click="toggleMobileMenu">
-                                Дизайнер
-                            </router-link>
-                        </li>
-                    </ul>
-                </li>
+          <ul
+            id="report"
+            class="collapse submenu list-unstyled"
+            data-bs-parent="#sidebar"
+          >
+            <li>
+              <router-link to="/report/assembler" @click="toggleMobileMenu">
+                {{ $t("assembler") }}
+              </router-link>
+            </li>
+            <li>
+              <router-link to="/report/designer" @click="toggleMobileMenu">
+                Дизайнер
+              </router-link>
+            </li>
+          </ul>
+        </li>
 
-                <!-- <li class="menu pt-5">
+        <!-- <li class="menu pt-5">
                     <a class="dropdown-toggle" data-bs-toggle="collapse" data-bs-target="#apps" aria-controls="apps"
                         aria-expanded="false">
                         <div class="">
@@ -901,8 +1105,8 @@ const links = {
                         </div>
                     </a>
                 </li> -->
-            </perfect-scrollbar>
-        </nav>
-    </div>
-    <!--  END SIDEBAR  -->
+      </perfect-scrollbar>
+    </nav>
+  </div>
+  <!--  END SIDEBAR  -->
 </template>

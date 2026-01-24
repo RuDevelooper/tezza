@@ -1,236 +1,311 @@
-import { createRouter, createWebHistory } from 'vue-router';
+import { createRouter, createWebHistory } from "vue-router";
 
-import Home from '../views/index.vue';
-import store from '../store';
+import Home from "../views/index.vue";
+import store from "../store";
 
 // Vue.use(VueRouter);
 // import { createApp } from 'vue';
 // const app = createApp();
 // app.use(createRouter);
 
-
 const requireAuthenticated = (to, from, next) => {
-    store.dispatch('auth/initialize')
-        .then(() => {
-            if (!store.getters['auth/isAuthenticated']) {
-                next('/auth/login');
-            } else {
-                next();
-            }
-        });
+  store.dispatch("auth/initialize").then(() => {
+    if (!store.getters["auth/isAuthenticated"]) {
+      next("/auth/login");
+    } else {
+      next();
+    }
+  });
 };
 
 const requireUnauthenticated = (to, from, next) => {
-    store.dispatch('auth/initialize')
-        .then(() => {
-            if (store.getters['auth/isAuthenticated']) {
-                next(from);
-            } else {
-                next();
-            }
-        });
+  store.dispatch("auth/initialize").then(() => {
+    if (store.getters["auth/isAuthenticated"]) {
+      next(from);
+    } else {
+      next();
+    }
+  });
 };
 
 const redirectLogout = (to, from, next) => {
-    store.dispatch('auth/logout')
-        .then(() => next('/auth/login'));
+  store.dispatch("auth/logout").then(() => next("/auth/login"));
 };
 
 const auth = [
-    {
-        path: '/auth/login',
-        name: 'login',
-        component: () => import(/* webpackChunkName: "auth-login" */ '../views/auth/login.vue'),
-        meta: { layout: 'auth' },
-        beforeEnter: requireUnauthenticated,
-    },
-    {
-        path: '/auth/logout',
-        beforeEnter: redirectLogout,
-    },
-    {
-        path: '/auth/register',
-        name: 'register',
-        component: () => import(/* webpackChunkName: "auth-register" */ '../views/auth/register.vue'),
-        meta: { layout: 'auth' },
-    },
-    {
-        path: '/auth/lockscreen',
-        name: 'lockscreen',
-        component: () => import(/* webpackChunkName: "auth-lockscreen" */ '../views/auth/lockscreen.vue'),
-        meta: { layout: 'auth' },
-    },
-    {
-        path: '/auth/pass-recovery',
-        name: 'pass-recovery',
-        component: () => import(/* webpackChunkName: "auth-pass-recovery" */ '../views/auth/pass_recovery.vue'),
-        meta: { layout: 'auth' },
-    },
-]
+  {
+    path: "/auth/login",
+    name: "login",
+    component: () =>
+      import(/* webpackChunkName: "auth-login" */ "../views/auth/login.vue"),
+    meta: { layout: "auth" },
+    beforeEnter: requireUnauthenticated,
+  },
+  {
+    path: "/auth/logout",
+    beforeEnter: redirectLogout,
+  },
+  {
+    path: "/auth/register",
+    name: "register",
+    component: () =>
+      import(
+        /* webpackChunkName: "auth-register" */ "../views/auth/register.vue"
+      ),
+    meta: { layout: "auth" },
+  },
+  {
+    path: "/auth/lockscreen",
+    name: "lockscreen",
+    component: () =>
+      import(
+        /* webpackChunkName: "auth-lockscreen" */ "../views/auth/lockscreen.vue"
+      ),
+    meta: { layout: "auth" },
+  },
+  {
+    path: "/auth/pass-recovery",
+    name: "pass-recovery",
+    component: () =>
+      import(
+        /* webpackChunkName: "auth-pass-recovery" */ "../views/auth/pass_recovery.vue"
+      ),
+    meta: { layout: "auth" },
+  },
+];
 const links = {
-    manager: ['Администратор', 'Менеджер'],
-    assembler: ['Администратор', 'Сборщик'],
-    picker: ['Администратор', 'Упаковщик'],
-    cutter: ['Администратор', 'Технолог'],
-    sender: ['Администратор', 'СДЭК'],
-    admin: ['Администратор'],
+  manager: ["Администратор", "Менеджер"],
+  assembler: ["Администратор", "Сборщик"],
+  picker: ["Администратор", "Упаковщик"],
+  cutter: ["Администратор", "Технолог"],
+  sender: ["Администратор", "СДЭК"],
+  admin: ["Администратор"],
 };
 const roleRouter = () => {
-    const start_page_match = {
-        'Менеджер': import('../views/orders/list.vue'),
-        'Сборщик': import('../views/assembler/orders.vue'),
-        'Упаковщик': import('../views/picker/orders.vue'),
-        'Технолог': import('../views/cutter/orders.vue'),
-        'СДЭК': import('../views/sender/orders.vue'),
-        'Администратор': import('../views/report/assembler.vue'),
-    }
+  const start_page_match = {
+    Менеджер: import("../views/orders/list.vue"),
+    Сборщик: import("../views/assembler/orders.vue"),
+    Упаковщик: import("../views/picker/orders.vue"),
+    Технолог: import("../views/cutter/orders.vue"),
+    СДЭК: import("../views/sender/orders.vue"),
+    Администратор: import("../views/report/assembler.vue"),
+  };
 
-    return start_page_match[store.state.auth.user.group]
-}
+  return start_page_match[store.state.auth.user.group];
+};
 
 const orders = [
-    {
-        path: '/',
-        name: 'home',
-        component: roleRouter,
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/orders/list',
-        name: 'orders-list',
-        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/list.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/orders/archive',
-        name: 'orders-archive',
-        component: () => import(/* webpackChunkName: "apps-invoice-list" */ '../views/orders/archive.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/orders/preview',
-        name: 'orders-preview',
-        component: () => import(/* webpackChunkName: "apps-invoice-preview" */ '../views/orders/preview.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/orders/add',
-        name: 'orders-add',
-        component: () => import(/* webpackChunkName: "apps-invoice-add" */ '../views/orders/add.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/orders/edit',
-        name: 'orders-edit',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/orders/edit.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/assembler/orders',
-        name: 'assembler_orders',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler/orders.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/assembler/order',
-        name: 'assembler_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler/order.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/assembler/chart',
-        name: 'assembler_chart',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/assembler/chart.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/cutter/orders',
-        name: 'cutter_orders',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/cutter/orders.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/cutter/order',
-        name: 'cutter_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/cutter/order.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/sender/orders',
-        name: 'sender_orders',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/sender/orders.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/sender/order',
-        name: 'sender_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/sender/order.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/picker/orders',
-        name: 'picker_orders',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/picker/orders.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/picker/order',
-        name: 'picker_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/picker/order.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/picker',
-        name: 'picker',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/picker.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-]
+  {
+    path: "/",
+    name: "home",
+    component: roleRouter,
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/orders/list",
+    name: "orders-list",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-list" */ "../views/orders/list.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/orders/archive",
+    name: "orders-archive",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-list" */ "../views/orders/archive.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/orders/preview",
+    name: "orders-preview",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-preview" */ "../views/orders/preview.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/orders/add",
+    name: "orders-add",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-add" */ "../views/orders/add.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/orders/edit",
+    name: "orders-edit",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/orders/edit.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/assembler/orders",
+    name: "assembler_orders",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/assembler/orders.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/assembler/order",
+    name: "assembler_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/assembler/order.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/assembler/chart",
+    name: "assembler_chart",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/assembler/chart.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/cutter/orders",
+    name: "cutter_orders",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/cutter/orders.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/cutter/orders-indi",
+    name: "cutter_orders_indi",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/cutter/orders-indi.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/cutter/order",
+    name: "cutter_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/cutter/order.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/sender/orders",
+    name: "sender_orders",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/sender/orders.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/sender/order",
+    name: "sender_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/sender/order.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/picker/orders",
+    name: "picker_orders",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/picker/orders.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/picker/order",
+    name: "picker_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/picker/order.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/picker",
+    name: "picker",
+    component: () =>
+      import(/* webpackChunkName: "apps-invoice-edit" */ "../views/picker.vue"),
+    beforeEnter: requireAuthenticated,
+  },
+];
 const report = [
-    {
-        path: '/report/assembler',
-        name: 'report_assembler',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/report/assembler.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/report/designer',
-        name: 'report_designer',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/report/designer.vue'),
-        beforeEnter: requireAuthenticated,
-    },
-]
+  {
+    path: "/report/assembler",
+    name: "report_assembler",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/report/assembler.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/report/designer",
+    name: "report_designer",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/report/designer.vue"
+      ),
+    beforeEnter: requireAuthenticated,
+  },
+];
 const docs = [
-    {
-        path: '/docs/assembler_order',
-        name: 'docs_assembler_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/assembler/order.vue'),
-        meta: { layout: 'auth' },
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/docs/picker_order',
-        name: 'docs_picker_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/picker/order.vue'),
-        meta: { layout: 'auth' },
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/docs/manager_order',
-        name: 'docs_manager_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/manager/order.vue'),
-        meta: { layout: 'auth' },
-        beforeEnter: requireAuthenticated,
-    },
-    {
-        path: '/docs/sender_order',
-        name: 'docs_sender_order',
-        component: () => import(/* webpackChunkName: "apps-invoice-edit" */ '../views/docs/sender/order.vue'),
-        meta: { layout: 'auth' },
-        beforeEnter: requireAuthenticated,
-    },
-]
-
+  {
+    path: "/docs/assembler_order",
+    name: "docs_assembler_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/docs/assembler/order.vue"
+      ),
+    meta: { layout: "auth" },
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/docs/picker_order",
+    name: "docs_picker_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/docs/picker/order.vue"
+      ),
+    meta: { layout: "auth" },
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/docs/manager_order",
+    name: "docs_manager_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/docs/manager/order.vue"
+      ),
+    meta: { layout: "auth" },
+    beforeEnter: requireAuthenticated,
+  },
+  {
+    path: "/docs/sender_order",
+    name: "docs_sender_order",
+    component: () =>
+      import(
+        /* webpackChunkName: "apps-invoice-edit" */ "../views/docs/sender/order.vue"
+      ),
+    meta: { layout: "auth" },
+    beforeEnter: requireAuthenticated,
+  },
+];
 
 // const dashboard = [
 //     {
@@ -728,55 +803,58 @@ const docs = [
 // ];
 
 const error_pages = [
-    {
-        path: '/:pathMatch(.*)*',
-        name: 'error404',
-        component: () => import(/* webpackChunkName: "pages-error404" */ '../views/pages/error404.vue'),
-        meta: { layout: 'auth' },
-    },
+  {
+    path: "/:pathMatch(.*)*",
+    name: "error404",
+    component: () =>
+      import(
+        /* webpackChunkName: "pages-error404" */ "../views/pages/error404.vue"
+      ),
+    meta: { layout: "auth" },
+  },
 ];
 
 const routes = [
-    ...auth,
-    ...orders,
-    ...report,
-    ...docs,
-    // ...dashboard,
-    // ...components,
-    // ...fonts,
-    // ...pages,
-    // ...elements,
-    // ...users,
-    // ...dragNdrop,
-    // ...charts,
-    // ...widgets,
-    // ...forms,
-    // ...apps,
-    // ...tables,
-    ...error_pages,
-]
+  ...auth,
+  ...orders,
+  ...report,
+  ...docs,
+  // ...dashboard,
+  // ...components,
+  // ...fonts,
+  // ...pages,
+  // ...elements,
+  // ...users,
+  // ...dragNdrop,
+  // ...charts,
+  // ...widgets,
+  // ...forms,
+  // ...apps,
+  // ...tables,
+  ...error_pages,
+];
 
 const router = new createRouter({
-    // mode: 'history',
-    history: createWebHistory(),
-    linkExactActiveClass: 'active',
-    routes,
-    scrollBehavior(to, from, savedPosition) {
-        if (savedPosition) {
-            return savedPosition;
-        } else {
-            return { left: 0, top: 0 };
-        }
-    },
+  // mode: 'history',
+  history: createWebHistory(),
+  linkExactActiveClass: "active",
+  routes,
+  scrollBehavior(to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition;
+    } else {
+      return { left: 0, top: 0 };
+    }
+  },
 });
 
 router.beforeEach((to, from, next) => {
-    if (to.meta && to.meta.layout && to.meta.layout == 'auth') {
-        store.commit('setLayout', 'auth');
-    } else {
-        store.commit('setLayout', 'app');
-    }
-    next(true);
+  if (to.meta && to.meta.layout && to.meta.layout == "auth") {
+    store.commit("setLayout", "auth");
+  } else {
+    store.commit("setLayout", "app");
+  }
+  next(true);
 });
 
 export default router;
