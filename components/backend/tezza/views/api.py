@@ -3,7 +3,7 @@ from typing import Dict, List
 from rest_framework import viewsets, permissions, filters
 from rest_framework.authentication import TokenAuthentication
 from rest_framework.response import Response
-from rest_framework.filters import OrderingFilter
+from rest_framework.filters import OrderingFilter, SearchFilter
 from rest_framework.pagination import PageNumberPagination
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -107,6 +107,7 @@ class Order(viewsets.ModelViewSet):
     permission_classes = {
         permissions.IsAuthenticated,
     }
+
     # pagination_class = PageNumberPagination
     # serializer_class = serializers.Order
 
@@ -118,8 +119,6 @@ class Order(viewsets.ModelViewSet):
             return serializers.OrderSimple
 
         return serializers.OrderCreate
-
-
 
     filterset_fields: dict[str, list[str]] = {
         "status": ["in", "exact"],  # note the 'in' field
@@ -148,7 +147,7 @@ class OrderItem(viewsets.ModelViewSet):
         permissions.IsAuthenticated,
     }
     serializer_class = serializers.OrderItem
-    filter_backends = [DjangoFilterBackend, OrderingFilter]
+    filter_backends = [DjangoFilterBackend, OrderingFilter, SearchFilter]
     filterset_fields = {
         "status": ("in", "exact"),  # note the 'in' field
         "order__assembler": ("exact",),
@@ -157,6 +156,9 @@ class OrderItem(viewsets.ModelViewSet):
     ordering_fields = ["assembled_at", "added_at"]
     ordering = ("-added_at",)
     queryset = models.OrderItem.objects.all()
+
+    # filter_backends = [SearchFilter]  # Используем SearchFilter
+    search_fields = ['^product__sku']
 
 
 class OrderComment(viewsets.ModelViewSet):
