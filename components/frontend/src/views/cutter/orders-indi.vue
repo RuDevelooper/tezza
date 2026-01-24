@@ -155,32 +155,6 @@ const indiItemsOnly = () => {
               :columns="columns"
               :options="table_option"
             >
-              <template #afterFilterWrapper>
-                <button
-                  type="button"
-                  class="btn me-4"
-                  @click="indiItemsOnly()"
-                  :class="
-                    clickedIndiItemsOnly
-                      ? 'btn-secondary'
-                      : 'btn-outline-secondary'
-                  "
-                >
-                  INDI
-                  <span
-                    class="badge badge-danger counter"
-                    style="top: -8px; right: -8px"
-                  >
-                    {{
-                      store.state.order_items.order_items.reduce(
-                        (acc, e) =>
-                          acc + (e.product.sku.startsWith("INDI") ? 1 : 0),
-                        0,
-                      )
-                    }}</span
-                  >
-                </button>
-              </template>
               <template #beforeFilter>
                 <button
                   :disabled="selected_rows.length == 0"
