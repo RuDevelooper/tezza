@@ -7,7 +7,7 @@ import { useMeta } from "@/composables/use-meta";
 
 import { EventBus } from "v-tables-3";
 
-useMeta({ title: "Заказы на упаковку" });
+useMeta({ title: "Заказы на резку" });
 
 const store = useStore();
 const items = ref([]);
@@ -57,10 +57,7 @@ const table_option = ref({
   customFilters: [
     {
       name: "indiOnly",
-      callback: (row, user) => {
-        console.log(row);
-        return row.product.sku.startsWith("INDI");
-      },
+      callback: (row, query) => row.product.sku.startsWith("INDI"),
     },
     {
       name: "all",

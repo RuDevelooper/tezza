@@ -1,4 +1,4 @@
-from rest_framework import serializers
+from rest_framework import serializers, filters
 
 from tezza import models, services
 from tezza.serializers import Customer, Product
@@ -28,6 +28,9 @@ class OrderItem(serializers.ModelSerializer):
                                      required=False)
     product = Product()
     order_num = serializers.CharField(source='order.number', read_only=True)
+
+    filter_backends = [filters.SearchFilter]
+    search_fields = ['^order__number']
 
     class Meta:
         model = models.OrderItem
